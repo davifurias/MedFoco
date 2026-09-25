@@ -21,7 +21,7 @@ export function ResumoDoDiaCard({
   ];
   return (
     <section className="card" aria-label="Resumo do dia">
-      <div className="meta resumo-date">{formatLongDate(now)}</div>
+      <div className="resumo-date">{formatLongDate(now)}</div>
       <p className="resumo-greeting">
         {greeting(now.getHours())} <span aria-hidden="true">👋</span>
       </p>
@@ -29,7 +29,7 @@ export function ResumoDoDiaCard({
         {counters.map((counter) => (
           <div key={counter.label}>
             <div className="counter-value">{counter.value}</div>
-            <div className="meta">{counter.label}</div>
+            <div>{counter.label}</div>
           </div>
         ))}
       </div>

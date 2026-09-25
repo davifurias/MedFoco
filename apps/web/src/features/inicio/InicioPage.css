@@ -14,7 +14,7 @@
   font-weight: 700;
 }
 
-.travou-card {
+.card.travou-card {
   background: var(--primary);
   border-color: var(--primary);
   color: #fff;
