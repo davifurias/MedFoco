@@ -20,6 +20,7 @@ export const STORAGE_KEYS = {
   notebook: 'medfoco:v1:notebook',
   focusSessions: 'medfoco:v1:focusSessions',
   dailySuggestion: 'medfoco:v1:dailySuggestion',
+  schedule: 'medfoco:v1:schedule',
 } as const;
 
 type IdCrypto = Pick<Crypto, 'getRandomValues'> & { randomUUID?: () => string };
@@ -78,6 +79,20 @@ export function createLocalRepository(
     async addTask(task: NewTask) {
       return append<Task>(STORAGE_KEYS.tasks, task);
     },
+    async setTaskDone(id: string, done: boolean) {
+      const tasks = readList<Task>(STORAGE_KEYS.tasks);
+      writeList(
+        STORAGE_KEYS.tasks,
+        tasks.map((task) => (task.id === id ? { ...task, done } : task)),
+      );
+    },
+    async deleteTask(id: string) {
+      const tasks = readList<Task>(STORAGE_KEYS.tasks);
+      writeList(
+        STORAGE_KEYS.tasks,
+        tasks.filter((task) => task.id !== id),
+      );
+    },
 
     async listEvents() {
       return readList<CalendarEvent>(STORAGE_KEYS.events);
@@ -102,6 +117,20 @@ export function createLocalRepository(
 
     async listFocusSessions() {
       return readList<FocusSession>(STORAGE_KEYS.focusSessions);
+    },
+
+    async getSchedule() {
+      const raw = storage.getItem(STORAGE_KEYS.schedule);
+      if (!raw) return '';
+      try {
+        const parsed = JSON.parse(raw) as { text?: unknown } | null;
+        return typeof parsed?.text === 'string' ? parsed.text : '';
+      } catch {
+        return '';
+      }
+    },
+    async saveSchedule(text: string) {
+      storage.setItem(STORAGE_KEYS.schedule, JSON.stringify({ text }));
     },
 
     async getDailySuggestion() {

@@ -75,6 +75,48 @@ describe('createLocalRepository', () => {
   });
 });
 
+describe('tarefas: concluir e excluir', () => {
+  it('marca e desmarca como concluída apenas a tarefa indicada', async () => {
+    const repo = createLocalRepository(createMemoryStorage());
+    const a = await repo.addTask(task);
+    const b = await repo.addTask({ ...task, title: 'Outra' });
+    await repo.setTaskDone(a.id, true);
+    expect(await repo.listTasks()).toEqual([{ ...a, done: true }, b]);
+    await repo.setTaskDone(a.id, false);
+    expect(await repo.listTasks()).toEqual([a, b]);
+  });
+
+  it('exclui apenas a tarefa indicada', async () => {
+    const repo = createLocalRepository(createMemoryStorage());
+    const a = await repo.addTask(task);
+    const b = await repo.addTask({ ...task, title: 'Outra' });
+    await repo.deleteTask(a.id);
+    expect(await repo.listTasks()).toEqual([b]);
+  });
+});
+
+describe('horários da semana', () => {
+  it('começa vazio', async () => {
+    expect(await createLocalRepository(createMemoryStorage()).getSchedule()).toBe('');
+  });
+
+  it('salva e mantém após recarregar, inclusive texto vazio', async () => {
+    const storage = createMemoryStorage();
+    await createLocalRepository(storage).saveSchedule('Seg 8h-12h aula');
+    expect(await createLocalRepository(storage).getSchedule()).toBe('Seg 8h-12h aula');
+    await createLocalRepository(storage).saveSchedule('');
+    expect(await createLocalRepository(storage).getSchedule()).toBe('');
+  });
+
+  it('ignora dados corrompidos', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(STORAGE_KEYS.schedule, '{ruim');
+    expect(await createLocalRepository(storage).getSchedule()).toBe('');
+    storage.setItem(STORAGE_KEYS.schedule, '{"text":42}');
+    expect(await createLocalRepository(storage).getSchedule()).toBe('');
+  });
+});
+
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 /** Simula um navegador em contexto não seguro (http://<IP-da-rede>): sem crypto.randomUUID. */
