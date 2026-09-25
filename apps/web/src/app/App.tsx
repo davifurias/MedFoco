@@ -1,18 +1,7 @@
-import './App.css';
+import { RouterProvider, type createBrowserRouter } from 'react-router';
 
-export function App() {
-  return (
-    <div className="app">
-      <header className="app-header">
-        <h1>
-          <span aria-hidden="true">🧠</span> MedFoco
-        </h1>
-      </header>
-      <main className="app-main">
-        <section className="card">
-          <p>Nova versão do MedFoco em construção.</p>
-        </section>
-      </main>
-    </div>
-  );
+type AppRouter = ReturnType<typeof createBrowserRouter>;
+
+export function App({ router }: { router: AppRouter }) {
+  return <RouterProvider router={router} />;
 }
