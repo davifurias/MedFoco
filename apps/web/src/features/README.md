@@ -1,8 +1,17 @@
 # features/
 
 Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes, lógica e testes
-juntos. Por enquanto cada área mostra uma página provisória listando o que ela oferece no app
-original (`legacy/MedFoco.html`); o conteúdo real será migrado área por área.
+juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
+original (`legacy/MedFoco.html`).
+
+**Migradas:** Início (`inicio/`: `components/`, `hooks/`, `services/`, `utils/`).
+
+## Dados
+
+Componentes nunca acessam o armazenamento diretamente: usam `useRepository()`
+(`src/data/`). Hoje a implementação é local (`localStorage`, chaves `medfoco:v1:*`, só neste
+navegador); na fase de backend, basta criar outra implementação da mesma interface
+`MedFocoRepository`. Datas sempre no fuso local, via `src/shared/date.ts`.
 
 | Pasta        | Endereço                                         | Origem no app original                       |
 | ------------ | ------------------------------------------------ | -------------------------------------------- |
