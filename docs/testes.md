@@ -25,6 +25,9 @@ se alguma falhar, o PR não pode ser incorporado.
 
 ## Regras
 
+- Os testes rodam no fuso `America/Sao_Paulo` (definido em `vitest.config.mjs`), inclusive no
+  CI, para detectar erros de data que só aparecem fora do UTC.
+
 - Toda mudança de comportamento vem com teste.
 - Testes nunca usam dados reais de usuários.
 - Nunca desativar um teste para "fazer passar".

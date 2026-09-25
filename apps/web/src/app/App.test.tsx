@@ -2,19 +2,24 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import { StrictMode } from 'react';
 import { createMemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { createLocalRepository, createMemoryStorage } from '../data/localRepository';
 import { routes } from '../routes/routes';
 import { App } from './App';
 import { MAIN_AREAS } from './navigation';
 
 function renderApp(path = '/') {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
-  render(<App router={router} />);
+  render(<App router={router} repository={createLocalRepository(createMemoryStorage())} />);
   return router;
 }
 
 const desktopNav = () => screen.getByRole('navigation', { name: 'Navegação principal' });
 const mobileNav = () => screen.getByRole('navigation', { name: 'Navegação principal (celular)' });
-const pageTitle = () => screen.getByRole('heading', { level: 2 }).textContent;
+/** Título da página atual. O Início não tem um título único: é reconhecido pelo Resumo do dia. */
+const pageTitle = () =>
+  screen.queryByRole('region', { name: 'Resumo do dia' })
+    ? 'Início'
+    : screen.getByRole('heading', { level: 2 }).textContent;
 
 afterEach(() => {
   cleanup();
@@ -33,7 +38,10 @@ describe('App', () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     render(
       <StrictMode>
-        <App router={createMemoryRouter(routes)} />
+        <App
+          router={createMemoryRouter(routes)}
+          repository={createLocalRepository(createMemoryStorage())}
+        />
       </StrictMode>,
     );
     expect(consoleError).not.toHaveBeenCalled();

@@ -136,3 +136,183 @@ h2 {
   font-size: 0.9rem;
   line-height: 1.5;
 }
+
+/* Formulários, listas e pílulas do app original. */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.btn.danger {
+  background: var(--danger);
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.row > * {
+  flex: 1;
+  min-width: 120px;
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.status {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 8px 0;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.cat-trabalho {
+  background: var(--c-trabalho);
+}
+.cat-provas {
+  background: var(--c-provas);
+}
+.cat-ferias {
+  background: var(--c-ferias);
+}
+.cat-aulas {
+  background: var(--c-aulas);
+}
+.cat-outro {
+  background: var(--c-outro);
+}
+
+.item-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.item:last-child {
+  border-bottom: none;
+}
+
+.item-title {
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.del {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 1.1rem;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.quick button {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.quick button.active {
+  border-color: var(--primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Diálogo de confirmação. */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 360px;
+  margin: 0;
+}
+
+.dialog-title {
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.dialog p {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
