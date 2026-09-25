@@ -1,0 +1,130 @@
+import type { MedFocoRepository } from './repository';
+import type {
+  CalendarEvent,
+  DailySuggestion,
+  FocusSession,
+  NewCalendarEvent,
+  NewNotebookEntry,
+  NewTask,
+  NotebookEntry,
+  Task,
+} from './types';
+
+/** O mínimo de `Storage` (localStorage) de que o repositório precisa. */
+export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem'>;
+
+/** Chaves versionadas: permitem migrar o formato dos dados no futuro. */
+export const STORAGE_KEYS = {
+  tasks: 'medfoco:v1:tasks',
+  events: 'medfoco:v1:events',
+  notebook: 'medfoco:v1:notebook',
+  focusSessions: 'medfoco:v1:focusSessions',
+  dailySuggestion: 'medfoco:v1:dailySuggestion',
+} as const;
+
+function newId(): string {
+  return globalThis.crypto.randomUUID();
+}
+
+/**
+ * Persistência local temporária (até existir backend). Os dados ficam só neste navegador e
+ * nunca são enviados a nenhum serviço externo.
+ */
+export function createLocalRepository(
+  storage: KeyValueStorage,
+  now: () => number = Date.now,
+): MedFocoRepository {
+  function readList<T>(key: string): T[] {
+    const raw = storage.getItem(key);
+    if (!raw) return [];
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      return Array.isArray(parsed) ? (parsed as T[]) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function writeList<T>(key: string, items: T[]): void {
+    storage.setItem(key, JSON.stringify(items));
+  }
+
+  function append<T extends { id: string; createdAt: number }>(
+    key: string,
+    data: Omit<T, 'id' | 'createdAt'>,
+  ): T {
+    const item = { ...data, id: newId(), createdAt: now() } as T;
+    writeList(key, [...readList<T>(key), item]);
+    return item;
+  }
+
+  return {
+    async listTasks() {
+      return readList<Task>(STORAGE_KEYS.tasks);
+    },
+    async addTask(task: NewTask) {
+      return append<Task>(STORAGE_KEYS.tasks, task);
+    },
+
+    async listEvents() {
+      return readList<CalendarEvent>(STORAGE_KEYS.events);
+    },
+    async addEvent(event: NewCalendarEvent) {
+      return append<CalendarEvent>(STORAGE_KEYS.events, event);
+    },
+    async deleteEvent(id: string) {
+      const events = readList<CalendarEvent>(STORAGE_KEYS.events);
+      writeList(
+        STORAGE_KEYS.events,
+        events.filter((event) => event.id !== id),
+      );
+    },
+
+    async listNotebookEntries() {
+      return readList<NotebookEntry>(STORAGE_KEYS.notebook);
+    },
+    async addNotebookEntry(entry: NewNotebookEntry) {
+      return append<NotebookEntry>(STORAGE_KEYS.notebook, entry);
+    },
+
+    async listFocusSessions() {
+      return readList<FocusSession>(STORAGE_KEYS.focusSessions);
+    },
+
+    async getDailySuggestion() {
+      const raw = storage.getItem(STORAGE_KEYS.dailySuggestion);
+      if (!raw) return null;
+      try {
+        const parsed = JSON.parse(raw) as Partial<DailySuggestion> | null;
+        return parsed && typeof parsed.date === 'string' && typeof parsed.text === 'string'
+          ? { date: parsed.date, text: parsed.text }
+          : null;
+      } catch {
+        return null;
+      }
+    },
+  };
+}
+
+/** Armazenamento em memória: usado em testes e quando o navegador bloqueia o localStorage. */
+export function createMemoryStorage(): KeyValueStorage {
+  const data = new Map<string, string>();
+  return {
+    getItem: (key) => data.get(key) ?? null,
+    setItem: (key, value) => {
+      data.set(key, value);
+    },
+  };
+}
+
+/** localStorage do navegador, ou memória se ele estiver indisponível (ex.: modo privado). */
+export function getBrowserStorage(): KeyValueStorage {
+  try {
+    const probe = 'medfoco:probe';
+    window.localStorage.setItem(probe, probe);
+    window.localStorage.removeItem(probe);
+    return window.localStorage;
+  } catch {
+    return createMemoryStorage();
+  }
+}
