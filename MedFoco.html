@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MedFoco</title>
+<style>
+:root{
+  --bg:#f6f5fb; --card:#ffffff; --text:#1c1c28; --muted:#6b6b7b;
+  --primary:#6C5CE7; --primary-d:#5847d1; --accent:#00b894; --danger:#e74c3c;
+  --border:#e6e4f0; --radius:16px;
+  --c-trabalho:#f39c12; --c-provas:#e74c3c; --c-ferias:#00b894; --c-aulas:#6c5ce7; --c-outro:#636e72;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15141f; --card:#1e1d2b; --text:#f0eff6; --muted:#a3a1b5; --border:#302e42;
+  }
+}
+:root[data-theme="dark"]{ --bg:#15141f; --card:#1e1d2b; --text:#f0eff6; --muted:#a3a1b5; --border:#302e42; }
+*{box-sizing:border-box;}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+body{margin:0; height:100%; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; background:var(--bg); color:var(--text); display:flex; flex-direction:column;}
+header{padding:16px 20px calc(10px + env(safe-area-inset-top,0px)); display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); background:var(--card);}
+header h1{font-size:1.1rem; margin:0; display:flex; align-items:center; gap:8px;}
+nav.top{display:none;}
+main{flex:1; overflow-y:auto; padding:16px; padding-bottom:90px; max-width:900px; margin:0 auto; width:100%;}
+.card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; margin-bottom:14px;}
+h2{font-size:1rem; margin:0 0 10px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; font-size:.75rem;}
+button{font-family:inherit; cursor:pointer;}
+.btn{background:var(--primary); color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:600; font-size:.9rem;}
+.btn:hover{background:var(--primary-d);}
+.btn.secondary{background:transparent; color:var(--primary); border:1px solid var(--primary);}
+input,textarea,select{width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; font-size:.9rem; margin-bottom:8px;}
+.row{display:flex; gap:8px; flex-wrap:wrap;}
+.row>*{flex:1; min-width:120px;}
+.pill{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:.75rem; font-weight:600; color:#fff;}
+.cat-trabalho{background:var(--c-trabalho);} .cat-provas{background:var(--c-provas);} .cat-ferias{background:var(--c-ferias);} .cat-aulas{background:var(--c-aulas);} .cat-outro{background:var(--c-outro);}
+.item{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border);}
+.item:last-child{border-bottom:none;}
+.item .meta{color:var(--muted); font-size:.8rem;}
+.del{background:none; border:none; color:var(--danger); font-size:1.1rem; padding:2px 6px;}
+.empty{color:var(--muted); font-size:.85rem; padding:8px 0;}
+.chatbox{display:flex; flex-direction:column; height:60vh;}
+.chatmsgs{flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px; padding:4px 2px;}
+.bubble{max-width:85%; padding:10px 14px; border-radius:14px; font-size:.9rem; line-height:1.4; white-space:pre-wrap;}
+.bubble.user{align-self:flex-end; background:var(--primary); color:#fff; border-bottom-right-radius:4px;}
+.bubble.assist{align-self:flex-start; background:var(--bg); border:1px solid var(--border); border-bottom-left-radius:4px;}
+.chatinput{display:flex; gap:8px; margin-top:10px;}
+.chatinput textarea{margin:0; resize:none; height:44px;}
+.quick{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+.quick button{background:var(--bg); border:1px solid var(--border); border-radius:999px; padding:6px 12px; font-size:.78rem; color:var(--text);}
+.tabbar{position:fixed; bottom:0; left:0; right:0; display:flex; background:var(--card); border-top:1px solid var(--border); padding-bottom:env(safe-area-inset-bottom,0px); z-index:5;}
+.tabbar button{flex:1; background:none; border:none; padding:10px 4px 8px; display:flex; flex-direction:column; align-items:center; gap:2px; color:var(--muted); font-size:.68rem;}
+.tabbar button.active{color:var(--primary);}
+.tabbar .ic{font-size:1.25rem;}
+.hidden{display:none !important;}
+.subject-group{margin-bottom:16px;}
+.subject-group h3{font-size:.85rem; margin:0 0 6px; color:var(--primary);}
+.file-row{display:flex; align-items:center; gap:8px; padding:6px 0;}
+.file-row a{color:var(--text); text-decoration:none; font-size:.85rem; flex:1;}
+.note{font-size:.8rem; color:var(--muted); margin-top:4px;}
+.status{font-size:.78rem; color:var(--muted); margin-top:6px;}
+@media (min-width:760px){
+  .tabbar{display:none;}
+  nav.top{display:flex; gap:4px;}
+  nav.top button{background:none; border:none; padding:8px 14px; border-radius:10px; color:var(--muted); font-weight:600; font-size:.85rem;}
+  nav.top button.active{background:var(--primary); color:#fff;}
+  main{padding-bottom:16px;}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧠 MedFoco</h1>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button onclick="setView('busca')" title="Buscar" style="background:none;border:none;font-size:1.05rem;color:var(--text);padding:4px 6px;">🔍</button>
+    <span id="whoami" class="meta" style="font-size:.75rem;"></span>
+  </div>
+  <nav class="top" id="topnav"></nav>
+</header>
+<main id="main"></main>
+<nav class="tabbar" id="tabbar"></nav>
+
+<script>
+const VIEWS = [
+  {id:'inicio', label:'Início', icon:'🏠'},
+  {id:'calendario', label:'Agenda', icon:'📅'},
+  {id:'arquivos', label:'Matérias', icon:'📚'},
+  {id:'mapa', label:'Mapa', icon:'🕸️'},
+  {id:'questoes', label:'Questões', icon:'📝'},
+  {id:'foco', label:'Foco', icon:'🍅'},
+  {id:'assessora', label:'Assessora IA', icon:'💬'},
+  {id:'ideias', label:'Ideias', icon:'💡'},
+];
+const CATS = {trabalho:'Trabalho', provas:'Provas', ferias:'Férias', aulas:'Aulas', outro:'Outro'};
+
+let state = {view:'inicio', events:[], materials:[], ideas:[], chat:[], questions:[], quiz:null, sessions:[], timer:null,
+  tasks:[], schedule:'', calTab:'eventos', notebook:[], notebookOrganized:null, lesson:null, mtType:'arquivo', attach:null,
+  profile:{curso:'Medicina', periodo:'', materias:'', metas:'', preferencias:''}, dailySuggestion:null, quickOpen:null, searchQuery:'', attempts:[]};
+let db=null, assets=null, sample=null, user=null, uid=null, myName='';
+
+async function initCaps(){
+  try{ db = await window.claude.use('db'); }catch(e){ db=null; }
+  try{ assets = await window.claude.use('assets'); }catch(e){ assets=null; }
+  try{ sample = await window.claude.use('sample'); }catch(e){ sample=null; }
+  try{ user = await window.claude.use('user'); }catch(e){ user=null; }
+  if(user){
+    try{ uid = await user.id(); }catch(e){ uid=null; }
+    try{ myName = (await user.me()).name || ''; }catch(e){ myName=''; }
+  }
+  const who=document.getElementById('whoami');
+  if(who) who.textContent = uid ? ('Olá, '+(myName||'você')+' 👋') : '';
+}
+
+// Cada pessoa tem seu próprio espaço privado em data/users/<seu id>/...
+// Só a aba "Ideias do App" fica compartilhada entre todo mundo que usa o link.
+function uCollection(name){ return db.collection('data').doc('users').collection(uid).doc(name).collection('items'); }
+function uDoc(name){ return db.collection('data').doc('users').collection(uid).doc(name); }
+
+function fmtDate(d){
+  try{ const dt=new Date(d+'T00:00:00'); return dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'}); }catch(e){ return d; }
+}
+
+async function loadAll(){
+  if(!db || !uid) return;
+  try{
+    const ev = await uCollection('events').orderBy('date','asc').get();
+    state.events = ev.docs ? ev.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  try{
+    const mt = await uCollection('materials').orderBy('subject','asc').get();
+    state.materials = mt.docs ? mt.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  try{
+    const id = await db.collection('ideas').orderBy('createdAt','desc').get();
+    state.ideas = id.docs ? id.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  try{
+    const chatDoc = await uDoc('chat').get();
+    if(chatDoc && chatDoc.exists && chatDoc.data().turns) state.chat = chatDoc.data().turns;
+  }catch(e){}
+  try{
+    const qs = await uCollection('questions').orderBy('createdAt','asc').get();
+    state.questions = qs.docs ? qs.docs.map(d=>({id:d.id, ...d.data()})) : [];
+    if(state.questions.length===0) await seedQuestions();
+  }catch(e){}
+  try{
+    const ss = await uCollection('sessions').orderBy('createdAt','desc').limit(50).get();
+    state.sessions = ss.docs ? ss.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  try{
+    const tk = await uCollection('tasks').orderBy('createdAt','desc').get();
+    state.tasks = tk.docs ? tk.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  try{
+    const sc = await uDoc('schedule').get();
+    if(sc && sc.exists) state.schedule = sc.data().text || '';
+  }catch(e){}
+  try{
+    const nb = await uCollection('notebook').orderBy('createdAt','desc').get();
+    state.notebook = nb.docs ? nb.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  try{
+    const pf = await uDoc('profile').get();
+    if(pf && pf.exists) state.profile = {...state.profile, ...pf.data()};
+  }catch(e){}
+  try{
+    const ds = await uDoc('dailySuggestion').get();
+    if(ds && ds.exists) state.dailySuggestion = ds.data();
+  }catch(e){}
+  try{
+    const at = await uCollection('attempts').orderBy('createdAt','desc').limit(300).get();
+    state.attempts = at.docs ? at.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+  render();
+}
+
+async function seedQuestions(){
+  const examples=[
+    {subject:'Cardiologia', topic:'Insuficiência cardíaca', difficulty:'médio',
+     question:'Paciente com dispneia aos esforços, edema de membros inferiores e turgência jugular. Qual exame inicial mais indicado para avaliar função cardíaca?',
+     options:['Ecocardiograma transtorácico','Radiografia de tórax apenas','Hemograma completo','Endoscopia digestiva'], correctIndex:0,
+     explanation:'O ecocardiograma avalia função sistólica/diastólica e é o exame inicial padrão diante de suspeita de insuficiência cardíaca.'},
+    {subject:'Farmacologia', topic:'Anti-hipertensivos', difficulty:'fácil',
+     question:'Qual classe de anti-hipertensivos pode causar tosse seca como efeito colateral comum?',
+     options:['Inibidores da ECA','Diuréticos tiazídicos','Bloqueadores de canal de cálcio','Betabloqueadores'], correctIndex:0,
+     explanation:'Os inibidores da ECA aumentam bradicinina, causando tosse seca em parte dos pacientes.'},
+    {subject:'Anatomia', topic:'Sistema nervoso', difficulty:'difícil',
+     question:'Lesão que causa perda de sensibilidade térmica e dolorosa contralateral com preservação da propriocepção sugere lesão em qual estrutura?',
+     options:['Trato espinotalâmico lateral','Coluna dorsal (fascículo grácil)','Trato corticoespinal','Nervo periférico único'], correctIndex:0,
+     explanation:'O trato espinotalâmico lateral cruza próximo à entrada na medula e carrega dor/temperatura; sua lesão unilateral causa déficit contralateral.'}
+  ];
+  for(const ex of examples){
+    try{ await uCollection('questions').add({...ex, createdAt:Date.now()}); }catch(e){}
+  }
+  try{
+    const qs = await uCollection('questions').orderBy('createdAt','asc').get();
+    state.questions = qs.docs ? qs.docs.map(d=>({id:d.id, ...d.data()})) : [];
+  }catch(e){}
+}
+
+function setView(v){ state.view=v; render(); }
+
+function render(){
+  document.getElementById('topnav').innerHTML = VIEWS.map(v=>`<button class="${state.view===v.id?'active':''}" onclick="setView('${v.id}')">${v.icon} ${v.label}</button>`).join('');
+  document.getElementById('tabbar').innerHTML = VIEWS.map(v=>`<button class="${state.view===v.id?'active':''}" onclick="setView('${v.id}')"><span class="ic">${v.icon}</span>${v.label}</button>`).join('');
+  const main = document.getElementById('main');
+  if(state.view==='inicio') main.innerHTML = renderInicio();
+  if(state.view==='calendario') main.innerHTML = renderCalendario();
+  if(state.view==='arquivos') main.innerHTML = renderArquivos();
+  if(state.view==='mapa') { main.innerHTML = renderMapa(); }
+  if(state.view==='questoes') { main.innerHTML = renderQuestoes(); }
+  if(state.view==='foco') { main.innerHTML = renderFoco(); }
+  if(state.view==='assessora') { main.innerHTML = renderAssessora(); scrollChatBottom(); }
+  if(state.view==='ideias') main.innerHTML = renderIdeias();
+  if(state.view==='perfil') main.innerHTML = renderPerfil();
+  if(state.view==='busca') { main.innerHTML = renderBusca(); focusSearchInput(); }
+}
+
+// ---------- INÍCIO ----------
+function greeting(){
+  const h=new Date().getHours();
+  const first = myName ? myName.split(' ')[0] : '';
+  const base = h<12?'Bom dia':(h<18?'Boa tarde':'Boa noite');
+  return first? base+', '+first : base;
+}
+
+function renderInicio(){
+  if(db && !uid){
+    return `<div class="card"><h2>Acesso limitado</h2><p>Não consegui identificar sua conta para separar seus dados dos de outras pessoas neste app. Peça para quem compartilhou o link com você garantir que você está com permissão de "Contribuidor" (não apenas visualizar), e recarregue a página.</p></div>`;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  const proximos = state.events.filter(e=>e.date>=today).slice(0,5);
+  const minutosHoje = state.sessions.filter(s=>s.date===today).reduce((a,s)=>a+(s.minutes||0),0);
+  const dataFmt = new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+  const sug = state.dailySuggestion;
+  const sugHoje = sug && sug.date===today ? sug.text : null;
+  return `
+  <div class="card">
+    <div class="meta" style="text-transform:capitalize;">${dataFmt}</div>
+    <div style="font-size:1.3rem;font-weight:700;margin:4px 0 12px;">${greeting()} 👋</div>
+    <div class="row">
+      <div><div style="font-size:1.4rem;font-weight:700;">${state.tasks.filter(t=>!t.done).length}</div><div class="meta">tarefas pendentes</div></div>
+      <div><div style="font-size:1.4rem;font-weight:700;">${proximos.length}</div><div class="meta">próximos eventos</div></div>
+      <div><div style="font-size:1.4rem;font-weight:700;">${minutosHoje}</div><div class="meta">min estudados hoje</div></div>
+    </div>
+  </div>
+  <div class="card" style="background:var(--primary);color:#fff;">
+    <h2 style="color:rgba(255,255,255,.8);">Travou?</h2>
+    <p style="margin:0 0 12px;">Sem saber por onde começar agora? Deixa que eu escolho uma coisa só pra você.</p>
+    <button class="btn" style="background:#fff;color:var(--primary);width:100%;" onclick="estouPerdidoQuick()">😵 Estou perdido, o que faço agora?</button>
+  </div>
+  <div class="card">
+    <h2>Sugestão da IA para hoje</h2>
+    ${sugHoje?`<div style="font-size:.9rem;line-height:1.5;">${escapeHtml(sugHoje).replace(/\n/g,'<br>')}</div>
+      <button class="btn secondary" style="margin-top:10px;" onclick="gerarSugestaoDia()">Gerar de novo 🔄</button>`
+    :`<p class="note">Levo em conta seu perfil, horários, tarefas e provas para sugerir o foco de hoje.</p>
+      <button class="btn" onclick="gerarSugestaoDia()">Gerar sugestão do dia ✨</button>`}
+    <div id="sugestaoResult" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Ações rápidas</h2>
+    <div class="quick">
+      <button onclick="toggleQuick('tarefa')">✅ Tarefa</button>
+      <button onclick="toggleQuick('evento')">📅 Evento</button>
+      <button onclick="toggleQuick('ideia')">💡 Ideia</button>
+      <button onclick="setView('arquivos')">📄 Material</button>
+      <button onclick="setView('assessora')">💬 Perguntar</button>
+    </div>
+    ${state.quickOpen==='tarefa'?`<input id="dqTkTitle" placeholder="O que precisa fazer?">
+      <button class="btn" onclick="addTaskQuick()">Adicionar tarefa</button><div id="dqStatus" class="status"></div>`:''}
+    ${state.quickOpen==='evento'?`<input id="dqEvTitle" placeholder="Título do evento">
+      <input id="dqEvDate" type="date">
+      <button class="btn" onclick="addEventQuick()">Adicionar evento</button><div id="dqStatus" class="status"></div>`:''}
+    ${state.quickOpen==='ideia'?`<textarea id="dqIdText" rows="2" placeholder="Escreva a ideia, sem se preocupar em organizar"></textarea>
+      <button class="btn" onclick="addIdeaQuick()">Guardar no caderno</button><div id="dqStatus" class="status"></div>`:''}
+  </div>
+  <div class="card">
+    <h2>Próximos eventos</h2>
+    ${proximos.length? proximos.map(eventRow).join('') : '<div class="empty">Nenhum evento futuro. Adicione na aba Agenda.</div>'}
+  </div>
+  <div class="card">
+    <button class="btn secondary" style="width:100%;" onclick="setView('perfil')">⚙️ Editar perfil acadêmico</button>
+  </div>`;
+}
+
+async function gerarSugestaoDia(){
+  const el=document.getElementById('sugestaoResult');
+  if(!sample){ el.textContent='IA indisponível nesta visualização.'; return; }
+  el.textContent='Pensando...';
+  const today = new Date().toISOString().slice(0,10);
+  const p = state.profile||{};
+  const pend = state.tasks.filter(t=>!t.done).map(t=>`- ${t.title}${t.subject?' ('+t.subject+')':''}${t.deadline?' — prazo '+t.deadline:''} [prioridade ${t.priority||'média'}]`).join('\n')||'(nenhuma)';
+  const proximos = state.events.filter(e=>e.date>=today).slice(0,6).map(e=>`- ${e.date} ${e.title}`).join('\n')||'(nenhum)';
+  const minutosHoje = state.sessions.filter(s=>s.date===today).reduce((a,s)=>a+(s.minutes||0),0);
+  const prompt = `Você é a assessora acadêmica de um estudante de ${p.curso||'Medicina'}${p.periodo?' ('+p.periodo+')':''} com TDAH.
+Metas dele: ${p.metas||'(não informado)'}
+Preferências de estudo: ${p.preferencias||'(não informado)'}
+Horários fixos da semana: ${state.schedule||'(não informado)'}
+Tarefas pendentes:
+${pend}
+Próximos eventos/provas:
+${proximos}
+Ele já estudou ${minutosHoje} minutos hoje.
+Dê uma sugestão curta e direta (no máximo 4 linhas) do que ele deve focar HOJE, priorizando o mais urgente. Tom acolhedor mas objetivo. Responda em português.`;
+  try{
+    const {text}=await sample(prompt,{modelTier:'default'});
+    state.dailySuggestion={date:today, text};
+    if(db){ try{ await uDoc('dailySuggestion').set(state.dailySuggestion); }catch(e){} }
+    render();
+  }catch(e){ el.textContent='Não consegui agora ('+(e.code||'erro')+').'; }
+}
+
+function toggleQuick(t){ state.quickOpen = state.quickOpen===t ? null : t; render(); }
+
+async function addTaskQuick(){
+  const title=document.getElementById('dqTkTitle').value.trim();
+  const st=document.getElementById('dqStatus');
+  if(!title){ st.textContent='Escreva o que precisa fazer.'; return; }
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{ await uCollection('tasks').add({title,subject:'',deadline:'',priority:'média',done:false,createdAt:Date.now()}); state.quickOpen=null; await loadAll(); }
+  catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function addEventQuick(){
+  const title=document.getElementById('dqEvTitle').value.trim();
+  const date=document.getElementById('dqEvDate').value;
+  const st=document.getElementById('dqStatus');
+  if(!title||!date){ st.textContent='Preencha título e data.'; return; }
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{ await uCollection('events').add({title,date,category:'outro',notes:'',createdAt:Date.now()}); state.quickOpen=null; await loadAll(); }
+  catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function addIdeaQuick(){
+  const t=document.getElementById('dqIdText').value.trim();
+  const st=document.getElementById('dqStatus');
+  if(!t) return;
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{ await uCollection('notebook').add({text:t, createdAt:Date.now()}); state.quickOpen=null; await loadAll(); }
+  catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+
+// ---------- PERFIL ACADÊMICO ----------
+function renderPerfil(){
+  const p = state.profile||{};
+  return `
+  <div class="card">
+    <h2>Perfil acadêmico</h2>
+    <p class="note">Isso ajuda a Assessora a te dar sugestões mais certeiras e personalizadas.</p>
+    <div class="row">
+      <input id="pfCurso" placeholder="Curso" value="${escapeHtml(p.curso||'')}">
+      <input id="pfPeriodo" placeholder="Período (ex: 4º período)" value="${escapeHtml(p.periodo||'')}">
+    </div>
+    <input id="pfMaterias" placeholder="Matérias que está cursando (separadas por vírgula)" value="${escapeHtml(p.materias||'')}">
+    <textarea id="pfMetas" rows="2" placeholder="Suas metas (ex: passar em Neuro com nota alta, entrar na liga de cardio...)">${escapeHtml(p.metas||'')}</textarea>
+    <textarea id="pfPreferencias" rows="2" placeholder="Preferências de estudo (ex: rendo mais de manhã, prefiro sessões curtas, gosto de estudar com questões...)">${escapeHtml(p.preferencias||'')}</textarea>
+    <button class="btn" onclick="saveProfile()">Salvar perfil</button>
+    <div id="pfStatus" class="status"></div>
+  </div>
+  <button class="btn secondary" style="width:100%;" onclick="setView('inicio')">← Voltar ao início</button>`;
+}
+async function saveProfile(){
+  const p = {
+    curso: document.getElementById('pfCurso').value.trim(),
+    periodo: document.getElementById('pfPeriodo').value.trim(),
+    materias: document.getElementById('pfMaterias').value.trim(),
+    metas: document.getElementById('pfMetas').value.trim(),
+    preferencias: document.getElementById('pfPreferencias').value.trim(),
+  };
+  const st=document.getElementById('pfStatus');
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{ await uDoc('profile').set(p); state.profile=p; st.textContent='Salvo!'; }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+
+// ---------- BUSCA GLOBAL ----------
+function renderBusca(){
+  const q=(state.searchQuery||'').trim().toLowerCase();
+  return `
+  <div class="card">
+    <h2>Busca global</h2>
+    <input id="searchInput" placeholder="Buscar em eventos, matérias, tarefas, questões, ideias..." value="${escapeHtml(state.searchQuery||'')}" oninput="onSearchInput(this.value)">
+  </div>
+  ${q.length<2? '<div class="empty">Digite pelo menos 2 letras para buscar.</div>' : renderSearchResults(doSearch(q))}`;
+}
+function onSearchInput(v){ state.searchQuery=v; render(); }
+function focusSearchInput(){
+  const el=document.getElementById('searchInput');
+  if(el){ el.focus(); const v=el.value; el.value=''; el.value=v; el.setSelectionRange(v.length,v.length); }
+}
+function doSearch(q){
+  const inc = s => (s||'').toString().toLowerCase().includes(q);
+  return {
+    eventos: state.events.filter(e=>inc(e.title)||inc(e.notes)),
+    materiais: state.materials.filter(m=>inc(m.title)||inc(m.subject)||inc(m.notes)||inc((m.tags||[]).join(' '))),
+    tarefas: state.tasks.filter(t=>inc(t.title)||inc(t.subject)),
+    questoes: state.questions.filter(qq=>inc(qq.question)||inc(qq.subject)||inc(qq.topic)),
+    ideiasApp: state.ideas.filter(i=>inc(i.text)),
+    caderno: state.notebook.filter(n=>inc(n.text)),
+  };
+}
+function renderSearchResults(r){
+  const total=Object.values(r).reduce((a,arr)=>a+arr.length,0);
+  if(total===0) return '<div class="empty">Nada encontrado.</div>';
+  const section=(label,icon,items,view,rowFn)=> items.length? `
+    <div class="card">
+      <h2>${icon} ${label} (${items.length})</h2>
+      ${items.slice(0,8).map(rowFn).join('')}
+      <button class="btn secondary" style="margin-top:8px;" onclick="setView('${view}')">Ver na aba →</button>
+    </div>`:'';
+  return [
+    section('Eventos','📅',r.eventos,'calendario', e=>`<div class="item"><div>${escapeHtml(e.title)}<div class="meta">${fmtDate(e.date)}</div></div></div>`),
+    section('Matérias','📚',r.materiais,'arquivos', m=>`<div class="item"><div>${escapeHtml(m.title)}<div class="meta">${escapeHtml(m.subject||'')}</div></div></div>`),
+    section('Tarefas','✅',r.tarefas,'calendario', t=>`<div class="item"><div>${escapeHtml(t.title)}<div class="meta">${escapeHtml(t.subject||'')}</div></div></div>`),
+    section('Questões','📝',r.questoes,'questoes', qq=>`<div class="item"><div>${escapeHtml((qq.question||'').slice(0,80))}${(qq.question||'').length>80?'...':''}<div class="meta">${escapeHtml(qq.subject||'')}</div></div></div>`),
+    section('Ideias do app','💡',r.ideiasApp,'ideias', i=>`<div class="item"><div>${escapeHtml((i.text||'').slice(0,80))}</div></div>`),
+    section('Caderno de ideias','📓',r.caderno,'ideias', n=>`<div class="item"><div>${escapeHtml((n.text||'').slice(0,80))}</div></div>`),
+  ].join('');
+}
+
+function eventRow(e){
+  return `<div class="item"><div><span class="pill cat-${e.category}">${CATS[e.category]||e.category}</span>
+    <div style="margin-top:4px;font-weight:600;">${e.title}</div>
+    <div class="meta">${fmtDate(e.date)}${e.notes?' · '+e.notes:''}</div></div>
+    <button class="del" onclick="delEvent('${e.id}')">✕</button></div>`;
+}
+
+// ---------- CALENDÁRIO ----------
+function renderCalendario(){
+  const sub = `<div class="quick">
+    <button onclick="state.calTab='eventos';render();" style="${state.calTab==='eventos'?'background:var(--primary);color:#fff;':''}">📅 Eventos</button>
+    <button onclick="state.calTab='tarefas';render();" style="${state.calTab==='tarefas'?'background:var(--primary);color:#fff;':''}">✅ Tarefas</button>
+    <button onclick="state.calTab='horarios';render();" style="${state.calTab==='horarios'?'background:var(--primary);color:#fff;':''}">🕒 Horários</button>
+  </div>`;
+  if(state.calTab==='tarefas') return sub+renderTarefas();
+  if(state.calTab==='horarios') return sub+renderHorarios();
+  return sub+`
+  <div class="card">
+    <h2>Novo evento</h2>
+    <div class="row">
+      <input id="evTitle" placeholder="Título (ex: Prova de Anatomia)">
+      <input id="evDate" type="date">
+    </div>
+    <select id="evCat">
+      ${Object.entries(CATS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
+    </select>
+    <input id="evNotes" placeholder="Observação (opcional)">
+    <button class="btn" onclick="addEvent()">Adicionar ao calendário</button>
+    <div id="evStatus" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Todos os eventos</h2>
+    ${state.events.length? state.events.map(eventRow).join('') : '<div class="empty">Nenhum evento ainda.</div>'}
+  </div>`;
+}
+
+function renderTarefas(){
+  const pend = state.tasks.filter(t=>!t.done);
+  const feitas = state.tasks.filter(t=>t.done);
+  const taskRow = t=>`<div class="item"><div>
+      <label style="display:flex;gap:8px;align-items:flex-start;cursor:pointer;">
+        <input type="checkbox" style="width:auto;margin:3px 0 0;" ${t.done?'checked':''} onchange="toggleTask('${t.id}', this.checked)">
+        <span style="${t.done?'text-decoration:line-through;color:var(--muted);':''}">${escapeHtml(t.title)}${t.subject?' <span class="pill cat-outro">'+t.subject+'</span>':''}${t.priority==='alta'?' 🔴':t.priority==='média'?' 🟡':''}
+        ${t.deadline?'<div class="meta">Prazo: '+fmtDate(t.deadline)+'</div>':''}</span>
+      </label></div>
+      <button class="del" onclick="delTask('${t.id}')">✕</button></div>`;
+  return `
+  <div class="card">
+    <h2>Nova tarefa</h2>
+    <input id="tkTitle" placeholder="O que precisa fazer (ex: Ler capítulo 4 de Cardio)">
+    <div class="row">
+      <input id="tkSubject" placeholder="Matéria (opcional)">
+      <input id="tkDeadline" type="date">
+      <select id="tkPriority"><option value="média">Prioridade média</option><option value="alta">Prioridade alta</option><option value="baixa">Prioridade baixa</option></select>
+    </div>
+    <button class="btn" onclick="addTask()">Adicionar tarefa</button>
+    <div id="tkStatus" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Pendentes (${pend.length})</h2>
+    ${pend.length? pend.map(taskRow).join('') : '<div class="empty">Nenhuma tarefa pendente.</div>'}
+    ${pend.length? `<button class="btn secondary" style="margin-top:10px;" onclick="organizeWeek()">Organizar minha semana com IA 🧭</button>`:''}
+    <div id="orgResult" class="note"></div>
+  </div>
+  ${feitas.length?`<div class="card"><h2>Concluídas</h2>${feitas.map(taskRow).join('')}</div>`:''}`;
+}
+async function addTask(){
+  const title=document.getElementById('tkTitle').value.trim();
+  const subject=document.getElementById('tkSubject').value.trim();
+  const deadline=document.getElementById('tkDeadline').value;
+  const priority=document.getElementById('tkPriority').value;
+  const st=document.getElementById('tkStatus');
+  if(!title){ st.textContent='Escreva o que precisa fazer.'; return; }
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{
+    await uCollection('tasks').add({title,subject,deadline,priority,done:false,createdAt:Date.now()});
+    await loadAll(); state.calTab='tarefas'; render();
+  }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function toggleTask(id,done){ if(!db) return; try{ await uCollection('tasks').doc(id).update({done}); await loadAll(); state.calTab='tarefas'; render(); }catch(e){} }
+async function delTask(id){ if(!db) return; try{ await uCollection('tasks').doc(id).delete(); await loadAll(); state.calTab='tarefas'; render(); }catch(e){} }
+
+function renderHorarios(){
+  return `
+  <div class="card">
+    <h2>Seus horários fixos da semana</h2>
+    <p class="note">Escreva livremente sua rotina (aulas, estágio, trabalho, etc). A Assessora usa isso para te ajudar a encaixar os estudos.</p>
+    <textarea id="scheduleText" rows="6" placeholder="Ex: Seg 8h-12h aula clínica; Ter 14h-18h estágio; Qua livre à tarde...">${escapeHtml(state.schedule)}</textarea>
+    <button class="btn" onclick="saveSchedule()">Salvar horários</button>
+    <div id="schStatus" class="status"></div>
+  </div>`;
+}
+async function saveSchedule(){
+  const text=document.getElementById('scheduleText').value.trim();
+  const st=document.getElementById('schStatus');
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{ await uDoc('schedule').set({text}); state.schedule=text; st.textContent='Salvo!'; }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function organizeWeek(){
+  const el=document.getElementById('orgResult');
+  if(!sample){ el.textContent='Chat com IA indisponível nesta visualização.'; return; }
+  el.textContent='Organizando...';
+  const pend = state.tasks.filter(t=>!t.done).map(t=>`- ${t.title}${t.subject?' ('+t.subject+')':''}${t.deadline?' — prazo '+t.deadline:''} [prioridade ${t.priority||'média'}]`).join('\n');
+  const today=new Date().toISOString().slice(0,10);
+  const upcoming = state.events.filter(e=>e.date>=today).slice(0,10).map(e=>`- ${e.date} ${e.title}`).join('\n')||'(nenhum)';
+  const prompt=`Você ajuda um estudante de medicina com TDAH a organizar a semana. Horários fixos dele:\n${state.schedule||'(não informado)'}\n\nTarefas pendentes:\n${pend||'(nenhuma)'}\n\nPróximos eventos:\n${upcoming}\n\nSugira uma organização da semana, encaixando as tarefas nos horários livres, priorizando por prazo e prioridade. Seja direto, use uma lista curta por dia. Responda em português.`;
+  try{
+    const {text}=await sample(prompt,{modelTier:'default'});
+    el.innerHTML = '<div class="card" style="margin-top:10px;">'+escapeHtml(text).replace(/\n/g,'<br>')+'</div>';
+  }catch(e){ el.textContent='Não consegui agora ('+(e.code||'erro')+').'; }
+}
+
+async function addEvent(){
+  const title=document.getElementById('evTitle').value.trim();
+  const date=document.getElementById('evDate').value;
+  const category=document.getElementById('evCat').value;
+  const notes=document.getElementById('evNotes').value.trim();
+  const st=document.getElementById('evStatus');
+  if(!title||!date){ st.textContent='Preencha título e data.'; return; }
+  if(!db){ st.textContent='Armazenamento indisponível nesta visualização.'; return; }
+  st.textContent='Salvando...';
+  try{
+    await uCollection('events').add({title,date,category,notes,createdAt:Date.now()});
+    await loadAll();
+    setView('calendario');
+  }catch(e){ st.textContent='Erro ao salvar: '+(e.code||e.message||''); }
+}
+async function delEvent(id){
+  if(!db) return;
+  try{ await uCollection('events').doc(id).delete(); await loadAll(); }catch(e){}
+}
+
+// ---------- ARQUIVOS / MATÉRIAS ----------
+function renderArquivos(){
+  const bySubject = {};
+  state.materials.forEach(m=>{ (bySubject[m.subject]=bySubject[m.subject]||[]).push(m); });
+  const groups = Object.keys(bySubject).sort().map(s=>`
+    <div class="subject-group">
+      <h3>${s}</h3>
+      ${bySubject[s].map(m=>`
+        <div class="file-row">
+          ${m.type==='video'&&m.videoLink?`<a href="${m.videoLink}" target="_blank">🎥 ${m.title}</a>`:m.assetUrl?`<a href="${m.assetUrl}" target="_blank">📄 ${m.title}</a>`:`<span style="flex:1;">📝 ${m.title}</span>`}
+          <button class="del" onclick="delMaterial('${m.id}')">✕</button>
+        </div>
+        ${m.notes?`<div class="note">${escapeHtml(m.notes.slice(0,200))}${m.notes.length>200?'…':''}</div>`:''}
+        ${m.tags&&m.tags.length?`<div class="quick">${m.tags.map(t=>`<span class="pill cat-outro">${t}</span>`).join('')}</div>`:''}
+        ${m.type==='video'&&m.notes&&!m.summary?`<button class="btn secondary" style="margin:4px 0;" onclick="summarizeVideo('${m.id}')">Gerar resumo e questões com IA ✨</button>`:''}
+        ${m.summary?`<div class="note"><strong>Resumo:</strong> ${escapeHtml(m.summary)}</div>`:''}
+      `).join('')}
+    </div>`).join('');
+  return `
+  <div class="card">
+    <h2>Adicionar material</h2>
+    <div class="quick">
+      <button onclick="state.mtType='arquivo';render();" style="${state.mtType==='arquivo'?'background:var(--primary);color:#fff;':''}">📄 Arquivo/Nota</button>
+      <button onclick="state.mtType='video';render();" style="${state.mtType==='video'?'background:var(--primary);color:#fff;':''}">🎥 Aula em vídeo</button>
+    </div>
+    <input id="mtSubject" placeholder="Matéria (ex: Cardiologia)">
+    <input id="mtTitle" placeholder="Título do material">
+    ${state.mtType==='video'?`<input id="mtVideoLink" placeholder="Link do YouTube">
+    <p class="note">O app não consegue assistir ao vídeo sozinho. Cole abaixo a transcrição, ou um resumo do que o vídeo ensina — com isso a IA gera resumo e questões.</p>`:''}
+    <textarea id="mtNotes" placeholder="${state.mtType==='video'?'Cole aqui a transcrição/resumo do vídeo':'Cole aqui um resumo, anotação ou texto — isso é o que a Assessora IA vai ler para te explicar o assunto'}" rows="3"></textarea>
+    <input id="mtTags" placeholder="Assuntos-chave separados por vírgula (ex: coração, valvas, sopro) — usado para conectar no Mapa">
+    ${state.mtType==='arquivo'?`<input id="mtFile" type="file">`:''}
+    <button class="btn" onclick="addMaterial()">Salvar material</button>
+    <div id="mtStatus" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Seus materiais</h2>
+    ${groups || '<div class="empty">Nenhum material ainda.</div>'}
+  </div>
+  <div class="card">
+    <h2>Ferramentas</h2>
+    <p class="note">Quer transformar um material em uma apresentação de slides editável? Isso eu faço melhor numa conversa direta comigo — é só me pedir "crie uma apresentação a partir deste arquivo" e enviar o arquivo.</p>
+    <a href="https://claude.ai/new" target="_blank"><button class="btn secondary">Abrir conversa com Claude para criar slides ↗</button></a>
+  </div>`;
+}
+
+async function addMaterial(){
+  const subject=document.getElementById('mtSubject').value.trim()||'Geral';
+  const title=document.getElementById('mtTitle').value.trim();
+  const notes=document.getElementById('mtNotes').value.trim();
+  const tags=document.getElementById('mtTags').value.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+  const type=state.mtType;
+  const videoLink = type==='video' ? document.getElementById('mtVideoLink').value.trim() : null;
+  const fileInput = type==='arquivo' ? document.getElementById('mtFile') : null;
+  const st=document.getElementById('mtStatus');
+  if(!title){ st.textContent='Dê um título ao material.'; return; }
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  st.textContent='Salvando...';
+  let assetId=null, assetUrl=null;
+  try{
+    const file=fileInput ? fileInput.files[0] : null;
+    if(file && assets){
+      const up = await assets.upload(file);
+      assetId=up.id; assetUrl=up.url;
+    }
+    await uCollection('materials').add({subject,title,notes,tags,type,videoLink,assetId,assetUrl,summary:null,createdAt:Date.now()});
+    await loadAll();
+    setView('arquivos');
+  }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function delMaterial(id){
+  if(!db) return;
+  try{ await uCollection('materials').doc(id).delete(); await loadAll(); }catch(e){}
+}
+async function summarizeVideo(id){
+  const m = state.materials.find(x=>x.id===id);
+  if(!m || !sample) return;
+  const prompt=`Baseado neste texto (transcrição/resumo de uma aula em vídeo de ${m.subject}), faça: 1) um resumo curto e didático (máx 5 frases), pensando em estudante com TDAH (direto, sem enrolação); 2) 3 questões de múltipla escolha sobre o conteúdo. Responda em JSON: {"summary": "...", "questions": [{"question":"...","options":["a","b","c","d"],"correctIndex":0,"explanation":"..."}]}. Texto:\n\n${m.notes.slice(0,4000)}`;
+  try{
+    const data = await sample.json(prompt);
+    if(data.summary) await uCollection('materials').doc(id).update({summary:data.summary});
+    if(Array.isArray(data.questions)){
+      for(const q of data.questions){
+        try{ await uCollection('questions').add({subject:m.subject, topic:m.title, difficulty:'médio', question:q.question, options:q.options, correctIndex:q.correctIndex||0, explanation:q.explanation||'', createdAt:Date.now()}); }catch(e){}
+      }
+    }
+    await loadAll();
+  }catch(e){ alert('Não consegui gerar agora ('+(e.code||'erro')+'). Tente novamente.'); }
+}
+
+// ---------- MAPA VISUAL ----------
+const SUBJECT_COLORS=['#6c5ce7','#00b894','#e17055','#0984e3','#e84393','#fdcb6e','#00cec9','#636e72'];
+function subjectColor(subject, list){ const i=list.indexOf(subject); return SUBJECT_COLORS[i % SUBJECT_COLORS.length]; }
+
+function renderMapa(){
+  const mats = state.materials;
+  if(!mats.length) return `<div class="card"><h2>Mapa visual</h2><div class="empty">Adicione materiais com assuntos-chave (tags) na aba Matérias para ver as conexões aqui.</div></div>`;
+  const subjects=[...new Set(mats.map(m=>m.subject))];
+  // edges: materiais que compartilham ao menos 1 tag
+  const edges=[];
+  for(let i=0;i<mats.length;i++){
+    for(let j=i+1;j<mats.length;j++){
+      const a=mats[i].tags||[], b=mats[j].tags||[];
+      const shared=a.filter(t=>b.includes(t));
+      if(shared.length) edges.push({a:i,b:j,shared});
+    }
+  }
+  // layout: círculo por assunto (cluster), materiais em mini-círculo ao redor do centro do cluster
+  const W=800,H=560, cx=W/2, cy=H/2, clusterR=Math.min(W,H)/2-90;
+  const clusterCenters={};
+  subjects.forEach((s,i)=>{
+    const ang=(2*Math.PI*i)/subjects.length - Math.PI/2;
+    clusterCenters[s]={x:cx+clusterR*Math.cos(ang), y:cy+clusterR*Math.sin(ang)};
+  });
+  const bySubject={};
+  mats.forEach((m,idx)=>{ (bySubject[m.subject]=bySubject[m.subject]||[]).push(idx); });
+  const pos=[];
+  Object.entries(bySubject).forEach(([s,idxs])=>{
+    const c=clusterCenters[s];
+    const miniR = Math.max(38, idxs.length*10);
+    idxs.forEach((idx,k)=>{
+      const ang=(2*Math.PI*k)/idxs.length - Math.PI/2;
+      pos[idx]={x:c.x+miniR*Math.cos(ang), y:c.y+miniR*Math.sin(ang)};
+    });
+  });
+  const edgeSvg = edges.map(e=>`<line x1="${pos[e.a].x}" y1="${pos[e.a].y}" x2="${pos[e.b].x}" y2="${pos[e.b].y}" stroke="var(--border)" stroke-width="${1+Math.min(e.shared.length,4)}" opacity="0.65"><title>${e.shared.join(', ')}</title></line>`).join('');
+  const nodeSvg = mats.map((m,idx)=>{
+    const p=pos[idx]; const col=subjectColor(m.subject,subjects);
+    const label=m.title.length>14? m.title.slice(0,13)+'…' : m.title;
+    return `<g class="node" onclick="showNodeInfo(${idx})" style="cursor:pointer;">
+      <circle cx="${p.x}" cy="${p.y}" r="16" fill="${col}" stroke="var(--card)" stroke-width="2"/>
+      <text x="${p.x}" y="${p.y+30}" text-anchor="middle" font-size="11" fill="var(--text)">${label}</text>
+    </g>`;
+  }).join('');
+  const legend = subjects.map(s=>`<span class="pill" style="background:${subjectColor(s,subjects)}">${s}</span>`).join(' ');
+  return `
+  <div class="card">
+    <h2>Mapa visual de conexões</h2>
+    <p class="note">Cada bolinha é um material; linhas ligam materiais que compartilham assuntos-chave. Toque numa bolinha para ver detalhes.</p>
+    <div class="quick">${legend}</div>
+    <div style="overflow-x:auto;">
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%; min-width:600px; height:auto;">
+        ${edgeSvg}
+        ${nodeSvg}
+      </svg>
+    </div>
+    <div id="nodeInfo" class="note"></div>
+  </div>`;
+}
+function showNodeInfo(idx){
+  const m=state.materials[idx];
+  const el=document.getElementById('nodeInfo');
+  if(!el) return;
+  el.innerHTML = `<strong>${escapeHtml(m.title)}</strong> · ${escapeHtml(m.subject)}<br>${m.tags&&m.tags.length? 'Assuntos: '+m.tags.join(', ') : ''}${m.notes? '<br>'+escapeHtml(m.notes.slice(0,200)) : ''}`;
+}
+
+// ---------- BANCO DE QUESTÕES ----------
+function renderQuestoes(){
+  if(state.quiz) return renderQuiz();
+  const subjects=[...new Set(state.questions.map(q=>q.subject))];
+  return `
+  ${renderDesempenhoMini()}
+  <div class="card">
+    <h2>Praticar</h2>
+    <div class="row">
+      <select id="qzSubject"><option value="">Todas as matérias</option>${subjects.map(s=>`<option value="${s}">${s}</option>`).join('')}</select>
+      <select id="qzDiff"><option value="">Qualquer dificuldade</option><option value="fácil">Fácil</option><option value="médio">Médio</option><option value="difícil">Difícil</option></select>
+    </div>
+    <button class="btn" onclick="startQuiz()">Começar prática ▶</button>
+    <div id="qzStatus" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Adicionar questão</h2>
+    <div class="row">
+      <input id="nqSubject" placeholder="Matéria">
+      <input id="nqTopic" placeholder="Assunto">
+    </div>
+    <select id="nqDiff"><option value="fácil">Fácil</option><option value="médio">Médio</option><option value="difícil">Difícil</option></select>
+    <textarea id="nqQuestion" placeholder="Enunciado da questão" rows="2"></textarea>
+    <input id="nqOpt0" placeholder="Alternativa A (correta)">
+    <input id="nqOpt1" placeholder="Alternativa B">
+    <input id="nqOpt2" placeholder="Alternativa C">
+    <input id="nqOpt3" placeholder="Alternativa D">
+    <textarea id="nqExpl" placeholder="Explicação da resposta correta" rows="2"></textarea>
+    <button class="btn" onclick="addQuestion()">Salvar questão</button>
+    <div id="nqStatus" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Todas as questões (${state.questions.length})</h2>
+    ${state.questions.length? state.questions.map(q=>`<div class="item"><div><span class="pill cat-outro">${q.subject}</span> <span class="pill cat-aulas">${q.difficulty}</span>
+      <div style="margin-top:4px;">${escapeHtml(q.question)}</div></div><button class="del" onclick="delQuestion('${q.id}')">✕</button></div>`).join('') : '<div class="empty">Nenhuma questão ainda.</div>'}
+  </div>`;
+}
+
+async function addQuestion(){
+  const subject=document.getElementById('nqSubject').value.trim();
+  const topic=document.getElementById('nqTopic').value.trim();
+  const difficulty=document.getElementById('nqDiff').value;
+  const question=document.getElementById('nqQuestion').value.trim();
+  const options=[0,1,2,3].map(i=>document.getElementById('nqOpt'+i).value.trim());
+  const explanation=document.getElementById('nqExpl').value.trim();
+  const st=document.getElementById('nqStatus');
+  if(!subject||!question||options.some(o=>!o)){ st.textContent='Preencha matéria, enunciado e as 4 alternativas.'; return; }
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{
+    await uCollection('questions').add({subject,topic,difficulty,question,options,correctIndex:0,explanation,createdAt:Date.now()});
+    await loadAll();
+    setView('questoes');
+  }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function delQuestion(id){
+  if(!db) return;
+  try{ await uCollection('questions').doc(id).delete(); await loadAll(); }catch(e){}
+}
+
+function startQuiz(){
+  const subj=document.getElementById('qzSubject').value;
+  const diff=document.getElementById('qzDiff').value;
+  let pool = state.questions.filter(q=> (!subj||q.subject===subj) && (!diff||q.difficulty===diff));
+  if(!pool.length){ document.getElementById('qzStatus').textContent='Nenhuma questão com esse filtro.'; return; }
+  pool = pool.map(q=>({...q, shuffled: shuffleOptions(q)}));
+  state.quiz = {pool, idx:0, score:0, answered:null};
+  render();
+}
+function shuffleOptions(q){
+  const idxs=[0,1,2,3];
+  for(let i=idxs.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [idxs[i],idxs[j]]=[idxs[j],idxs[i]]; }
+  return {order:idxs, correct: idxs.indexOf(q.correctIndex)};
+}
+function renderQuiz(){
+  const {pool,idx,score,answered}=state.quiz;
+  if(idx>=pool.length){
+    return `<div class="card"><h2>Resultado</h2><p style="font-size:1.3rem;font-weight:700;">${score} / ${pool.length} corretas</p>
+      <button class="btn" onclick="state.quiz=null; render();">Voltar</button></div>`;
+  }
+  const q=pool[idx];
+  const opts=q.shuffled.order.map((origIdx,pos)=>`
+    <button class="btn secondary" style="display:block;width:100%;text-align:left;margin-bottom:8px;${answered!==null?(pos===q.shuffled.correct?'border-color:var(--accent);color:var(--accent);':(pos===answered?'border-color:var(--danger);color:var(--danger);':'')):''}" ${answered!==null?'disabled':''} onclick="answerQuiz(${pos})">${q.options[origIdx]}</button>`).join('');
+  return `<div class="card">
+    <div class="meta">Questão ${idx+1} de ${pool.length} · ${q.subject}${q.topic?' · '+q.topic:''} · ${q.difficulty}</div>
+    <h2 style="text-transform:none;font-size:1rem;color:var(--text);margin-top:8px;">${escapeHtml(q.question)}</h2>
+    <div style="margin-top:12px;">${opts}</div>
+    ${answered!==null?`<div class="note" style="margin-top:8px;">${answered===q.shuffled.correct?'✅ Correto! ':'❌ Não foi dessa vez. '}${q.explanation||''}</div><button class="btn" style="margin-top:10px;" onclick="nextQuiz()">Próxima</button>`:''}
+    <button class="btn secondary" style="margin-top:10px;" onclick="state.quiz=null; render();">Sair da prática</button>
+  </div>`;
+}
+async function answerQuiz(pos){
+  const cur=state.quiz.pool[state.quiz.idx];
+  state.quiz.answered=pos;
+  const correct = pos===cur.shuffled.correct;
+  if(correct) state.quiz.score++;
+  render();
+  if(db && uid){
+    try{
+      const today=new Date().toISOString().slice(0,10);
+      await uCollection('attempts').add({subject:cur.subject, topic:cur.topic||'', correct, date:today, createdAt:Date.now()});
+      state.attempts=[{subject:cur.subject, topic:cur.topic||'', correct}, ...(state.attempts||[])];
+    }catch(e){}
+  }
+}
+function nextQuiz(){ state.quiz.idx++; state.quiz.answered=null; render(); }
+
+function computePerformance(){
+  const groups={};
+  for(const a of (state.attempts||[])){
+    const key=a.subject+'|||'+(a.topic||'');
+    if(!groups[key]) groups[key]={subject:a.subject, topic:a.topic||'', total:0, correct:0};
+    groups[key].total++;
+    if(a.correct) groups[key].correct++;
+  }
+  return Object.values(groups).map(g=>({...g, pct:Math.round(100*g.correct/g.total)})).sort((a,b)=>a.pct-b.pct);
+}
+function renderDesempenhoMini(){
+  const perf=computePerformance();
+  if(!perf.length) return '';
+  const weakest=perf.slice(0,3);
+  return `<div class="card">
+    <h2>Seu desempenho</h2>
+    ${weakest.map(x=>`<div class="item"><div>${escapeHtml(x.subject)}${x.topic?' — '+escapeHtml(x.topic):''}<div class="meta">${x.correct}/${x.total} questões</div></div>
+      <div style="font-weight:700;color:${x.pct<60?'var(--danger)':x.pct<80?'var(--c-trabalho)':'var(--accent)'}">${x.pct}%</div></div>`).join('')}
+    <p class="note">A Assessora usa isso para priorizar o que sugerir.</p>
+  </div>`;
+}
+
+// ---------- FOCO (CRONÔMETRO DE ESTUDOS) ----------
+const TECHNIQUES = {
+  pomodoro:{label:'Pomodoro (25/5)', work:25, brk:5},
+  pomodoro_longo:{label:'Pomodoro longo (50/10)', work:50, brk:10},
+  cinquenta_dezessete:{label:'52/17', work:52, brk:17},
+  curto:{label:'Foco curto (15/3) — bom p/ dias difíceis de TDAH', work:15, brk:3},
+};
+let tickHandle=null;
+
+function renderFoco(){
+  const t=state.timer;
+  const todayStr=new Date().toISOString().slice(0,10);
+  const todayMin = state.sessions.filter(s=>s.date===todayStr && s.type==='work').reduce((a,s)=>a+s.minutes,0);
+  if(!t){
+    return `
+    <div class="card">
+      <h2>Escolha uma técnica</h2>
+      <select id="techSel" onchange="document.getElementById('customRow').style.display=this.value==='custom'?'flex':'none';">${Object.entries(TECHNIQUES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('')}<option value="custom">Personalizado</option></select>
+      <div class="row" id="customRow" style="display:none;">
+        <input id="custWork" type="number" placeholder="Minutos de foco" value="25">
+        <input id="custBrk" type="number" placeholder="Minutos de pausa" value="5">
+      </div>
+      <input id="focoSubject" placeholder="Matéria (opcional, para o histórico)">
+      <button class="btn" onclick="prepTimer()">Configurar</button>
+    </div>
+    <div class="card">
+      <h2>Hoje</h2>
+      <p style="font-size:1.4rem;font-weight:700;">${todayMin} min de foco</p>
+    </div>
+    <div class="card">
+      <h2>Histórico recente</h2>
+      ${state.sessions.length? state.sessions.slice(0,10).map(s=>`<div class="item"><div>${s.type==='work'?'🍅':'☕'} ${s.minutes} min ${s.subject?'· '+s.subject:''}</div><div class="meta">${fmtDate(s.date)}</div></div>`).join('') : '<div class="empty">Nenhuma sessão registrada ainda.</div>'}
+    </div>`;
+  }
+  const mins=String(Math.floor(t.remaining/60)).padStart(2,'0');
+  const secs=String(t.remaining%60).padStart(2,'0');
+  return `
+  <div class="card" style="text-align:center;">
+    <h2>${t.mode==='work'?'🍅 Foco':'☕ Pausa'}${t.subject?' · '+t.subject:''}</h2>
+    <div id="timerDisplay" style="font-size:3.2rem;font-weight:700;margin:10px 0;">${mins}:${secs}</div>
+    <div class="row">
+      ${t.running? `<button class="btn secondary" onclick="pauseTimer()">Pausar</button>` : `<button class="btn" onclick="resumeTimer()">${t.remaining===t.total?'Iniciar':'Continuar'}</button>`}
+      <button class="btn secondary" onclick="stopTimer()">Encerrar</button>
+    </div>
+    <p class="meta" style="margin-top:10px;">Ciclos completos hoje: ${t.cyclesToday}</p>
+  </div>`;
+}
+
+function prepTimer(){
+  const sel=document.getElementById('techSel').value;
+  const subject=document.getElementById('focoSubject').value.trim();
+  let work,brk;
+  if(sel==='custom'){ work=parseInt(document.getElementById('custWork').value)||25; brk=parseInt(document.getElementById('custBrk').value)||5; }
+  else { work=TECHNIQUES[sel].work; brk=TECHNIQUES[sel].brk; }
+  state.timer={mode:'work', workMin:work, brkMin:brk, remaining:work*60, total:work*60, running:false, subject, cyclesToday:0};
+  render();
+}
+function resumeTimer(){
+  state.timer.running=true; render();
+  clearInterval(tickHandle);
+  tickHandle=setInterval(tick,1000);
+}
+function pauseTimer(){ state.timer.running=false; clearInterval(tickHandle); render(); }
+function stopTimer(){ clearInterval(tickHandle); state.timer=null; render(); }
+async function tick(){
+  const t=state.timer; if(!t||!t.running) return;
+  t.remaining--;
+  const el=document.getElementById('timerDisplay');
+  if(el){ const m=String(Math.floor(t.remaining/60)).padStart(2,'0'); const s=String(t.remaining%60).padStart(2,'0'); el.textContent=m+':'+s; }
+  if(t.remaining<=0){
+    beep();
+    const minutesDone = t.mode==='work'? t.workMin : t.brkMin;
+    if(db){ try{ await uCollection('sessions').add({type:t.mode, minutes:minutesDone, subject:t.subject||null, date:new Date().toISOString().slice(0,10), createdAt:Date.now()}); await loadAll(); }catch(e){} }
+    if(t.mode==='work'){ t.cyclesToday++; t.mode='break'; t.remaining=t.brkMin*60; t.total=t.brkMin*60; }
+    else { t.mode='work'; t.remaining=t.workMin*60; t.total=t.workMin*60; }
+    render();
+  }
+}
+function beep(){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(); const g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value=880; g.gain.value=0.15;
+    o.start(); setTimeout(()=>{o.stop(); ctx.close();},400);
+  }catch(e){}
+}
+
+// ---------- ASSESSORA IA ----------
+function renderAssessora(){
+  const msgs = state.chat.map(m=>`<div class="bubble ${m.role==='user'?'user':'assist'}">${escapeHtml(m.content)}</div>`).join('');
+  const noSample = !sample ? '<div class="empty">Chat com IA indisponível nesta visualização (é preciso permissão do visualizador).</div>' : '';
+  const withNotes = state.materials.filter(m=>m.notes);
+  const chip = state.attach ? `<div class="quick"><span class="pill cat-aulas">📎 ${state.attach.type==='image'?'🖼️':'📄'} ${escapeHtml(state.attach.title)} <span style="cursor:pointer;margin-left:6px;" onclick="clearAttach()">✕</span></span></div>` : '';
+  return `
+  <div class="card">
+    <h2>Aula guiada (modo TDAH)</h2>
+    <p class="note">Escolha um assunto e receba uma aula dividida em passos curtos, com analogias e uma pergunta de checagem em cada etapa — em vez de um texto corrido.</p>
+    <div class="row">
+      <input id="lessonTopic" placeholder="Assunto (ex: Ciclo cardíaco)">
+      <button class="btn" onclick="generateLesson()">Gerar aula guiada</button>
+    </div>
+    <div id="lessonBox">${state.lesson? renderLessonSteps() : ''}</div>
+  </div>
+  <div class="card chatbox">
+    <h2>Assessora de estudos</h2>
+    <div class="quick">
+      <button onclick="estouPerdido()" style="background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;">😵 Estou perdido, o que faço agora?</button>
+      <button onclick="quickPrompt('Planeje minha semana de estudos com base nos meus próximos eventos e materiais.')">Planejar semana</button>
+      <button onclick="quickPrompt('Explique de forma bem simples e visual, pensando em TDAH, um assunto que eu escolher.')">Me explique algo</button>
+      <button onclick="quickPrompt('Quais são minhas provas mais próximas e como devo priorizar os estudos?')">Priorizar provas</button>
+    </div>
+    <div class="row" style="margin-bottom:6px;">
+      <select id="attachSelect" onchange="pickSavedMaterial(this.value)">
+        <option value="">📚 Explicar um material salvo...</option>
+        ${withNotes.map(m=>`<option value="${m.id}">${escapeHtml(m.subject)} — ${escapeHtml(m.title)}</option>`).join('')}
+      </select>
+      <label class="btn secondary" style="text-align:center;display:block;">💻 Enviar do computador<input type="file" accept=".txt,.md,image/*" style="display:none;" onchange="handleAttachFile(this)"></label>
+    </div>
+    ${chip}
+    <div class="chatmsgs" id="chatmsgs">${msgs || '<div class="empty">Pergunte algo, anexe um material acima, ou peça um plano de estudos.</div>'}</div>
+    ${noSample}
+    <div class="chatinput">
+      <textarea id="chatInput" placeholder="Escreva sua mensagem..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}"></textarea>
+      <button class="btn" id="sendBtn" onclick="sendChat()">Enviar</button>
+    </div>
+  </div>`;
+}
+function pickSavedMaterial(id){
+  if(!id){ state.attach=null; render(); return; }
+  const m=state.materials.find(x=>x.id===id);
+  if(!m) return;
+  state.attach={type:'text', title:m.title, content:m.notes};
+  render();
+  document.getElementById('chatInput').value = `Explique o material "${m.title}" de forma simples, pensando em TDAH.`;
+}
+function handleAttachFile(input){
+  const file=input.files[0];
+  if(!file) return;
+  if(file.type.startsWith('image/')){
+    state.attach={type:'image', title:file.name, blob:file};
+    render();
+    document.getElementById('chatInput').value = 'Explique o que está nesta imagem/material de forma simples, pensando em TDAH.';
+  } else if(file.type==='text/plain' || file.type==='text/markdown' || /\.(txt|md)$/i.test(file.name)){
+    const reader=new FileReader();
+    reader.onload=()=>{ state.attach={type:'text', title:file.name, content:reader.result}; render();
+      document.getElementById('chatInput').value = `Explique o material "${file.name}" de forma simples, pensando em TDAH.`; };
+    reader.readAsText(file);
+  } else {
+    alert('Esse tipo de arquivo (ex: PDF) não pode ter o texto lido automaticamente aqui. Cole o texto na aba Matérias, ou envie uma foto/print como imagem.');
+  }
+}
+function clearAttach(){ state.attach=null; render(); }
+async function generateLesson(){
+  const topic=document.getElementById('lessonTopic').value.trim();
+  const box=document.getElementById('lessonBox');
+  if(!topic) return;
+  if(!sample){ box.innerHTML='<div class="empty">IA indisponível nesta visualização.</div>'; return; }
+  box.innerHTML='<div class="empty">Gerando aula...</div>';
+  const prompt=`Crie uma mini-aula sobre "${topic}" para um estudante de medicina com TDAH. Divida em 4 a 6 passos curtos e progressivos. Cada passo deve ter: um título curto, uma explicação de 2-3 frases no máximo, uma analogia simples do dia a dia, e uma pergunta rápida de checagem (com resposta). Responda em JSON: {"steps":[{"title":"...","explanation":"...","analogy":"...","check":"pergunta?","checkAnswer":"resposta curta"}]}`;
+  try{
+    const data=await sample.json(prompt);
+    state.lesson={topic, steps:data.steps||[], idx:0};
+    box.innerHTML=renderLessonSteps();
+  }catch(e){ box.innerHTML='<div class="empty">Não consegui gerar agora ('+(e.code||'erro')+').</div>'; }
+}
+function renderLessonSteps(){
+  const l=state.lesson; if(!l||!l.steps.length) return '';
+  const s=l.steps[l.idx];
+  return `<div class="card" style="margin-top:10px;background:var(--bg);">
+    <div class="meta">Passo ${l.idx+1} de ${l.steps.length} · ${l.topic}</div>
+    <h2 style="text-transform:none;color:var(--text);font-size:1rem;margin-top:6px;">${escapeHtml(s.title)}</h2>
+    <p>${escapeHtml(s.explanation)}</p>
+    <p class="note">💡 Analogia: ${escapeHtml(s.analogy)}</p>
+    <p><strong>Checagem:</strong> ${escapeHtml(s.check)}</p>
+    <details><summary style="cursor:pointer;color:var(--primary);">Ver resposta</summary><p>${escapeHtml(s.checkAnswer)}</p></details>
+    <div class="row" style="margin-top:10px;">
+      ${l.idx>0?`<button class="btn secondary" onclick="lessonNav(-1)">Anterior</button>`:''}
+      ${l.idx<l.steps.length-1?`<button class="btn" onclick="lessonNav(1)">Próximo</button>`:`<button class="btn" onclick="lessonToQuestions()">Criar questões desta aula ✨</button>`}
+    </div>
+  </div>`;
+}
+function lessonNav(d){ state.lesson.idx+=d; document.getElementById('lessonBox').innerHTML=renderLessonSteps(); }
+async function lessonToQuestions(){
+  const l=state.lesson; if(!l||!sample||!db) return;
+  const box=document.getElementById('lessonBox');
+  box.innerHTML+='<div class="empty">Criando questões...</div>';
+  const stepsText = l.steps.map(s=>`${s.title}: ${s.explanation}`).join('\n');
+  const prompt=`Baseado nesta mini-aula sobre "${l.topic}":\n${stepsText}\n\nCrie 3 questões de múltipla escolha. Responda em JSON: {"questions":[{"question":"...","options":["a","b","c","d"],"correctIndex":0,"explanation":"..."}]}`;
+  try{
+    const data=await sample.json(prompt);
+    for(const q of (data.questions||[])){
+      try{ await uCollection('questions').add({subject:'Aula guiada', topic:l.topic, difficulty:'médio', question:q.question, options:q.options, correctIndex:q.correctIndex||0, explanation:q.explanation||'', createdAt:Date.now()}); }catch(e){}
+    }
+    await loadAll();
+    box.innerHTML=renderLessonSteps()+'<p class="note">Questões adicionadas ao Banco de Questões ✅</p>';
+  }catch(e){ box.innerHTML+='<div class="empty">Não consegui agora.</div>'; }
+}
+function escapeHtml(s){ return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+function quickPrompt(t){ document.getElementById('chatInput').value=t; sendChat(); }
+function estouPerdido(){
+  const el=document.getElementById('chatInput');
+  if(!el || !sample) return;
+  el.value='Estou perdido, não sei nem por onde começar agora. Baseado no que você sabe sobre mim, me diga apenas UMA tarefa simples e específica para eu fazer agora, com duração sugerida entre 15 e 25 minutos. Não me dê uma lista — só uma coisa. Eu decido o resto depois.';
+  sendChat();
+}
+function estouPerdidoQuick(){ setView('assessora'); estouPerdido(); }
+function scrollChatBottom(){ const el=document.getElementById('chatmsgs'); if(el) el.scrollTop=el.scrollHeight; }
+
+async function sendChat(){
+  const inputEl=document.getElementById('chatInput');
+  const text=inputEl.value.trim();
+  if(!text) return;
+  if(!sample){ return; }
+  inputEl.value='';
+  let context = buildContext();
+  const attach = state.attach;
+  if(attach && attach.type==='text'){
+    context += `\n\nMaterial anexado pelo estudante ("${attach.title}"), use isso como base principal da explicação:\n${attach.content.slice(0,6000)}`;
+  }
+  state.chat.push({role:'user', content:text});
+  render(); scrollChatBottom();
+  document.getElementById('sendBtn').disabled=true;
+  const turns = [{role:'user', content: context}, ...state.chat.map(m=>({role:m.role, content:m.content}))];
+  const sampleOpts = {
+    cache:false,
+    onText:({text:partial})=>{
+      const el=document.getElementById('chatmsgs');
+      if(!el) return;
+      const temp = state.chat.concat([{role:'assistant', content:partial}]);
+      el.innerHTML = temp.map(m=>`<div class="bubble ${m.role==='user'?'user':'assist'}">${escapeHtml(m.content)}</div>`).join('');
+      el.scrollTop=el.scrollHeight;
+    }
+  };
+  if(attach && attach.type==='image'){ sampleOpts.images=[attach.blob]; }
+  try{
+    const {text: answer} = await sample(turns, sampleOpts);
+    state.chat.push({role:'assistant', content:answer});
+    if(state.chat.length>30) state.chat = state.chat.slice(-30);
+    if(db){ try{ await uDoc('chat').set({turns:state.chat}); }catch(e){} }
+  }catch(e){
+    state.chat.push({role:'assistant', content: e.text || 'Não consegui responder agora ('+(e.code||'erro')+'). Tente novamente. Se anexou uma imagem grande, tente uma menor.'});
+  }
+  state.attach=null;
+  document.getElementById('sendBtn').disabled=false;
+  render(); scrollChatBottom();
+}
+
+function buildContext(){
+  const today=new Date().toISOString().slice(0,10);
+  const p = state.profile||{};
+  const upcoming = state.events.filter(e=>e.date>=today).slice(0,10).map(e=>{
+    const days = Math.round((new Date(e.date+'T00:00:00')-new Date(today+'T00:00:00'))/86400000);
+    return `- ${e.date} (em ${days} dia${days===1?'':'s'}) [${CATS[e.category]||e.category}] ${e.title}${e.notes?' — '+e.notes:''}`;
+  }).join('\n')||'(nenhum)';
+  const materials = state.materials.slice(0,15).map(m=>`- ${m.subject}: ${m.title}${(m.tags&&m.tags.length)?' [tags: '+m.tags.join(', ')+']':''}${m.notes?' — resumo: '+m.notes.slice(0,200):''}`).join('\n')||'(nenhum)';
+  const pend = state.tasks.filter(t=>!t.done).map(t=>`- ${t.title}${t.subject?' ('+t.subject+')':''}${t.deadline?' — prazo '+t.deadline:''} [prioridade ${t.priority||'média'}]`).join('\n')||'(nenhuma)';
+  const perf = computePerformance();
+  const perfText = perf.length? perf.slice(0,8).map(x=>`- ${x.subject}${x.topic?' / '+x.topic:''}: ${x.pct}% de acerto (${x.correct}/${x.total} questões respondidas)`).join('\n') : '(ainda sem histórico de questões respondidas na prática)';
+  const minutosHoje = state.sessions.filter(s=>s.date===today).reduce((a,s)=>a+(s.minutes||0),0);
+
+  return `Você é a assessora de estudos pessoal de um(a) estudante de ${p.curso||'medicina'}${p.periodo?' ('+p.periodo+')':''} com TDAH (laudado). Seu papel: organizar e planejar os estudos, explicar assuntos de forma simples, visual e fragmentada em passos curtos (bom para TDAH), e ser prática e direta, sem textos longos desnecessários. Use listas curtas quando possível.
+
+MUITO IMPORTANTE: baseie-se nos dados reais abaixo (provas, tarefas, desempenho, materiais). Não invente provas, datas ou percentuais que não estejam listados. Quando o estudante disser quanto tempo livre tem, monte uma sugestão CONCRETA de sessão de estudo (assunto específico + duração), priorizando: 1) provas mais próximas, 2) assuntos com pior desempenho nas questões, 3) tarefas de prioridade alta. Se houver um material salvo relacionado ao assunto, mencione o nome dele e sugira abri-lo na aba Matérias.
+
+Metas do estudante: ${p.metas||'(não informado)'}
+Preferências de estudo: ${p.preferencias||'(não informado)'}
+Horários fixos da semana: ${state.schedule||'(não informado)'}
+Já estudou ${minutosHoje} minuto(s) hoje.
+
+Próximos eventos/provas:
+${upcoming}
+
+Tarefas pendentes:
+${pend}
+
+Desempenho em questões por assunto (do pior para o melhor):
+${perfText}
+
+Materiais de estudo salvos:
+${materials}
+
+Responda sempre em português do Brasil, de forma acolhedora e objetiva.`;
+}
+
+// ---------- IDEIAS ----------
+function renderIdeias(){
+  const sub = `<div class="quick">
+    <button onclick="state.ideiasTab='app';render();" style="${(!state.ideiasTab||state.ideiasTab==='app')?'background:var(--primary);color:#fff;':''}">💡 Ideias do App</button>
+    <button onclick="state.ideiasTab='caderno';render();" style="${state.ideiasTab==='caderno'?'background:var(--primary);color:#fff;':''}">📓 Caderno de Ideias</button>
+  </div>`;
+  if(state.ideiasTab==='caderno') return sub+renderCaderno();
+  return sub+`
+  <div class="card">
+    <h2>Espaço de ideias para o MedFoco</h2>
+    <p class="note">Esse espaço é <strong>compartilhado</strong> com todo mundo que usa esse link (ex: você e seu amigo) — ótimo lugar para vocês colaborarem com sugestões de melhoria. O resto do app (agenda, materiais, chat etc.) é privado de cada pessoa.</p>
+    <textarea id="ideaText" placeholder="Ex: quero que o calendário me avise por e-mail, ou adicionar banco de questões de Cardiologia..." rows="3"></textarea>
+    <button class="btn" onclick="addIdea()">Salvar ideia</button>
+    <div id="ideaStatus" class="status"></div>
+  </div>
+  <div class="card">
+    <h2>Ideias salvas</h2>
+    ${state.ideas.length? state.ideas.map(i=>`<div class="item"><div><div>${escapeHtml(i.text)}</div><div class="meta">${new Date(i.createdAt).toLocaleDateString('pt-BR')}</div></div><button class="del" onclick="delIdea('${i.id}')">✕</button></div>`).join('') : '<div class="empty">Nenhuma ideia salva ainda.</div>'}
+  </div>`;
+}
+function renderCaderno(){
+  return `
+  <div class="card">
+    <h2>Caderno de ideias soltas</h2>
+    <p class="note">Jogue aqui qualquer ideia aleatória, sem se preocupar com organização — depois peça para a IA organizar tudo por tema.</p>
+    <textarea id="nbText" placeholder="Escreva uma ideia solta..." rows="2"></textarea>
+    <button class="btn" onclick="addNotebook()">Adicionar</button>
+    <div id="nbStatus" class="status"></div>
+    ${state.notebook.length?`<button class="btn secondary" style="margin-top:10px;" onclick="organizeNotebook()">Organizar com IA ✨</button>`:''}
+  </div>
+  <div id="nbOrganized">${state.notebookOrganized ? renderNotebookOrganized() : ''}</div>
+  <div class="card">
+    <h2>Ideias soltas (${state.notebook.length})</h2>
+    ${state.notebook.length? state.notebook.map(n=>`<div class="item"><div>${escapeHtml(n.text)}</div><button class="del" onclick="delNotebook('${n.id}')">✕</button></div>`).join('') : '<div class="empty">Nada por aqui ainda.</div>'}
+  </div>`;
+}
+async function addNotebook(){
+  const t=document.getElementById('nbText').value.trim();
+  const st=document.getElementById('nbStatus');
+  if(!t) return;
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{ await uCollection('notebook').add({text:t, createdAt:Date.now()}); await loadAll(); state.ideiasTab='caderno'; render(); }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function delNotebook(id){ if(!db) return; try{ await uCollection('notebook').doc(id).delete(); await loadAll(); state.ideiasTab='caderno'; render(); }catch(e){} }
+async function organizeNotebook(){
+  if(!sample) return;
+  const box=document.getElementById('nbOrganized');
+  box.innerHTML='<div class="empty">Organizando...</div>';
+  const list = state.notebook.map(n=>'- '+n.text).join('\n');
+  const prompt=`Organize estas ideias soltas de um estudante de medicina em grupos temáticos. Responda em JSON: {"groups":[{"theme":"nome do grupo","items":["idea 1","idea 2"]}]}. Ideias:\n${list}`;
+  try{
+    const data=await sample.json(prompt);
+    state.notebookOrganized = data.groups||[];
+    box.innerHTML = renderNotebookOrganized();
+  }catch(e){ box.innerHTML='<div class="empty">Não consegui organizar agora.</div>'; }
+}
+function renderNotebookOrganized(){
+  if(!state.notebookOrganized) return '';
+  return `<div class="card"><h2>Organizado por tema</h2>
+    ${state.notebookOrganized.map(g=>`<div class="subject-group"><h3>${escapeHtml(g.theme)}</h3>${(g.items||[]).map(it=>`<div class="item">${escapeHtml(it)}</div>`).join('')}</div>`).join('')}
+  </div>`;
+}
+async function addIdea(){
+  const t=document.getElementById('ideaText').value.trim();
+  const st=document.getElementById('ideaStatus');
+  if(!t){ return; }
+  if(!db){ st.textContent='Armazenamento indisponível.'; return; }
+  try{
+    await db.collection('ideas').add({text:t, createdAt:Date.now()});
+    await loadAll();
+    setView('ideias');
+  }catch(e){ st.textContent='Erro: '+(e.code||e.message||''); }
+}
+async function delIdea(id){
+  if(!db) return;
+  try{ await db.doc('ideas/'+id).delete(); await loadAll(); }catch(e){}
+}
+
+// ---------- INIT ----------
+(async function(){
+  render();
+  await initCaps();
+  await loadAll();
+  render();
+})();
+</script>
+</body>
+</html>
