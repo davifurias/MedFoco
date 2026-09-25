@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { EventoItem } from '../../../components/EventoItem';
 import type { CalendarEvent } from '../../../data/types';
@@ -12,11 +12,27 @@ interface Props {
 
 export function ProximosEventosCard({ events, onDelete }: Props) {
   const [pending, setPending] = useState<CalendarEvent | null>(null);
+  const [error, setError] = useState('');
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const visible = events.slice(0, UPCOMING_EVENTS_LIMIT);
+
+  async function confirmDelete(id: string) {
+    setPending(null);
+    setError('');
+    try {
+      await onDelete(id);
+      // O botão que abriu o diálogo sumiu com o evento: leva o foco para o título do cartão.
+      titleRef.current?.focus();
+    } catch {
+      setError('Não foi possível excluir o evento. Tente novamente.');
+    }
+  }
 
   return (
     <section className="card" aria-labelledby="proximos-title">
-      <h2 id="proximos-title">Próximos eventos</h2>
+      <h2 id="proximos-title" ref={titleRef} tabIndex={-1}>
+        Próximos eventos
+      </h2>
       {visible.length ? (
         <ul className="item-list">
           {visible.map((event) => (
@@ -26,17 +42,16 @@ export function ProximosEventosCard({ events, onDelete }: Props) {
       ) : (
         <div className="empty">Nenhum evento futuro. Adicione na aba Agenda.</div>
       )}
+      <div className="status" role="alert">
+        {error}
+      </div>
       {pending && (
         <ConfirmDialog
           title="Excluir evento?"
           message={`Tem certeza que deseja excluir o evento "${pending.title}"?`}
           confirmLabel="Excluir"
           onCancel={() => setPending(null)}
-          onConfirm={async () => {
-            const { id } = pending;
-            setPending(null);
-            await onDelete(id);
-          }}
+          onConfirm={() => confirmDelete(pending.id)}
         />
       )}
     </section>

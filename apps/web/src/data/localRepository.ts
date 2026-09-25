@@ -22,8 +22,21 @@ export const STORAGE_KEYS = {
   dailySuggestion: 'medfoco:v1:dailySuggestion',
 } as const;
 
-function newId(): string {
-  return globalThis.crypto.randomUUID();
+type IdCrypto = Pick<Crypto, 'getRandomValues'> & { randomUUID?: () => string };
+
+/**
+ * Gera um identificador único (UUID v4). Usa `crypto.randomUUID()` quando existe; como ele só
+ * está disponível em contexto seguro (HTTPS ou localhost), cai para `crypto.getRandomValues()`,
+ * que funciona também ao abrir o app por `http://<IP-da-rede>` (ex.: testando no celular).
+ */
+export function newId(cryptoImpl: IdCrypto = globalThis.crypto): string {
+  if (typeof cryptoImpl.randomUUID === 'function') return cryptoImpl.randomUUID();
+
+  const bytes = cryptoImpl.getRandomValues(new Uint8Array(16));
+  bytes[6] = ((bytes[6] ?? 0) & 0x0f) | 0x40; // versão 4
+  bytes[8] = ((bytes[8] ?? 0) & 0x3f) | 0x80; // variante RFC 4122
+  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
 /**

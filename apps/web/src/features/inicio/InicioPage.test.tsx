@@ -195,6 +195,50 @@ describe('Próximos eventos', () => {
   });
 });
 
+describe('Exclusão de evento: foco e erros', () => {
+  it('após confirmar, leva o foco para o título do cartão (não perde o foco)', async () => {
+    const storage = createMemoryStorage();
+    store(storage, STORAGE_KEYS.events, [event('2026-10-01', 1), event('2026-10-02', 2)]);
+    renderInicio({ storage });
+    fireEvent.click(await screen.findByRole('button', { name: 'Excluir evento Evento 1' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir' }));
+    await waitFor(() => expect(within(eventsCard()).queryByText('Evento 1')).toBeNull());
+    await waitFor(() =>
+      expect(document.activeElement).toBe(
+        within(eventsCard()).getByRole('heading', { name: 'Próximos eventos' }),
+      ),
+    );
+    expect(document.activeElement).not.toBe(document.body);
+  });
+
+  it('mostra erro acessível quando a exclusão falha e mantém o evento', async () => {
+    const memory = createMemoryStorage();
+    store(memory, STORAGE_KEYS.events, [event('2026-10-01', 1)]);
+    // Armazenamento que falha ao gravar eventos (ex.: armazenamento cheio ou bloqueado).
+    const failing: KeyValueStorage = {
+      getItem: (key) => memory.getItem(key),
+      setItem: (key, value) => {
+        if (key === STORAGE_KEYS.events) throw new Error('falha ao gravar');
+        memory.setItem(key, value);
+      },
+    };
+    renderInicio({ storage: failing });
+    const deleteButton = await screen.findByRole('button', { name: 'Excluir evento Evento 1' });
+    deleteButton.focus(); // no navegador, clicar ou usar o teclado põe o foco no botão
+    fireEvent.click(deleteButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Excluir' }));
+
+    const alert = await within(eventsCard()).findByRole('alert');
+    await waitFor(() =>
+      expect(alert.textContent).toBe('Não foi possível excluir o evento. Tente novamente.'),
+    );
+    expect(within(eventsCard()).getAllByRole('listitem')).toHaveLength(1);
+    expect(counter('próximos eventos')).toBe('1');
+    // O foco volta para o botão de excluir, que continua na tela.
+    expect(document.activeElement).toBe(deleteButton);
+  });
+});
+
 describe('Ações rápidas', () => {
   it('abre um formulário por vez e fecha ao clicar de novo', () => {
     renderInicio();

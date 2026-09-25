@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { STORAGE_KEYS, createLocalRepository, createMemoryStorage } from './localRepository';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { STORAGE_KEYS, createLocalRepository, createMemoryStorage, newId } from './localRepository';
 
 const task = {
   title: 'Ler capítulo 4',
@@ -72,5 +72,38 @@ describe('createLocalRepository', () => {
       date: '2026-09-25',
       text: 'x',
     });
+  });
+});
+
+const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
+
+/** Simula um navegador em contexto não seguro (http://<IP-da-rede>): sem crypto.randomUUID. */
+const realCrypto = globalThis.crypto;
+const insecureCrypto: Pick<Crypto, 'getRandomValues'> = {
+  getRandomValues: (array) => realCrypto.getRandomValues(array),
+};
+
+describe('newId', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('usa crypto.randomUUID quando disponível', () => {
+    expect(newId({ ...insecureCrypto, randomUUID: () => 'id-fixo' })).toBe('id-fixo');
+  });
+
+  it('gera UUID v4 válido e único sem crypto.randomUUID', () => {
+    const ids = Array.from({ length: 100 }, () => newId(insecureCrypto));
+    for (const id of ids) expect(id).toMatch(UUID_V4);
+    expect(new Set(ids).size).toBe(100);
+  });
+
+  it('permite salvar dados quando o navegador não oferece crypto.randomUUID', async () => {
+    vi.stubGlobal('crypto', insecureCrypto);
+    expect(globalThis.crypto.randomUUID).toBeUndefined();
+    const repo = createLocalRepository(createMemoryStorage());
+    const created = await repo.addTask(task);
+    expect(created.id).toMatch(UUID_V4);
+    expect(await repo.listTasks()).toEqual([created]);
   });
 });
