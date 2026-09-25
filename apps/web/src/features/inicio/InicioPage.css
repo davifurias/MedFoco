@@ -1,0 +1,41 @@
+/* Estilos da tela Início, reproduzindo legacy/MedFoco.html (renderInicio). */
+.resumo-date::first-letter {
+  text-transform: uppercase;
+}
+
+.resumo-greeting {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 4px 0 12px;
+}
+
+.counter-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.travou-card {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.travou-card h2 {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.travou-card p {
+  margin: 0 0 12px;
+}
+
+.btn.travou-button {
+  background: #fff;
+  color: var(--primary);
+}
+
+.sugestao-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 10px;
+  white-space: pre-wrap;
+}
