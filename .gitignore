@@ -1,0 +1,39 @@
+# Dependências e builds
+node_modules/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# Variáveis de ambiente e segredos — NUNCA versionar
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
+# Backups de banco — nunca no Git
+*.dump
+*.sql.gz
+backups/
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Claude Code — configurações pessoais
+.claude/settings.local.json
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
