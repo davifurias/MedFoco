@@ -1,7 +1,9 @@
 import js from '@eslint/js';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default tseslint.config(
   { ignores: ['legacy/**', '**/node_modules/**', '**/dist/**', '**/coverage/**'] },
   js.configs.recommended,
   {
@@ -23,4 +25,8 @@ export default [
       ],
     },
   },
-];
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [tseslint.configs.recommended, reactHooks.configs.flat.recommended],
+  },
+);

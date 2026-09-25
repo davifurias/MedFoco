@@ -1,0 +1,56 @@
+/*
+ * Identidade visual herdada de legacy/MedFoco.html (cores, raio, tema claro/escuro).
+ * Mantenha estes tokens como fonte única de cores do app.
+ */
+:root {
+  --bg: #f6f5fb;
+  --card: #ffffff;
+  --text: #1c1c28;
+  --muted: #6b6b7b;
+  --primary: #6c5ce7;
+  --primary-d: #5847d1;
+  --accent: #00b894;
+  --danger: #e74c3c;
+  --border: #e6e4f0;
+  --radius: 16px;
+  --c-trabalho: #f39c12;
+  --c-provas: #e74c3c;
+  --c-ferias: #00b894;
+  --c-aulas: #6c5ce7;
+  --c-outro: #636e72;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #15141f;
+    --card: #1e1d2b;
+    --text: #f0eff6;
+    --muted: #a3a1b5;
+    --border: #302e42;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #15141f;
+  --card: #1e1d2b;
+  --text: #f0eff6;
+  --muted: #a3a1b5;
+  --border: #302e42;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}

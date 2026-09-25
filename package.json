@@ -9,6 +9,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "dev": "pnpm --filter @medfoco/web dev",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . && node scripts/check-platform-independence.mjs",
@@ -20,8 +21,11 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.11.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.12.0",
     "prettier": "^3.9.9",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.1",
     "vitest": "^5.0.2"
   }
 }

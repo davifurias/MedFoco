@@ -176,7 +176,7 @@ Nunca apagar histórico: desfazer é sempre uma nova mudança.
 | Caminho                 | O que é                                                                       |
 | ----------------------- | ----------------------------------------------------------------------------- |
 | `legacy/MedFoco.html`   | App original exportado do Claude Artifact (histórico, não editar)             |
-| `apps/`                 | Aplicativos (a partir da Fase 1: `apps/web`, React + TypeScript + PWA)        |
+| `apps/web`              | Aplicativo web (React + TypeScript + Vite); funcionalidades em `src/features` |
 | `packages/`             | Código compartilhado (a partir da Fase 1: `packages/core`, regras de negócio) |
 | `supabase/`             | Migrações, seeds e funções do backend (a partir da Fase 2)                    |
 | `scripts/`              | Scripts de verificação do repositório                                         |
@@ -184,7 +184,7 @@ Nunca apagar histórico: desfazer é sempre uma nova mudança.
 | `.github/`              | CI, template de PR, Dependabot                                                |
 | `.claude/settings.json` | Travas técnicas do Claude Code                                                |
 
-Comandos (iguais em qualquer ambiente): `pnpm install` · `pnpm check` · `pnpm lint` ·
+Comandos (iguais em qualquer ambiente): `pnpm install` · `pnpm dev` · `pnpm check` · `pnpm lint` ·
 `pnpm test` · `pnpm build` · `pnpm format`.
 
 Mantenha este mapa atualizado quando a estrutura mudar.
