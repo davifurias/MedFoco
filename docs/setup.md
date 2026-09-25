@@ -2,14 +2,15 @@
 
 O projeto roda igual em qualquer lugar. Os comandos são sempre os mesmos:
 
-| Comando        | O que faz                                             |
-| -------------- | ----------------------------------------------------- |
-| `pnpm install` | Instala as dependências (versões fixadas no lockfile) |
-| `pnpm check`   | Tudo: formato, lint, tipos, testes e build            |
-| `pnpm lint`    | Verifica o código e a independência de plataforma     |
-| `pnpm test`    | Testes automáticos                                    |
-| `pnpm build`   | Gera o aplicativo                                     |
-| `pnpm format`  | Formata os arquivos automaticamente                   |
+| Comando        | O que faz                                                  |
+| -------------- | ---------------------------------------------------------- |
+| `pnpm install` | Instala as dependências (versões fixadas no lockfile)      |
+| `pnpm dev`     | Abre o app em modo desenvolvimento (http://localhost:5173) |
+| `pnpm check`   | Tudo: formato, lint, tipos, testes e build                 |
+| `pnpm lint`    | Verifica o código e a independência de plataforma          |
+| `pnpm test`    | Testes automáticos                                         |
+| `pnpm build`   | Gera o aplicativo                                          |
+| `pnpm format`  | Formata os arquivos automaticamente                        |
 
 ## Computador local
 
