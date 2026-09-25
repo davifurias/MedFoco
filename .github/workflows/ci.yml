@@ -1,0 +1,60 @@
+# CI do MedFoco — roda em todo Pull Request e em todo push na main.
+# Se qualquer etapa falhar, o PR não pode ser incorporado (ver docs/configuracao-github.md).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualidade:
+    name: Formato, lint, testes e build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Formato (Prettier)
+        run: pnpm format:check
+      - name: Lint + independência de plataforma
+        run: pnpm lint
+      - name: Tipos
+        run: pnpm typecheck
+      - name: Testes
+        run: pnpm test
+      - name: Build
+        run: pnpm build
+
+  segredos:
+    name: Verificação de segredos (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  dependencias:
+    name: Dependências vulneráveis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: pnpm audit --audit-level high

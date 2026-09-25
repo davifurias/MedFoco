@@ -1,0 +1,4 @@
+# Gitpod (clássico). Ambientes compatíveis com Dev Containers usam .devcontainer/.
+tasks:
+  - init: corepack enable && pnpm install
+    command: pnpm check
