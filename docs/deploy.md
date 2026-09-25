@@ -26,4 +26,11 @@
 3. Deploy de **produção**: GitHub → Actions → "Deploy produção" → escolher a tag → Run.
    Um backup do banco é feito antes, automaticamente.
 
+## Requisito da hospedagem
+
+O app usa endereços próprios para cada área (ex.: `/agenda/tarefas`). A hospedagem precisa
+responder qualquer endereço com o `index.html` ("SPA fallback"); caso contrário, abrir um link
+direto ou recarregar a página numa área dá erro 404. Cloudflare Pages, Vercel e Netlify suportam
+isso com configuração simples, a ser feita quando a hospedagem for escolhida.
+
 Rollback: [runbooks/rollback.md](runbooks/rollback.md).
