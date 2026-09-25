@@ -1,20 +1,23 @@
 # features/
 
-Cada funcionalidade do MedFoco terá sua própria pasta aqui, migrada aos poucos de
-`legacy/MedFoco.html`. Nenhuma foi migrada ainda.
+Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes, lógica e testes
+juntos. Por enquanto cada área mostra uma página provisória listando o que ela oferece no app
+original (`legacy/MedFoco.html`); o conteúdo real será migrado área por área.
 
-| Pasta futura | Origem no app original                                      |
-| ------------ | ----------------------------------------------------------- |
-| `inicio/`    | Início (resumo do dia, ações rápidas, "Estou perdido")      |
-| `perfil/`    | Perfil acadêmico                                            |
-| `busca/`     | Busca global                                                |
-| `agenda/`    | Agenda: eventos, tarefas e horários                         |
-| `materias/`  | Matérias (materiais, arquivos, vídeos)                      |
-| `mapa/`      | Mapa visual de conexões                                     |
-| `questoes/`  | Banco de questões, quiz e desempenho                        |
-| `foco/`      | Timer de foco (Pomodoro)                                    |
-| `assessora/` | Assessora IA (chat, aula guiada) — IA só a partir da Fase 3 |
-| `ideias/`    | Ideias do app e caderno de ideias                           |
+| Pasta        | Endereço                                         | Origem no app original                       |
+| ------------ | ------------------------------------------------ | -------------------------------------------- |
+| `inicio/`    | `/`                                              | Início                                       |
+| `agenda/`    | `/agenda`, `/agenda/tarefas`, `/agenda/horarios` | Agenda (sub-abas Eventos, Tarefas, Horários) |
+| `materias/`  | `/materias`                                      | Matérias                                     |
+| `mapa/`      | `/mapa`                                          | Mapa visual                                  |
+| `questoes/`  | `/questoes`                                      | Banco de questões                            |
+| `foco/`      | `/foco`                                          | Foco (timer)                                 |
+| `assessora/` | `/assessora`                                     | Assessora IA (IA real só a partir da Fase 3) |
+| `ideias/`    | `/ideias`                                        | Ideias (sub-aba "Ideias do App")             |
+| `caderno/`   | `/ideias/caderno`                                | Sub-aba "Caderno de Ideias" dentro de Ideias |
+| `busca/`     | `/busca`                                         | Busca global (botão 🔍 do cabeçalho)         |
+| `perfil/`    | `/perfil`                                        | Perfil acadêmico (botão na tela Início)      |
 
-Regra: uma pasta por funcionalidade, com seus componentes, lógica e testes juntos. Lógica pura
-reaproveitável (datas, timer, cálculo de desempenho) poderá ir para `packages/core`.
+Estrutura do app: `routes/routes.tsx` (endereços), `layouts/AppLayout.tsx` (cabeçalho e barras de
+navegação), `app/navigation.ts` (as 8 áreas da navegação), `components/` (peças reutilizáveis).
+Lógica pura reaproveitável (datas, timer, desempenho) poderá ir para `packages/core`.
