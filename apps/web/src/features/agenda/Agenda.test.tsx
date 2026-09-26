@@ -448,6 +448,38 @@ describe('Agenda › Horários', () => {
   });
 });
 
+describe('Agenda › dados danificados', () => {
+  const damaged = (storage: KeyValueStorage) => {
+    store(storage, STORAGE_KEYS.events, [{ id: 'x' }, null, 42, ev('e1', '2026-10-01')]);
+    store(storage, STORAGE_KEYS.tasks, [{ id: 'y' }, null, 'lixo', tk('t1', 1)]);
+    return storage;
+  };
+
+  it('Eventos mostra os itens válidos mesmo com itens danificados salvos', async () => {
+    renderApp('/agenda', damaged(createMemoryStorage()));
+    await within(region('Todos os eventos')).findByText('Evento e1');
+    expect(within(region('Todos os eventos')).getAllByRole('listitem')).toHaveLength(1);
+    expect(screen.queryByText('Não foi possível carregar os eventos.')).toBeNull();
+  });
+
+  it('Tarefas mostra os itens válidos mesmo com itens danificados salvos', async () => {
+    renderApp('/agenda/tarefas', damaged(createMemoryStorage()));
+    expect(await screen.findByRole('checkbox', { name: 'Tarefa t1' })).toBeTruthy();
+    expect(screen.getAllByRole('checkbox')).toHaveLength(1);
+  });
+
+  it('Início continua funcionando com itens danificados salvos', async () => {
+    renderApp('/', damaged(createMemoryStorage()));
+    await waitFor(() =>
+      expect(
+        within(screen.getByRole('region', { name: 'Resumo do dia' })).getByText('tarefas pendentes')
+          .previousElementSibling?.textContent,
+      ).toBe('1'),
+    );
+    expect(within(region('Próximos eventos')).getByText('Evento e1')).toBeTruthy();
+  });
+});
+
 describe('Integração Agenda → Início', () => {
   const goToInicio = () =>
     fireEvent.click(

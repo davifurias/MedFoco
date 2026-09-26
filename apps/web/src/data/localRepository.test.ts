@@ -117,6 +117,58 @@ describe('horários da semana', () => {
   });
 });
 
+describe('itens danificados', () => {
+  it('ignora na leitura itens danificados sem esconder os válidos', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(
+      STORAGE_KEYS.events,
+      JSON.stringify([{ id: 'x' }, null, 42, { ...event, id: 'ok', createdAt: 1 }]),
+    );
+    const events = await createLocalRepository(storage).listEvents();
+    expect(events.map((e) => e.id)).toEqual(['ok']);
+  });
+
+  it('não apaga itens danificados ao gravar outras mudanças', async () => {
+    const storage = createMemoryStorage();
+    const damaged = { id: 'x', algo: 'desconhecido' };
+    storage.setItem(STORAGE_KEYS.tasks, JSON.stringify([damaged]));
+    const repo = createLocalRepository(storage);
+    const created = await repo.addTask(task);
+    await repo.setTaskDone(created.id, true);
+    const saved = JSON.parse(storage.getItem(STORAGE_KEYS.tasks) ?? '[]') as unknown[];
+    expect(saved[0]).toEqual(damaged);
+    expect(saved).toHaveLength(2);
+    await repo.deleteTask(created.id);
+    expect(JSON.parse(storage.getItem(STORAGE_KEYS.tasks) ?? '[]')).toEqual([damaged]);
+  });
+
+  it('guarda cópia de segurança antes de gravar por cima de conteúdo ilegível', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(STORAGE_KEYS.events, '{conteúdo ilegível');
+    storage.setItem(STORAGE_KEYS.schedule, '{"texto":"formato antigo"}');
+    const repo = createLocalRepository(storage, () => 777);
+    await repo.addEvent(event);
+    await repo.saveSchedule('novo');
+    expect(storage.getItem(`${STORAGE_KEYS.events}:backup:777`)).toBe('{conteúdo ilegível');
+    expect(storage.getItem(`${STORAGE_KEYS.schedule}:backup:777`)).toBe(
+      '{"texto":"formato antigo"}',
+    );
+    expect(await repo.listEvents()).toHaveLength(1);
+    expect(await repo.getSchedule()).toBe('novo');
+  });
+
+  it('não cria cópia de segurança quando o conteúdo é válido', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage, () => 777);
+    await repo.addEvent(event);
+    await repo.addEvent(event);
+    await repo.saveSchedule('a');
+    await repo.saveSchedule('b');
+    expect(storage.getItem(`${STORAGE_KEYS.events}:backup:777`)).toBeNull();
+    expect(storage.getItem(`${STORAGE_KEYS.schedule}:backup:777`)).toBeNull();
+  });
+});
+
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 /** Simula um navegador em contexto não seguro (http://<IP-da-rede>): sem crypto.randomUUID. */
