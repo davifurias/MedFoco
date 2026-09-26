@@ -235,6 +235,18 @@ select {
   border-bottom: none;
 }
 
+/* Textos longos (ex.: palavras sem espaço) quebram a linha em vez de empurrar o ✕ para fora. */
+.item > :first-child {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.pill {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 .item-title {
   margin-top: 4px;
   font-weight: 600;
