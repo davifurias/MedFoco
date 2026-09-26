@@ -12,16 +12,36 @@ export function now(): Date {
 
 /** Converte um momento em data local AAAA-MM-DD. */
 export function toLocalDateKey(date: Date): DateKey {
-  const year = date.getFullYear();
+  const year = String(date.getFullYear()).padStart(4, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
 
+/**
+ * Cria a data à meia-noite local. Usa setFullYear porque `new Date(ano, …)` trata os anos
+ * 0–99 como 1900–1999.
+ */
+function localMidnight(year: number, monthIndex: number, day: number): Date {
+  const date = new Date(2000, 0, 1);
+  date.setFullYear(year, monthIndex, day);
+  return date;
+}
+
 /** Converte AAAA-MM-DD em Date à meia-noite local (sem interpretar como UTC). */
 export function fromDateKey(key: DateKey): Date {
   const [year = 0, month = 1, day = 1] = key.split('-').map(Number);
-  return new Date(year, month - 1, day);
+  return localMidnight(year, month - 1, day);
+}
+
+/** Verifica se o texto é uma data de calendário existente no formato AAAA-MM-DD. */
+export function isValidDateKey(value: unknown): value is DateKey {
+  if (typeof value !== 'string') return false;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+  const [year, month, day] = [Number(match[1]), Number(match[2]), Number(match[3])];
+  const date = localMidnight(year, month - 1, day);
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 }
 
 /** Ex.: "sexta-feira, 25 de setembro". */

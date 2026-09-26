@@ -4,7 +4,8 @@ Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes
 juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
 original (`legacy/MedFoco.html`).
 
-**Migradas:** Início (`inicio/`: `components/`, `hooks/`, `services/`, `utils/`).
+**Migradas:** Início (`inicio/`) e Agenda (`agenda/`), cada uma com `components/`, `hooks/`,
+`services/` e `utils/`.
 
 ## Dados
 
@@ -12,6 +13,11 @@ Componentes nunca acessam o armazenamento diretamente: usam `useRepository()`
 (`src/data/`). Hoje a implementação é local (`localStorage`, chaves `medfoco:v1:*`, só neste
 navegador); na fase de backend, basta criar outra implementação da mesma interface
 `MedFocoRepository`. Datas sempre no fuso local, via `src/shared/date.ts`.
+
+A leitura valida cada item salvo (`src/data/normalize.ts`): campos opcionais ausentes recebem o
+valor padrão e itens inutilizáveis são ignorados na tela, **sem** serem apagados do armazenamento.
+Antes de gravar por cima de um conteúdo ilegível, o repositório guarda uma cópia em
+`<chave>:backup:<momento>`.
 
 | Pasta        | Endereço                                         | Origem no app original                       |
 | ------------ | ------------------------------------------------ | -------------------------------------------- |

@@ -15,11 +15,21 @@ function renderApp(path = '/') {
 
 const desktopNav = () => screen.getByRole('navigation', { name: 'Navegação principal' });
 const mobileNav = () => screen.getByRole('navigation', { name: 'Navegação principal (celular)' });
-/** Título da página atual. O Início não tem um título único: é reconhecido pelo Resumo do dia. */
-const pageTitle = () =>
-  screen.queryByRole('region', { name: 'Resumo do dia' })
-    ? 'Início'
-    : screen.getByRole('heading', { level: 2 }).textContent;
+/** Páginas já reconstruídas, reconhecidas por um cartão característico (têm vários títulos). */
+const PAGE_BY_REGION: Record<string, string> = {
+  'Resumo do dia': 'Início',
+  'Novo evento': 'Eventos',
+  'Nova tarefa': 'Tarefas',
+  'Seus horários fixos da semana': 'Horários',
+};
+
+/** Título da página atual. */
+const pageTitle = () => {
+  for (const [region, page] of Object.entries(PAGE_BY_REGION)) {
+    if (screen.queryByRole('region', { name: region })) return page;
+  }
+  return screen.getByRole('heading', { level: 2 }).textContent;
+};
 
 afterEach(() => {
   cleanup();
