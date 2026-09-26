@@ -448,6 +448,54 @@ describe('Agenda › Horários', () => {
   });
 });
 
+describe('Agenda › entradas maliciosas são tratadas como texto', () => {
+  const PAYLOADS = [
+    '<img src=x onerror=alert(1)>',
+    '<script>alert(1)</script>',
+    '<a href="javascript:alert(1)">clique</a>',
+    '"><svg onload=alert(1)>',
+  ];
+
+  it('tarefas: título e matéria', async () => {
+    const storage = createMemoryStorage();
+    store(
+      storage,
+      STORAGE_KEYS.tasks,
+      PAYLOADS.map((payload, i) => tk(`t${i}`, i, { title: payload, subject: payload })),
+    );
+    renderApp('/agenda/tarefas', storage);
+    const card = await screen.findByRole('region', { name: /^Pendentes/ });
+    await within(card).findAllByRole('listitem');
+    for (const payload of PAYLOADS) expect(card.textContent).toContain(payload);
+    expect(card.querySelector('img, script, svg, a[href^="javascript"]')).toBeNull();
+  });
+
+  it('eventos criados pelo formulário', async () => {
+    renderApp('/agenda');
+    for (const payload of PAYLOADS) {
+      fireEvent.change(screen.getByLabelText('Título do evento'), { target: { value: payload } });
+      fireEvent.change(screen.getByLabelText('Data do evento'), {
+        target: { value: '2026-10-01' },
+      });
+      fireEvent.change(screen.getByLabelText('Observação'), { target: { value: payload } });
+      fireEvent.click(screen.getByRole('button', { name: 'Adicionar ao calendário' }));
+      await within(region('Todos os eventos')).findByText(payload);
+    }
+    expect(region('Todos os eventos').querySelector('img, script, svg, a')).toBeNull();
+  });
+
+  it('horários', async () => {
+    const storage = createMemoryStorage();
+    store(storage, STORAGE_KEYS.schedule, { text: PAYLOADS.join('\n') });
+    renderApp('/agenda/horarios', storage);
+    const field = (await screen.findByRole('textbox', {
+      name: 'Horários fixos da semana',
+    })) as HTMLTextAreaElement;
+    expect(field.value).toBe(PAYLOADS.join('\n'));
+    expect(document.querySelector('main img, main script, main svg')).toBeNull();
+  });
+});
+
 describe('Agenda › datas nas viradas de mês e de ano', () => {
   it('ordena e exibe corretamente eventos na virada do ano', async () => {
     const storage = createMemoryStorage();
