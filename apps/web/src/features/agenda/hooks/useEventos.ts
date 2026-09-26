@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRepository } from '../../../data/RepositoryContext';
 import type { CalendarEvent, NewCalendarEvent } from '../../../data/types';
 import { sortEventsByDate } from '../utils/agenda';
@@ -9,12 +9,16 @@ export function useEventos() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  // Depois de qualquer gravação, a carga inicial (se ainda não chegou) já está desatualizada.
+  const changedRef = useRef(false);
 
   useEffect(() => {
     let active = true;
     repository
       .listEvents()
-      .then((list) => active && setEvents(sortEventsByDate(list)))
+      .then((list) => {
+        if (active && !changedRef.current) setEvents(sortEventsByDate(list));
+      })
       .catch(() => active && setLoadError(true))
       .finally(() => active && setLoading(false));
     return () => {
@@ -23,7 +27,11 @@ export function useEventos() {
   }, [repository]);
 
   const reload = useCallback(async () => {
+    changedRef.current = true;
     setEvents(sortEventsByDate(await repository.listEvents()));
+    // A lista acabou de ser lida com sucesso: ela já está carregada e sem erro.
+    setLoadError(false);
+    setLoading(false);
   }, [repository]);
 
   const addEvent = useCallback(
