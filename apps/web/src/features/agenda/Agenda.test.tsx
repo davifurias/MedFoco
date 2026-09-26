@@ -448,6 +448,59 @@ describe('Agenda › Horários', () => {
   });
 });
 
+describe('Agenda › datas nas viradas de mês e de ano', () => {
+  it('ordena e exibe corretamente eventos na virada do ano', async () => {
+    const storage = createMemoryStorage();
+    store(storage, STORAGE_KEYS.events, [
+      ev('e3', '2027-01-01'),
+      ev('e1', '2026-11-30'),
+      ev('e2', '2026-12-31'),
+    ]);
+    renderApp('/agenda', storage);
+    const items = await within(region('Todos os eventos')).findAllByRole('listitem');
+    expect(items.map((li) => li.textContent)).toEqual([
+      expect.stringContaining('30 de nov. de 2026'),
+      expect.stringContaining('31 de dez. de 2026'),
+      expect.stringContaining('01 de jan. de 2027'),
+    ]);
+  });
+
+  it('evento criado às 23h59 de 31/12 para o mesmo dia conta como próximo no Início', async () => {
+    vi.setSystemTime(new Date(2026, 11, 31, 23, 59));
+    const { repository } = renderApp('/agenda');
+    fireEvent.change(screen.getByLabelText('Título do evento'), { target: { value: 'Réveillon' } });
+    fireEvent.change(screen.getByLabelText('Data do evento'), { target: { value: '2026-12-31' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Adicionar ao calendário' }));
+    expect((await within(region('Todos os eventos')).findByRole('listitem')).textContent).toContain(
+      '31 de dez. de 2026',
+    );
+    expect((await repository.listEvents())[0]?.date).toBe('2026-12-31');
+
+    fireEvent.click(
+      within(screen.getByRole('navigation', { name: 'Navegação principal' })).getByRole('link', {
+        name: 'Início',
+      }),
+    );
+    await waitFor(() =>
+      expect(within(region('Próximos eventos')).getByText('Réveillon')).toBeTruthy(),
+    );
+  });
+
+  it('logo após a meia-noite, o evento de 31/12 sai do Início mas continua na Agenda', async () => {
+    vi.setSystemTime(new Date(2027, 0, 1, 0, 1));
+    const storage = createMemoryStorage();
+    store(storage, STORAGE_KEYS.events, [ev('e1', '2026-12-31', { title: 'Réveillon' })]);
+    renderApp('/', storage);
+    expect(
+      await within(region('Próximos eventos')).findByText(/Nenhum evento futuro/),
+    ).toBeTruthy();
+
+    cleanup();
+    renderApp('/agenda', storage);
+    expect(await within(region('Todos os eventos')).findByText('Réveillon')).toBeTruthy();
+  });
+});
+
 describe('Agenda › acessibilidade', () => {
   /** Descrição acessível montada a partir de aria-describedby (texto ou aria-label). */
   const description = (el: HTMLElement) =>
