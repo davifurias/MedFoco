@@ -247,6 +247,10 @@ select {
   font-size: 1.1rem;
   padding: 2px 6px;
   cursor: pointer;
+  /* Área de toque confortável no celular, sem mudar o visual do ✕. */
+  min-width: 36px;
+  min-height: 36px;
+  flex-shrink: 0;
 }
 
 .quick button {

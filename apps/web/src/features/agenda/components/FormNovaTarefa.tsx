@@ -6,7 +6,10 @@ const DEFAULT_PRIORITY: TaskPriority = 'média';
 
 export function FormNovaTarefa({ onSave }: { onSave: (task: NewTask) => Promise<void> }) {
   const ids = { title: useId(), subject: useId(), deadline: useId(), priority: useId() };
+  const statusId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
+  const deadlineRef = useRef<HTMLInputElement>(null);
+  const [invalid, setInvalid] = useState<'title' | 'deadline' | null>(null);
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
   const [deadline, setDeadline] = useState('');
@@ -18,13 +21,18 @@ export function FormNovaTarefa({ onSave }: { onSave: (task: NewTask) => Promise<
     e.preventDefault();
     const value = title.trim();
     if (!value) {
+      setInvalid('title');
       setStatus('Escreva o que precisa fazer.');
+      titleRef.current?.focus();
       return;
     }
     if (deadline && !isValidDateKey(deadline)) {
+      setInvalid('deadline');
       setStatus('Informe uma data de prazo válida.');
+      deadlineRef.current?.focus();
       return;
     }
+    setInvalid(null);
     setSaving(true);
     try {
       await onSave({
@@ -59,7 +67,12 @@ export function FormNovaTarefa({ onSave }: { onSave: (task: NewTask) => Promise<
           ref={titleRef}
           placeholder="O que precisa fazer (ex: Ler capítulo 4 de Cardio)"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          aria-invalid={invalid === 'title' || undefined}
+          aria-describedby={invalid === 'title' ? statusId : undefined}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            if (invalid === 'title') setInvalid(null);
+          }}
         />
         <div className="row">
           <div>
@@ -79,9 +92,15 @@ export function FormNovaTarefa({ onSave }: { onSave: (task: NewTask) => Promise<
             </label>
             <input
               id={ids.deadline}
+              ref={deadlineRef}
               type="date"
               value={deadline}
-              onChange={(e) => setDeadline(e.target.value)}
+              aria-invalid={invalid === 'deadline' || undefined}
+              aria-describedby={invalid === 'deadline' ? statusId : undefined}
+              onChange={(e) => {
+                setDeadline(e.target.value);
+                if (invalid === 'deadline') setInvalid(null);
+              }}
             />
           </div>
           <div>
@@ -102,7 +121,7 @@ export function FormNovaTarefa({ onSave }: { onSave: (task: NewTask) => Promise<
         <button type="submit" className="btn" disabled={saving}>
           Adicionar tarefa
         </button>
-        <div className="status" aria-live="polite">
+        <div id={statusId} className="status" aria-live="polite">
           {status}
         </div>
       </form>

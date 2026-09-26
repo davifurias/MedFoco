@@ -56,7 +56,7 @@ export function TarefasPage({ organize = organizeWeek }: { organize?: OrganizeWe
       <FormNovaTarefa onSave={addTask} />
       <section className="card" aria-labelledby={PENDING_TITLE_ID}>
         <h2 id={PENDING_TITLE_ID} tabIndex={-1}>
-          Pendentes ({pending.length})
+          {loading ? 'Pendentes' : `Pendentes (${pending.length})`}
         </h2>
         {loadError ? (
           <div className="empty" role="alert">

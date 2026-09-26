@@ -448,6 +448,71 @@ describe('Agenda › Horários', () => {
   });
 });
 
+describe('Agenda › acessibilidade', () => {
+  /** Descrição acessível montada a partir de aria-describedby (texto ou aria-label). */
+  const description = (el: HTMLElement) =>
+    (el.getAttribute('aria-describedby') ?? '')
+      .split(' ')
+      .filter(Boolean)
+      .map((id) => {
+        const target = document.getElementById(id);
+        return (target?.getAttribute('aria-label') ?? target?.textContent ?? '').trim();
+      })
+      .join(' | ');
+
+  it('a caixa da tarefa anuncia matéria, prioridade e prazo', async () => {
+    const storage = createMemoryStorage();
+    store(storage, STORAGE_KEYS.tasks, [
+      tk('t1', 1, { subject: 'Cardio', priority: 'alta', deadline: '2026-10-01' }),
+      tk('t2', 2, { priority: 'baixa' }),
+    ]);
+    renderApp('/agenda/tarefas', storage);
+    const full = await screen.findByRole('checkbox', { name: 'Tarefa t1' });
+    expect(description(full)).toBe('Matéria: Cardio | Prioridade alta | Prazo: 01 de out. de 2026');
+    const plain = screen.getByRole('checkbox', { name: 'Tarefa t2' });
+    expect(plain.getAttribute('aria-describedby')).toBeNull();
+  });
+
+  it('não mostra "Pendentes (0)" enquanto as tarefas ainda estão carregando', () => {
+    const repo = createLocalRepository(createMemoryStorage());
+    const router = createMemoryRouter(routes, { initialEntries: ['/agenda/tarefas'] });
+    render(
+      <App router={router} repository={{ ...repo, listTasks: () => new Promise(() => {}) }} />,
+    );
+    expect(screen.getByRole('heading', { name: 'Pendentes' })).toBeTruthy();
+    expect(screen.queryByText('Nenhuma tarefa pendente.')).toBeNull();
+  });
+
+  it('evento: leva o foco ao primeiro campo que falta e o marca como inválido', async () => {
+    renderApp('/agenda');
+    const title = screen.getByLabelText('Título do evento');
+    const date = screen.getByLabelText('Data do evento');
+    fireEvent.click(screen.getByRole('button', { name: 'Adicionar ao calendário' }));
+    await screen.findByText('Preencha título e data.');
+    expect(document.activeElement).toBe(title);
+    expect(title.getAttribute('aria-invalid')).toBe('true');
+    expect(date.getAttribute('aria-invalid')).toBe('true');
+    expect(description(title)).toBe('Preencha título e data.');
+
+    fireEvent.change(title, { target: { value: 'Prova' } });
+    expect(title.getAttribute('aria-invalid')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Adicionar ao calendário' }));
+    await waitFor(() => expect(document.activeElement).toBe(date));
+    expect(date.getAttribute('aria-invalid')).toBe('true');
+  });
+
+  it('tarefa: leva o foco ao título vazio e o marca como inválido', async () => {
+    renderApp('/agenda/tarefas');
+    const title = screen.getByLabelText('Título da tarefa');
+    fireEvent.click(screen.getByRole('button', { name: 'Adicionar tarefa' }));
+    await screen.findByText('Escreva o que precisa fazer.');
+    expect(document.activeElement).toBe(title);
+    expect(title.getAttribute('aria-invalid')).toBe('true');
+    fireEvent.change(title, { target: { value: 'Ler' } });
+    expect(title.getAttribute('aria-invalid')).toBeNull();
+  });
+});
+
 describe('Agenda › dados danificados', () => {
   const damaged = (storage: KeyValueStorage) => {
     store(storage, STORAGE_KEYS.events, [{ id: 'x' }, null, 42, ev('e1', '2026-10-01')]);

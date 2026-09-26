@@ -8,7 +8,10 @@ const DEFAULT_CATEGORY: EventCategory = 'trabalho';
 
 export function FormNovoEvento({ onSave }: { onSave: (event: NewCalendarEvent) => Promise<void> }) {
   const ids = { title: useId(), date: useId(), category: useId(), notes: useId() };
+  const statusId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
+  const dateRef = useRef<HTMLInputElement>(null);
+  const [invalid, setInvalid] = useState({ title: false, date: false });
   const [title, setTitle] = useState('');
   const [date, setDate] = useState('');
   const [category, setCategory] = useState<EventCategory>(DEFAULT_CATEGORY);
@@ -19,10 +22,14 @@ export function FormNovoEvento({ onSave }: { onSave: (event: NewCalendarEvent) =
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     const value = title.trim();
-    if (!value || !isValidDateKey(date)) {
+    const missing = { title: !value, date: !isValidDateKey(date) };
+    if (missing.title || missing.date) {
+      setInvalid(missing);
       setStatus('Preencha título e data.');
+      (missing.title ? titleRef : dateRef).current?.focus();
       return;
     }
+    setInvalid({ title: false, date: false });
     setSaving(true);
     setStatus('Salvando...');
     try {
@@ -54,7 +61,12 @@ export function FormNovoEvento({ onSave }: { onSave: (event: NewCalendarEvent) =
               ref={titleRef}
               placeholder="Título (ex: Prova de Anatomia)"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              aria-invalid={invalid.title || undefined}
+              aria-describedby={invalid.title ? statusId : undefined}
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setInvalid((v) => ({ ...v, title: false }));
+              }}
             />
           </div>
           <div>
@@ -63,9 +75,15 @@ export function FormNovoEvento({ onSave }: { onSave: (event: NewCalendarEvent) =
             </label>
             <input
               id={ids.date}
+              ref={dateRef}
               type="date"
               value={date}
-              onChange={(e) => setDate(e.target.value)}
+              aria-invalid={invalid.date || undefined}
+              aria-describedby={invalid.date ? statusId : undefined}
+              onChange={(e) => {
+                setDate(e.target.value);
+                setInvalid((v) => ({ ...v, date: false }));
+              }}
             />
           </div>
         </div>
@@ -95,7 +113,7 @@ export function FormNovoEvento({ onSave }: { onSave: (event: NewCalendarEvent) =
         <button type="submit" className="btn" disabled={saving}>
           Adicionar ao calendário
         </button>
-        <div className="status" aria-live="polite">
+        <div id={statusId} className="status" aria-live="polite">
           {status}
         </div>
       </form>
