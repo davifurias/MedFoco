@@ -14,6 +14,11 @@ Componentes nunca acessam o armazenamento diretamente: usam `useRepository()`
 navegador); na fase de backend, basta criar outra implementação da mesma interface
 `MedFocoRepository`. Datas sempre no fuso local, via `src/shared/date.ts`.
 
+A leitura valida cada item salvo (`src/data/normalize.ts`): campos opcionais ausentes recebem o
+valor padrão e itens inutilizáveis são ignorados na tela, **sem** serem apagados do armazenamento.
+Antes de gravar por cima de um conteúdo ilegível, o repositório guarda uma cópia em
+`<chave>:backup:<momento>`.
+
 | Pasta        | Endereço                                         | Origem no app original                       |
 | ------------ | ------------------------------------------------ | -------------------------------------------- |
 | `inicio/`    | `/`                                              | Início                                       |
