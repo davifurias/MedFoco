@@ -1,6 +1,6 @@
 import { useId, useRef, useState, type FormEvent } from 'react';
 import type { NewTask, TaskPriority } from '../../../data/types';
-import { isValidDateKey } from '../utils/agenda';
+import { isValidDateKey } from '../../../shared/date';
 
 const DEFAULT_PRIORITY: TaskPriority = 'média';
 

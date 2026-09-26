@@ -26,12 +26,3 @@ export const PRIORITY_LABELS: Record<TaskPriority, string> = {
   média: 'Prioridade média',
   baixa: 'Prioridade baixa',
 };
-
-/** Verifica se o texto é uma data de calendário válida no formato AAAA-MM-DD. */
-export function isValidDateKey(value: string): boolean {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return false;
-  const [, y, m, d] = match.map(Number) as [number, number, number, number];
-  const date = new Date(y, m - 1, d);
-  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d;
-}

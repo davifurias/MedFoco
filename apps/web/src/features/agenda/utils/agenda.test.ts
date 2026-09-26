@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CalendarEvent, Task } from '../../../data/types';
-import { isValidDateKey, priorityMarker, sortEventsByDate, splitTasks } from './agenda';
+import { priorityMarker, sortEventsByDate, splitTasks } from './agenda';
 
 const event = (id: string, date: string, createdAt: number): CalendarEvent => ({
   id,
@@ -64,18 +64,5 @@ describe('priorityMarker', () => {
     expect(priorityMarker('alta')).toBe('🔴');
     expect(priorityMarker('média')).toBe('🟡');
     expect(priorityMarker('baixa')).toBe('');
-  });
-});
-
-describe('isValidDateKey', () => {
-  it('aceita datas válidas AAAA-MM-DD', () => {
-    expect(isValidDateKey('2026-09-25')).toBe(true);
-    expect(isValidDateKey('2028-02-29')).toBe(true);
-  });
-
-  it('recusa formatos e datas inválidas', () => {
-    for (const value of ['', '25/09/2026', '2026-9-25', '2026-02-30', '2026-13-01', 'abc']) {
-      expect(isValidDateKey(value)).toBe(false);
-    }
   });
 });

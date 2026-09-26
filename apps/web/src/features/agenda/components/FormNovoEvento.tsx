@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type FormEvent } from 'react';
 import { EVENT_CATEGORY_LABELS } from '../../../data/categories';
 import type { EventCategory, NewCalendarEvent } from '../../../data/types';
-import { isValidDateKey } from '../utils/agenda';
+import { isValidDateKey } from '../../../shared/date';
 
 /** Categoria inicial da Agenda, como no app original (primeira opção da lista). */
 const DEFAULT_CATEGORY: EventCategory = 'trabalho';
