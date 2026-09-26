@@ -77,7 +77,7 @@
 }
 
 .tabbar a.active {
-  color: var(--primary);
+  color: var(--primary-text);
 }
 
 .tabbar .ic {

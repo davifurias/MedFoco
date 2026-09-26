@@ -8,6 +8,8 @@
   --text: #1c1c28;
   --muted: #6b6b7b;
   --primary: #6c5ce7;
+  /* Roxo usado como cor de TEXTO; no tema escuro fica mais claro para manter o contraste. */
+  --primary-text: #6c5ce7;
   --primary-d: #5847d1;
   --accent: #00b894;
   --danger: #e74c3c;
@@ -27,6 +29,7 @@
     --text: #f0eff6;
     --muted: #a3a1b5;
     --border: #302e42;
+    --primary-text: #a29bfe;
   }
 }
 
@@ -36,6 +39,7 @@
   --text: #f0eff6;
   --muted: #a3a1b5;
   --border: #302e42;
+  --primary-text: #a29bfe;
 }
 
 * {
@@ -93,7 +97,7 @@ h2 {
 
 .btn.secondary {
   background: transparent;
-  color: var(--primary);
+  color: var(--primary-text);
   border: 1px solid var(--primary);
 }
 
