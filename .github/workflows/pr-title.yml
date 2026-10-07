@@ -31,5 +31,6 @@ jobs:
             chore
             revert
           requireScope: false
-          subjectPattern: ^(?![A-Z]).+$
+          # Letra minúscula no início, exceto "Bump ..." (título padrão do Dependabot).
+          subjectPattern: '^(?:Bump |(?![A-Z])).+$'
           subjectPatternError: 'Comece a descrição com letra minúscula. Ex.: "feat: adiciona metas semanais".'
