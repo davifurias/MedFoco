@@ -1,9 +1,11 @@
 import type {
+  AppIdea,
   Attempt,
   CalendarEvent,
   DailySuggestion,
   FocusSession,
   Material,
+  NewAppIdea,
   NewAttempt,
   NewCalendarEvent,
   NewFocusSession,
@@ -33,6 +35,11 @@ export interface MedFocoRepository {
 
   listNotebookEntries(): Promise<NotebookEntry[]>;
   addNotebookEntry(entry: NewNotebookEntry): Promise<NotebookEntry>;
+  deleteNotebookEntry(id: string): Promise<void>;
+
+  listAppIdeas(): Promise<AppIdea[]>;
+  addAppIdea(idea: NewAppIdea): Promise<AppIdea>;
+  deleteAppIdea(id: string): Promise<void>;
 
   listMaterials(): Promise<Material[]>;
   addMaterial(material: NewMaterial): Promise<Material>;

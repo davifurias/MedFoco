@@ -1,5 +1,6 @@
 import {
   isRecord,
+  normalizeAppIdea,
   normalizeAttempt,
   normalizeEvent,
   normalizeFocusSession,
@@ -11,6 +12,7 @@ import {
 import type { MedFocoRepository } from './repository';
 import type {
   DailySuggestion,
+  NewAppIdea,
   NewAttempt,
   NewCalendarEvent,
   NewFocusSession,
@@ -28,6 +30,7 @@ export const STORAGE_KEYS = {
   tasks: 'medfoco:v1:tasks',
   events: 'medfoco:v1:events',
   notebook: 'medfoco:v1:notebook',
+  appIdeas: 'medfoco:v1:appIdeas',
   focusSessions: 'medfoco:v1:focusSessions',
   dailySuggestion: 'medfoco:v1:dailySuggestion',
   schedule: 'medfoco:v1:schedule',
@@ -155,6 +158,19 @@ export function createLocalRepository(
     },
     async addNotebookEntry(entry: NewNotebookEntry) {
       return append(STORAGE_KEYS.notebook, entry);
+    },
+    async deleteNotebookEntry(id: string) {
+      removeById(STORAGE_KEYS.notebook, id);
+    },
+
+    async listAppIdeas() {
+      return readList(STORAGE_KEYS.appIdeas, normalizeAppIdea);
+    },
+    async addAppIdea(idea: NewAppIdea) {
+      return append(STORAGE_KEYS.appIdeas, idea);
+    },
+    async deleteAppIdea(id: string) {
+      removeById(STORAGE_KEYS.appIdeas, id);
     },
 
     async listMaterials() {

@@ -25,6 +25,8 @@ const PAGE_BY_REGION: Record<string, string> = {
   Praticar: 'Banco de questões',
   'Escolha uma técnica': 'Foco',
   'Aula guiada': 'Assessora IA',
+  'Espaço de ideias para o MedFoco': 'Ideias do App',
+  'Caderno de ideias soltas': 'Caderno de ideias',
 };
 
 /** Título da página atual. */

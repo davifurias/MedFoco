@@ -2,6 +2,7 @@ import { isValidDateKey, toLocalDateKey } from '../shared/date';
 import { toSafeHttpUrl } from '../shared/url';
 import { EVENT_CATEGORY_LABELS } from './categories';
 import type {
+  AppIdea,
   Attempt,
   CalendarEvent,
   EventCategory,
@@ -74,6 +75,10 @@ export function normalizeEvent(raw: unknown): CalendarEvent | null {
 export function normalizeNotebookEntry(raw: unknown): NotebookEntry | null {
   if (!isRecord(raw) || !nonEmptyString(raw.id) || !nonEmptyString(raw.text)) return null;
   return { id: raw.id, text: raw.text, createdAt: timestamp(raw.createdAt) };
+}
+
+export function normalizeAppIdea(raw: unknown): AppIdea | null {
+  return normalizeNotebookEntry(raw);
 }
 
 export function normalizeFocusSession(raw: unknown): FocusSession | null {

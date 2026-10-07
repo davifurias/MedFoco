@@ -36,6 +36,16 @@ export interface NotebookEntry {
   createdAt: number;
 }
 
+/**
+ * Ideia do mural "Ideias do App" (sugestões de melhoria para o MedFoco). No app original o mural
+ * era compartilhado entre usuários; sem backend, aqui ele é só deste aparelho (Fase 3: compartilhar).
+ */
+export interface AppIdea {
+  id: string;
+  text: string;
+  createdAt: number;
+}
+
 /** Sessão do timer de Foco: 'work' é tempo focado; 'break' é pausa. */
 export interface FocusSession {
   id: string;
@@ -100,3 +110,4 @@ export type NewMaterial = Omit<Material, 'id' | 'createdAt'>;
 export type NewQuestion = Omit<Question, 'id' | 'createdAt'>;
 export type NewAttempt = Omit<Attempt, 'id' | 'createdAt'>;
 export type NewFocusSession = Omit<FocusSession, 'id' | 'createdAt'>;
+export type NewAppIdea = Omit<AppIdea, 'id' | 'createdAt'>;

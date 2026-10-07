@@ -4,7 +4,7 @@ Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes
 juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
 original (`legacy/MedFoco.html`).
 
-**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`), Questões (`questoes/`), Foco (`foco/`) e Assessora IA (`assessora/`),
+**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`), Questões (`questoes/`), Foco (`foco/`), Assessora IA (`assessora/`) e Ideias (`ideias/`, `caderno/`),
 cada uma com `components/`, `hooks/`, `services/` e `utils/` conforme a necessidade. O Mapa só lê
 os materiais de Matérias; assuntos-chave são comparados sem acento nem maiúsculas.
 
@@ -16,6 +16,11 @@ real de término da fase (`foco/utils/timer.ts`), não descontando 1 segundo por
 `assessora/services/assessora.ts` (hoje avisam que a IA não está disponível, sem simular resposta);
 na Fase 3 basta trocar essas funções. A conversa fica só na tela (nada é guardado) e os anexos são
 lidos apenas no aparelho.
+
+**Ideias:** o mural "Ideias do App" (`medfoco:v1:appIdeas`) e o Caderno pessoal
+(`medfoco:v1:notebook`) são listas separadas. No app original o mural era compartilhado entre
+usuários; sem backend ele fica só neste aparelho, e compartilhar é da Fase 3. "Organizar com IA"
+segue o padrão da Assessora (serviço que avisa que a IA não está disponível).
 
 **Tema:** o app abre no tema escuro; o botão ☀️/🌙 do cabeçalho alterna para o claro e a escolha
 fica guardada neste navegador (`shared/theme.ts`, chave `medfoco:v1:theme`). As cores de cada tema

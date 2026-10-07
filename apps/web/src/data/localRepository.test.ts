@@ -356,6 +356,41 @@ describe('sessões de foco', () => {
   });
 });
 
+describe('ideias: mural e caderno', () => {
+  it('o mural começa vazio, grava, mantém após recarregar e exclui só a indicada', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    expect(await repo.listAppIdeas()).toEqual([]);
+    const first = await repo.addAppIdea({ text: 'Primeira' });
+    const second = await repo.addAppIdea({ text: 'Segunda' });
+    expect(await createLocalRepository(storage).listAppIdeas()).toEqual([first, second]);
+    await repo.deleteAppIdea(first.id);
+    expect(await repo.listAppIdeas()).toEqual([second]);
+  });
+
+  it('o mural e o caderno são listas separadas', async () => {
+    const repo = createLocalRepository(createMemoryStorage());
+    await repo.addAppIdea({ text: 'mural' });
+    await repo.addNotebookEntry({ text: 'caderno' });
+    expect((await repo.listAppIdeas()).map((i) => i.text)).toEqual(['mural']);
+    expect((await repo.listNotebookEntries()).map((i) => i.text)).toEqual(['caderno']);
+  });
+
+  it('exclui só a ideia indicada do caderno e ignora itens danificados', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    const a = await repo.addNotebookEntry({ text: 'a' });
+    const b = await repo.addNotebookEntry({ text: 'b' });
+    await repo.deleteNotebookEntry(a.id);
+    expect(await repo.listNotebookEntries()).toEqual([b]);
+    storage.setItem(
+      STORAGE_KEYS.appIdeas,
+      JSON.stringify([{ id: 'x', text: '   ' }, null, { text: 'sem id' }]),
+    );
+    expect(await repo.listAppIdeas()).toEqual([]);
+  });
+});
+
 describe('newId', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
