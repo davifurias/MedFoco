@@ -1,11 +1,11 @@
 {
   "name": "MedFoco",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
-  },
-  "postCreateCommand": "corepack enable && pnpm install",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "postCreateCommand": "npm install --global pnpm@10.33.0 && pnpm install",
   "forwardPorts": [5173],
+  "portsAttributes": {
+    "5173": { "label": "MedFoco (pnpm dev)", "onAutoForward": "openBrowser" }
+  },
   "customizations": {
     "vscode": {
       "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode", "vitest.explorer"]

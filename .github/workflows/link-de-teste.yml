@@ -1,0 +1,52 @@
+# Publica a versão atual da main no GitHub Pages: o "link de teste" do MedFoco.
+# Endereço: https://davifurias.github.io/MedFoco/ — atualizado a cada merge na main.
+# Os dados ficam só no navegador de quem usa (localStorage); nada é enviado a servidor.
+# Configuração única: Settings → Pages → Source: "GitHub Actions" (ver docs/link-de-teste.md).
+name: Link de teste
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: link-de-teste
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Gerar o app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build com o subendereço do GitHub Pages
+        run: pnpm --filter @medfoco/web build --base=/${{ github.event.repository.name }}/
+      - name: 'Abrir qualquer endereço do app (ex.: /agenda/tarefas) ao recarregar a página'
+        run: cp apps/web/dist/index.html apps/web/dist/404.html
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/web/dist
+
+  deploy:
+    name: Publicar
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -9,7 +9,9 @@ import './styles/global.css';
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Elemento #root não encontrado em index.html');
 
-const router = createBrowserRouter(routes);
+// O app pode ser publicado num subendereço (ex.: GitHub Pages em /MedFoco/): as rotas partem dele.
+const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
+const router = createBrowserRouter(routes, { basename });
 const repository = createLocalRepository(getBrowserStorage());
 
 createRoot(rootElement).render(
