@@ -9,7 +9,7 @@ export const SUBJECT_COLORS = [
   '#6c5ce7',
   '#00b894',
   '#e17055',
-  '#0984e3',
+  '#0a76cc',
   '#e84393',
   '#fdcb6e',
   '#00cec9',

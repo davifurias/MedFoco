@@ -19,3 +19,34 @@ export const MAIN_AREAS: readonly NavArea[] = [
   { path: '/assessora', label: 'Assessora IA', icon: '💬' },
   { path: '/ideias', label: 'Ideias', icon: '💡' },
 ];
+
+/** Nome de cada tela (para o título da aba e o aviso a leitores de tela ao trocar de tela). */
+const PAGE_NAMES: Record<string, string> = {
+  '/': 'Início',
+  '/agenda': 'Agenda · Eventos',
+  '/agenda/tarefas': 'Agenda · Tarefas',
+  '/agenda/horarios': 'Agenda · Horários',
+  '/materias': 'Matérias',
+  '/mapa': 'Mapa',
+  '/questoes': 'Questões',
+  '/foco': 'Foco',
+  '/assessora': 'Assessora IA',
+  '/ideias': 'Ideias · Ideias do App',
+  '/ideias/caderno': 'Ideias · Caderno de Ideias',
+  '/busca': 'Busca',
+  '/perfil': 'Perfil acadêmico',
+};
+
+export const APP_NAME = 'MedFoco';
+
+/** Nome da tela do endereço dado, ou null se não for uma tela conhecida. */
+export function pageNameFor(pathname: string): string | null {
+  const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  return PAGE_NAMES[normalized] ?? null;
+}
+
+/** Título da aba do navegador: "Agenda · Eventos · MedFoco". */
+export function documentTitleFor(pathname: string): string {
+  const name = pageNameFor(pathname);
+  return name ? `${name} · ${APP_NAME}` : APP_NAME;
+}

@@ -8,5 +8,7 @@ export default defineConfig({
   test: {
     name: 'web',
     environment: 'jsdom',
+    // Os testes de contraste leem as cores declaradas em global.css.
+    css: { include: [/global\.css/] },
   },
 });
