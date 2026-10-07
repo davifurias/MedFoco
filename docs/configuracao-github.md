@@ -79,3 +79,8 @@ bloqueado pela proteção da `main`.
 4. Copie o token **direto** para: repositório → **Settings → Secrets and variables → Actions →
    New repository secret** → nome `RELEASE_PLEASE_TOKEN`.
 5. Guarde uma cópia no gerenciador de senhas. **Nunca cole o token no chat ou em arquivos.**
+
+## 8. Ativar o link de teste (GitHub Pages)
+
+**Settings → Pages → Build and deployment → Source: "GitHub Actions"**. Detalhes em
+[link-de-teste.md](link-de-teste.md).
