@@ -65,6 +65,25 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+  banco:
+    name: Migrações do banco (Supabase)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Sobe o banco local e aplica as migrações do zero
+        run: pnpm exec supabase start -x realtime,storage-api,imgproxy,edge-runtime,logflare,vector,studio,mailpit,postgres-meta,supavisor
+      - name: Confere se o banco bate com as migrações
+        run: pnpm exec supabase db reset
+      - name: Para o banco
+        if: always()
+        run: pnpm exec supabase stop --no-backup
+
   segredos:
     name: Verificação de segredos (gitleaks)
     runs-on: ubuntu-latest

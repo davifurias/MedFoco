@@ -25,11 +25,15 @@ GitHub (secret scanning) bloqueiam segredos que escapem.
 
 | Variável                 | Ambiente                  | Pública?                | Fase |
 | ------------------------ | ------------------------- | ----------------------- | ---- |
-| `VITE_SUPABASE_URL`      | app                       | sim (protegida por RLS) | 2    |
-| `VITE_SUPABASE_ANON_KEY` | app                       | sim (protegida por RLS) | 2    |
-| `VITE_APP_ENV`           | app                       | sim                     | 2    |
+| `VITE_SUPABASE_URL`      | app                       | sim (protegida por RLS) | 3    |
+| `VITE_SUPABASE_ANON_KEY` | app                       | sim (protegida por RLS) | 3    |
+| `VITE_APP_ENV`           | app                       | sim                     | 3    |
 | `ANTHROPIC_API_KEY`      | **somente backend**       | **não — segredo**       | 3    |
 | `RELEASE_PLEASE_TOKEN`   | GitHub Secrets (opcional) | **não — segredo**       | 0    |
+
+A chave de serviço do Supabase (`service_role`) **nunca** vai ao app nem ao `.env` do front-end:
+ela é secreta e fica só no cofre do ambiente que a usa. As chaves do banco **local** (mostradas por
+`supabase start`) só valem no seu computador. Hoje o app funciona sem nenhuma variável.
 
 Variáveis com prefixo `VITE_` vão para dentro do app e **qualquer pessoa pode vê-las**: nunca
 coloque segredos nelas.

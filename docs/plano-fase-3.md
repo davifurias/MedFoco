@@ -70,7 +70,8 @@ Cada etapa abaixo termina com: testes, `pnpm check`, PR, revisão e merge pelo d
 
 ### 3.1 — Preparação e ambientes
 
-**Status: não iniciada.** Contas e projetos (ver seção 9, o que o dono precisa fazer); ambientes
+**Status: em andamento** (código: `config.toml`, `.env.example` e verificação das migrações no CI;
+staging automático fica para a 3.2; contas e projetos dependem do dono). Contas e projetos (ver seção 9, o que o dono precisa fazer); ambientes
 **desenvolvimento** (banco local em Docker), **staging** (Supabase Free, dados fictícios) e
 **produção** (Supabase Pro, **só criada na etapa 3.9**); cofres de segredos; `supabase/` com
 `config.toml`; variáveis em `.env.example` (sem valores); verificação das migrações no CI.
