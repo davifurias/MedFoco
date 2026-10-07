@@ -70,8 +70,10 @@ Cada etapa abaixo termina com: testes, `pnpm check`, PR, revisão e merge pelo d
 
 ### 3.1 — Preparação e ambientes
 
-**Status: em andamento** (código: `config.toml`, `.env.example` e verificação das migrações no CI;
-staging automático fica para a 3.2; contas e projetos dependem do dono). Contas e projetos (ver seção 9, o que o dono precisa fazer); ambientes
+**Status: concluída.** Feito: `config.toml`, `.env.example`, verificação das migrações no CI (PR
+#28), projeto Supabase de staging (São Paulo, plano Free) e conta no Console da Claude API, sem
+chave e sem crédito. Staging automático fica para a 3.2; o teto de gasto mensal do Console fica
+para a 3.7 (antes de criar qualquer chave). Contas e projetos (ver seção 9, o que o dono precisa fazer); ambientes
 **desenvolvimento** (banco local em Docker), **staging** (Supabase Free, dados fictícios) e
 **produção** (Supabase Pro, **só criada na etapa 3.9**); cofres de segredos; `supabase/` com
 `config.toml`; variáveis em `.env.example` (sem valores); verificação das migrações no CI.
@@ -118,7 +120,8 @@ sem internet com conta fica fora desta fase.
 
 ### 3.7 — IA real
 
-**Status: não iniciada.** Funções do servidor que chamam a IA; a chave **só no servidor**.
+**Status: não iniciada.** **Antes de criar a chave:** definir o teto de gasto mensal no Console e
+comparar o Haiku 4.5 com o Haiku 5.5 (preço e qualidade) para decidir o modelo. Funções do servidor que chamam a IA; a chave **só no servidor**.
 Primeiro lançamento: **Assessora** e **Sugestão do dia**, modelo Haiku, trocando os pontos de
 entrada de `assessora/services/assessora.ts` (`sendChatMessage`) e
 `inicio/services/sugestaoDoDia.ts` (`generateDailySuggestion`). Depois, na mesma etapa ou em PR
