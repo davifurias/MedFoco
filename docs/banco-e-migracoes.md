@@ -1,6 +1,20 @@
 # Banco de dados e migrações
 
 > Entra em uso na **Fase 3** (Supabase). Estas são as regras que valerão a partir de então.
+>
+> **Situação (etapa 3.1):** `supabase/config.toml` existe (cadastro aberto desligado, e-mail
+> confirmado, senha de no mínimo 8 caracteres) e o CI tem o job "Migrações do banco (Supabase)", que
+> sobe um banco local e aplica as migrações do zero. Ainda não há migrações (começam na etapa 3.2) e
+> o staging **não** recebe migrações automaticamente: isso entra quando houver migrações a aplicar.
+
+## Banco local no seu computador
+
+Precisa de Docker em execução. Comandos (a ferramenta vem com `pnpm install`):
+
+- `pnpm exec supabase start`: sobe o banco local (mostra as chaves **locais**, que são só do seu
+  computador e não valem em nenhum outro ambiente).
+- `pnpm exec supabase db reset`: recria o banco do zero com as migrações.
+- `pnpm exec supabase stop`: desliga.
 
 ## Regras
 
@@ -24,9 +38,9 @@ Para que voltar o código para a versão anterior nunca exija voltar o banco:
 
 ## Onde aplicar
 
-| Ambiente | Como as migrações são aplicadas              |
-| -------- | -------------------------------------------- |
-| Local    | `supabase db reset` (recria do zero + seed)  |
-| CI       | Automaticamente, banco temporário            |
-| Staging  | Automaticamente, a cada merge na `main`      |
-| Produção | No deploy da release, após backup automático |
+| Ambiente | Como as migrações são aplicadas                              |
+| -------- | ------------------------------------------------------------ |
+| Local    | `supabase db reset` (recria do zero + seed)                  |
+| CI       | Automaticamente, banco temporário (job "Migrações do banco") |
+| Staging  | Previsto: a cada merge na `main` (a partir da etapa 3.2)     |
+| Produção | No deploy da release, após backup automático                 |
