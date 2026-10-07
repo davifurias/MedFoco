@@ -56,9 +56,9 @@ select is(
   'toda tabela do schema public tem RLS ligado'
 );
 select is(
-  (select count(*) from pg_tables
-    where schemaname = 'public'
-      and has_table_privilege('anon', format('public.%I', tablename), 'select,insert,update,delete,truncate,references,trigger')),
+  (select count(*) from pg_class c
+    where c.relnamespace = 'public'::regnamespace and c.relkind in ('r', 'p')
+      and has_table_privilege('anon', c.oid, 'select,insert,update,delete,truncate,references,trigger')),
   0::bigint,
   'visitante (anon) não tem acesso a nenhuma tabela'
 );
