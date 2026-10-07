@@ -31,6 +31,8 @@ interface FocoValue {
   /** Aviso em texto sobre o último acontecimento (fase concluída, sessão encerrada). */
   notice: string;
   recordError: boolean;
+  /** Não foi possível ler o histórico de sessões salvo. */
+  sessionsLoadError: boolean;
   configure(workMin: number, breakMin: number, subject: string): void;
   resume(): void;
   pause(): void;
@@ -53,6 +55,7 @@ export function FocoProvider({ children }: { children: ReactNode }) {
   const [sessions, setSessions] = useState<FocusSession[]>([]);
   const [notice, setNotice] = useState('');
   const [recordError, setRecordError] = useState(false);
+  const [sessionsLoadError, setSessionsLoadError] = useState(false);
   // Depois de qualquer gravação, a carga inicial (se ainda não chegou) já está desatualizada.
   const changedRef = useRef(false);
 
@@ -63,7 +66,7 @@ export function FocoProvider({ children }: { children: ReactNode }) {
       .then((list) => {
         if (active && !changedRef.current) setSessions(list);
       })
-      .catch(() => {});
+      .catch(() => active && setSessionsLoadError(true));
     return () => {
       active = false;
     };
@@ -139,6 +142,7 @@ export function FocoProvider({ children }: { children: ReactNode }) {
       sessions,
       notice,
       recordError,
+      sessionsLoadError,
       configure(workMin, breakMin, subject) {
         setNotice('');
         setRecordError(false);
@@ -175,7 +179,7 @@ export function FocoProvider({ children }: { children: ReactNode }) {
         }
       },
     }),
-    [timer, seconds, sessions, notice, recordError, commit, record],
+    [timer, seconds, sessions, notice, recordError, sessionsLoadError, commit, record],
   );
 
   return <FocoContext.Provider value={value}>{children}</FocoContext.Provider>;
