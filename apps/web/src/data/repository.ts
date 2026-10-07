@@ -1,13 +1,17 @@
 import type {
+  Attempt,
   CalendarEvent,
   DailySuggestion,
   FocusSession,
   Material,
+  NewAttempt,
   NewCalendarEvent,
   NewMaterial,
   NewNotebookEntry,
+  NewQuestion,
   NewTask,
   NotebookEntry,
+  Question,
   Task,
 } from './types';
 
@@ -32,6 +36,13 @@ export interface MedFocoRepository {
   listMaterials(): Promise<Material[]>;
   addMaterial(material: NewMaterial): Promise<Material>;
   deleteMaterial(id: string): Promise<void>;
+
+  listQuestions(): Promise<Question[]>;
+  addQuestion(question: NewQuestion): Promise<Question>;
+  deleteQuestion(id: string): Promise<void>;
+
+  listAttempts(): Promise<Attempt[]>;
+  addAttempt(attempt: NewAttempt): Promise<Attempt>;
 
   listFocusSessions(): Promise<FocusSession[]>;
 

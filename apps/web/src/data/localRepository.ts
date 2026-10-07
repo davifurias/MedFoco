@@ -1,17 +1,21 @@
 import {
   isRecord,
+  normalizeAttempt,
   normalizeEvent,
   normalizeFocusSession,
   normalizeMaterial,
   normalizeNotebookEntry,
+  normalizeQuestion,
   normalizeTask,
 } from './normalize';
 import type { MedFocoRepository } from './repository';
 import type {
   DailySuggestion,
+  NewAttempt,
   NewCalendarEvent,
   NewMaterial,
   NewNotebookEntry,
+  NewQuestion,
   NewTask,
 } from './types';
 
@@ -27,6 +31,8 @@ export const STORAGE_KEYS = {
   dailySuggestion: 'medfoco:v1:dailySuggestion',
   schedule: 'medfoco:v1:schedule',
   materials: 'medfoco:v1:materials',
+  questions: 'medfoco:v1:questions',
+  attempts: 'medfoco:v1:attempts',
 } as const;
 
 type IdCrypto = Pick<Crypto, 'getRandomValues'> & { randomUUID?: () => string };
@@ -158,6 +164,23 @@ export function createLocalRepository(
     },
     async deleteMaterial(id: string) {
       removeById(STORAGE_KEYS.materials, id);
+    },
+
+    async listQuestions() {
+      return readList(STORAGE_KEYS.questions, normalizeQuestion);
+    },
+    async addQuestion(question: NewQuestion) {
+      return append(STORAGE_KEYS.questions, question);
+    },
+    async deleteQuestion(id: string) {
+      removeById(STORAGE_KEYS.questions, id);
+    },
+
+    async listAttempts() {
+      return readList(STORAGE_KEYS.attempts, normalizeAttempt);
+    },
+    async addAttempt(attempt: NewAttempt) {
+      return append(STORAGE_KEYS.attempts, attempt);
     },
 
     async listFocusSessions() {

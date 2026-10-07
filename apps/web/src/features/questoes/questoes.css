@@ -1,0 +1,98 @@
+/* Estilos de Questões, reproduzindo legacy/MedFoco.html (renderQuestoes e renderQuiz). */
+.desempenho-list,
+.questao-list,
+.opcoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pct {
+  font-weight: 700;
+}
+
+.pct-baixo {
+  color: var(--danger);
+}
+
+.pct-medio {
+  color: var(--c-trabalho);
+}
+
+.pct-alto {
+  color: var(--accent);
+}
+
+.questao-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.questao-enunciado {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.pergunta {
+  text-transform: none;
+  font-size: 1rem;
+  color: var(--text);
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.opcoes {
+  margin: 12px 0;
+}
+
+.opcoes .opcao {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 8px;
+  overflow-wrap: anywhere;
+}
+
+/* Respondida: os botões ficam desativados, mas o resultado precisa continuar bem visível. */
+.opcoes .opcao:disabled {
+  opacity: 1;
+}
+
+.opcoes .opcao:disabled:not(.correta):not(.errada) {
+  opacity: 0.6;
+}
+
+.opcoes .opcao.correta {
+  border-color: var(--accent);
+  border-width: 2px;
+  color: var(--accent);
+}
+
+.opcoes .opcao.errada {
+  border-color: var(--danger);
+  border-width: 2px;
+  color: var(--danger);
+}
+
+.feedback {
+  margin-bottom: 10px;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.resultado {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.pergunta + .opcoes,
+.feedback + .btn {
+  margin-top: 0;
+}
+
+.feedback + .btn {
+  margin-right: 8px;
+}

@@ -1,12 +1,15 @@
-import { isValidDateKey } from '../shared/date';
+import { isValidDateKey, toLocalDateKey } from '../shared/date';
 import { toSafeHttpUrl } from '../shared/url';
 import { EVENT_CATEGORY_LABELS } from './categories';
 import type {
+  Attempt,
   CalendarEvent,
   EventCategory,
   FocusSession,
   Material,
   NotebookEntry,
+  Question,
+  QuestionDifficulty,
   Task,
   TaskPriority,
 } from './types';
@@ -112,5 +115,41 @@ export function normalizeMaterial(raw: unknown): Material | null {
     // Dados salvos podem ter sido alterados: só links http(s) válidos são mantidos.
     videoLink: (type === 'video' ? toSafeHttpUrl(raw.videoLink) : null) ?? '',
     createdAt: timestamp(raw.createdAt),
+  };
+}
+
+const DIFFICULTIES: readonly QuestionDifficulty[] = ['fácil', 'médio', 'difícil'];
+
+/** Questões precisam de enunciado e de exatamente 4 alternativas preenchidas. */
+export function normalizeQuestion(raw: unknown): Question | null {
+  if (!isRecord(raw) || !nonEmptyString(raw.id) || !nonEmptyString(raw.question)) return null;
+  const options = raw.options;
+  if (!Array.isArray(options) || options.length !== 4 || !options.every(nonEmptyString)) {
+    return null;
+  }
+  const correct = raw.correctIndex;
+  return {
+    id: raw.id,
+    subject: nonEmptyString(raw.subject) ? raw.subject.trim() : DEFAULT_SUBJECT,
+    topic: stringOr(raw.topic, ''),
+    difficulty: DIFFICULTIES.find((d) => d === raw.difficulty) ?? 'médio',
+    question: raw.question,
+    options: [options[0], options[1], options[2], options[3]] as Question['options'],
+    correctIndex: typeof correct === 'number' && [0, 1, 2, 3].includes(correct) ? correct : 0,
+    explanation: stringOr(raw.explanation, ''),
+    createdAt: timestamp(raw.createdAt),
+  };
+}
+
+export function normalizeAttempt(raw: unknown): Attempt | null {
+  if (!isRecord(raw) || !nonEmptyString(raw.id) || typeof raw.correct !== 'boolean') return null;
+  const createdAt = timestamp(raw.createdAt);
+  return {
+    id: raw.id,
+    subject: nonEmptyString(raw.subject) ? raw.subject.trim() : DEFAULT_SUBJECT,
+    topic: stringOr(raw.topic, ''),
+    correct: raw.correct,
+    date: isValidDateKey(raw.date) ? raw.date : toLocalDateKey(new Date(createdAt)),
+    createdAt,
   };
 }
