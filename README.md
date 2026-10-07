@@ -43,6 +43,8 @@ Containers usam a configuração em `.devcontainer/`. Detalhes em [docs/setup.md
 | Voltar para uma versão anterior             | [docs/runbooks/rollback.md](docs/runbooks/rollback.md)         |
 | Configurações manuais do GitHub             | [docs/configuracao-github.md](docs/configuracao-github.md)     |
 | Ideias futuras                              | [docs/ideias.md](docs/ideias.md)                               |
+| Plano mestre da Fase 3                      | [docs/plano-fase-3.md](docs/plano-fase-3.md)                   |
+| O que a Fase 3 recebe pronto                | [docs/preparacao-fase-3.md](docs/preparacao-fase-3.md)         |
 | Por que as decisões foram tomadas           | [docs/decisoes/](docs/decisoes/)                               |
 
 ## Princípios

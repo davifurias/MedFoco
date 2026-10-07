@@ -1,7 +1,8 @@
 # Preparação para a Fase 3
 
 O que a Fase 2 deixa pronto para a Fase 3 (backend, login, sincronização, arquivos, IA real).
-Escrito na auditoria final da Fase 2 (etapa 2.16). A Fase 2 prepara **interfaces**, sem antecipar
+Escrito na auditoria final da Fase 2 (etapa 2.16). O plano das etapas está em
+[plano-fase-3.md](plano-fase-3.md). A Fase 2 prepara **interfaces**, sem antecipar
 as implementações (seção 15 do [plano da Fase 2](plano-fase-2.md)).
 
 ## 1. Onde a Fase 3 encaixa
