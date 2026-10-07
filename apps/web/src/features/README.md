@@ -4,9 +4,13 @@ Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes
 juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
 original (`legacy/MedFoco.html`).
 
-**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`) e Questões (`questoes/`),
+**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`), Questões (`questoes/`) e Foco (`foco/`),
 cada uma com `components/`, `hooks/`, `services/` e `utils/` conforme a necessidade. O Mapa só lê
 os materiais de Matérias; assuntos-chave são comparados sem acento nem maiúsculas.
+
+**Foco:** o timer fica no `FocoProvider` (`foco/FocoContext.tsx`), acima das telas, e continua
+contando ao navegar; ao fechar ou recarregar a página ele se perde. O tempo é calculado pelo horário
+real de término da fase (`foco/utils/timer.ts`), não descontando 1 segundo por tick.
 
 **Tema:** o app abre no tema escuro; o botão ☀️/🌙 do cabeçalho alterna para o claro e a escolha
 fica guardada neste navegador (`shared/theme.ts`, chave `medfoco:v1:theme`). As cores de cada tema

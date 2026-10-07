@@ -339,6 +339,23 @@ describe('questões e respostas', () => {
   });
 });
 
+describe('sessões de foco', () => {
+  it('grava, mantém após recarregar e ignora itens danificados', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    expect(await repo.listFocusSessions()).toEqual([]);
+    const saved = await repo.addFocusSession({
+      type: 'work',
+      minutes: 25,
+      subject: null,
+      date: '2026-10-07',
+    });
+    expect(await createLocalRepository(storage).listFocusSessions()).toEqual([saved]);
+    storage.setItem(STORAGE_KEYS.focusSessions, JSON.stringify([saved, null, { id: 'x' }]));
+    expect(await repo.listFocusSessions()).toEqual([saved]);
+  });
+});
+
 describe('newId', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

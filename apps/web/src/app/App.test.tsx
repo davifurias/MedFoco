@@ -23,6 +23,7 @@ const PAGE_BY_REGION: Record<string, string> = {
   'Adicionar material': 'Matérias',
   'Seus horários fixos da semana': 'Horários',
   Praticar: 'Banco de questões',
+  'Escolha uma técnica': 'Foco',
 };
 
 /** Título da página atual. */

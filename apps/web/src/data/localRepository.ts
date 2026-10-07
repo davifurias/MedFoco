@@ -13,6 +13,7 @@ import type {
   DailySuggestion,
   NewAttempt,
   NewCalendarEvent,
+  NewFocusSession,
   NewMaterial,
   NewNotebookEntry,
   NewQuestion,
@@ -185,6 +186,9 @@ export function createLocalRepository(
 
     async listFocusSessions() {
       return readList(STORAGE_KEYS.focusSessions, normalizeFocusSession);
+    },
+    async addFocusSession(session: NewFocusSession) {
+      return append(STORAGE_KEYS.focusSessions, session);
     },
 
     async getSchedule() {

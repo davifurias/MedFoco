@@ -99,3 +99,4 @@ export type NewNotebookEntry = Omit<NotebookEntry, 'id' | 'createdAt'>;
 export type NewMaterial = Omit<Material, 'id' | 'createdAt'>;
 export type NewQuestion = Omit<Question, 'id' | 'createdAt'>;
 export type NewAttempt = Omit<Attempt, 'id' | 'createdAt'>;
+export type NewFocusSession = Omit<FocusSession, 'id' | 'createdAt'>;

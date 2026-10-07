@@ -1,0 +1,31 @@
+/* Estilos de Foco, reproduzindo legacy/MedFoco.html (renderFoco). */
+.timer-card {
+  text-align: center;
+}
+
+.timer-display {
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin: 10px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-card .meta {
+  margin-top: 10px;
+}
+
+.hoje-minutos {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.historico-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.historico-info {
+  overflow-wrap: anywhere;
+}
