@@ -37,3 +37,7 @@ Thumbs.db
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# Testes ponta a ponta
+playwright-report/
+test-results/

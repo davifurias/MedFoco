@@ -16,12 +16,33 @@ se alguma falhar, o PR não pode ser incorporado.
 | Segurança do código (CodeQL) | —                   | CI            | Fase 0 |
 | Título do PR                 | —                   | CI            | Fase 0 |
 | Banco + RLS (pgTAP)          | a definir           | CI (+ Docker) | Fase 2 |
-| Ponta a ponta (Playwright)   | a definir           | CI            | Fase 1 |
+| Ponta a ponta (Playwright)   | `pnpm e2e`          | local + CI    | Fase 2 |
+
+## Testes ponta a ponta (`pnpm e2e`)
+
+Abrem o app **já construído** (com a política de segurança ligada) num Chromium de verdade, em
+**computador (1100px) e celular (375px), nos temas escuro e claro** (4 combinações). Ficam em
+`e2e/`, com a configuração em `playwright.config.ts`.
+
+- **Antes da primeira vez:** `pnpm e2e:instalar` (baixa o Chromium). Em ambientes que já têm um
+  Chromium instalado, aponte para ele com `E2E_CHROMIUM_PATH=/caminho/do/chrome`.
+- **O que cobrem:** navegação pelas áreas e títulos; fluxos entre telas (tarefa, evento e ideia
+  rápidos; Matérias → Mapa → Busca; Questões → prática → desempenho; Foco com relógio acelerado
+  → Início; Perfil e Horários); tema; rolagem lateral; segurança (política e link perigoso); e o
+  verificador de acessibilidade **axe** em todas as telas nos dois temas e tamanhos (0 falhas).
+- **Qualquer erro ou aviso do navegador** (inclusive violação da política de segurança) faz o
+  teste falhar, e também qualquer arquivo que não carregue (exceto o ícone da aba).
+- **Regras:** nunca esperar por tempo fixo (use esperas por condição e `page.clock`); datas
+  sempre relativas a hoje (`dataEm`); cada teste começa com o navegador limpo.
+- **No CI:** passo "Testes ponta a ponta (Playwright)". Ele só passa a ser obrigatório para o
+  merge quando for adicionado às regras da `main` (ver `configuracao-github.md`).
+- Não faz parte do `pnpm check` (que continua rápido e sem exigir navegador).
 
 ## Onde ficam os testes
 
 - Ao lado do código testado, com o sufixo `.test` (ex.: `timer.test.ts`).
 - Fase 0: `scripts/check-platform-independence.test.mjs`.
+- Ponta a ponta: `e2e/*.spec.ts`.
 - Integração entre as áreas: `apps/web/src/integracao.test.tsx` (cria numa tela, navega pelo
   roteador e confere em outra: tarefas, eventos, ideias, materiais, questões, foco, perfil).
 

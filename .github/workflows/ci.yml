@@ -37,6 +37,34 @@ jobs:
       - name: Build
         run: pnpm build
 
+  e2e:
+    name: Testes ponta a ponta (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Cache do navegador
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Instala o Chromium
+        run: pnpm e2e:instalar
+      - name: Testes ponta a ponta
+        run: pnpm e2e
+      - name: Relatório dos testes (só se falhar)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-e2e
+          path: playwright-report/
+          retention-days: 7
+
   segredos:
     name: Verificação de segredos (gitleaks)
     runs-on: ubuntu-latest

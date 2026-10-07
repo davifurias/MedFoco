@@ -13,13 +13,17 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . && node scripts/check-platform-independence.mjs",
-    "typecheck": "pnpm -r --if-present typecheck",
+    "typecheck": "pnpm -r --if-present typecheck && tsc -p e2e",
     "test": "vitest run",
     "build": "pnpm -r --if-present build",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "e2e": "playwright test",
+    "e2e:instalar": "playwright install --with-deps chromium"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.63.0",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.12.0",
