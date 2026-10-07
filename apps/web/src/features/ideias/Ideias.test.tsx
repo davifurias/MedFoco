@@ -122,7 +122,7 @@ describe('Ideias do App', () => {
     await waitFor(() => expect(screen.queryByText('Ideia 1')).toBeNull());
     expect(screen.getByText('Ideia 2')).toBeTruthy();
     expect(stored(storage)).toHaveLength(1);
-    expect(document.activeElement?.textContent).toBe('Ideias salvas');
+    await waitFor(() => expect(document.activeElement?.textContent).toBe('Ideias salvas'));
   });
 
   it('mostra erro quando a exclusão falha e mantém a ideia', async () => {
