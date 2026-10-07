@@ -1,9 +1,10 @@
 /// <reference types="vitest/config" />
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+import { contentSecurityPolicy } from './csp';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), contentSecurityPolicy()],
   test: {
     name: 'web',
     environment: 'jsdom',

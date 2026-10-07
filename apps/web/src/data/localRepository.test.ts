@@ -198,6 +198,7 @@ describe('materiais', () => {
         { id: 'm1', title: 'Mau', type: 'video', videoLink: 'javascript:alert(1)' },
         { id: 'm2', title: 'Bom', type: 'video', videoLink: 'youtube.com/x' },
         { id: 'm3', title: 'Nota com link', type: 'nota', videoLink: 'https://exemplo.com' },
+        { id: 'm4', title: 'Com senha', type: 'video', videoLink: 'https://u:s@exemplo.com' },
       ]),
     );
     const list = await createLocalRepository(storage).listMaterials();
@@ -205,6 +206,7 @@ describe('materiais', () => {
       ['m1', ''],
       ['m2', 'https://youtube.com/x'],
       ['m3', ''],
+      ['m4', ''],
     ]);
   });
 

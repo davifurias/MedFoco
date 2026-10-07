@@ -11,6 +11,8 @@ salvar na tela inicial do celular (no navegador: "Adicionar à tela de início")
   depois de cada merge** (automação `.github/workflows/link-de-teste.yml`).
 - Os dados ficam **só no aparelho e navegador** de quem usa (armazenamento local). Nada é enviado
   a servidor. O que você cria no celular não aparece no computador (isso chega na Fase 3).
+- Cuidado: os dados locais são guardados por endereço de site, e `davifurias.github.io` é
+  compartilhado por todos os projetos da conta. Veja os riscos em [seguranca.md](seguranca.md).
 - O link é público, como o repositório: qualquer pessoa com o endereço abre o app, mas cada uma
   vê apenas os próprios dados.
 - Limpar os dados do navegador apaga os dados do MedFoco naquele aparelho.
