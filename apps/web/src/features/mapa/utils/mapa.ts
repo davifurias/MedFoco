@@ -1,4 +1,5 @@
 import type { Material } from '../../../data/types';
+import { foldText } from '../../../shared/text';
 import { notesPreview } from '../../materias/utils/materias';
 
 export { notesPreview };
@@ -21,9 +22,7 @@ export const MAP_HEIGHT = 560;
 export const LABEL_LIMIT = 14;
 
 /** Chave de comparação de um assunto: sem acentos, sem maiúsculas, sem espaços nas pontas. */
-export function tagKey(tag: string): string {
-  return tag.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().trim().replace(/\s+/g, ' ');
-}
+export const tagKey = foldText;
 
 export function shortLabel(title: string): string {
   const chars = [...title];
