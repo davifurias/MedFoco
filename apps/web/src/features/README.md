@@ -4,7 +4,7 @@ Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes
 juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
 original (`legacy/MedFoco.html`).
 
-**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`), Questões (`questoes/`), Foco (`foco/`), Assessora IA (`assessora/`) e Ideias (`ideias/`, `caderno/`) e Busca (`busca/`),
+**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`), Questões (`questoes/`), Foco (`foco/`), Assessora IA (`assessora/`) e Ideias (`ideias/`, `caderno/`) Busca (`busca/`) e Perfil (`perfil/`),
 cada uma com `components/`, `hooks/`, `services/` e `utils/` conforme a necessidade. O Mapa só lê
 os materiais de Matérias; assuntos-chave são comparados sem acento nem maiúsculas.
 
@@ -26,6 +26,10 @@ segue o padrão da Assessora (serviço que avisa que a IA não está disponível
 letras, sem diferença de acento nem de maiúsculas, `shared/text.ts`). O texto fica no endereço
 (`/busca?q=…`) e a caixa usa estado próprio: o endereço atualiza com atraso e comeria letras
 digitadas rápido.
+
+**Perfil:** curso, período, matérias, metas e preferências, salvos só neste aparelho
+(`medfoco:v1:profile`) até existir login. Sem nada salvo, o curso vem como "Medicina"; um curso
+apagado e salvo fica em branco. Nada do perfil é enviado a lugar nenhum (a IA é da Fase 3).
 
 **Tema:** o app abre no tema escuro; o botão ☀️/🌙 do cabeçalho alterna para o claro e a escolha
 fica guardada neste navegador (`shared/theme.ts`, chave `medfoco:v1:theme`). As cores de cada tema

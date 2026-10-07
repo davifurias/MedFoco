@@ -9,6 +9,7 @@ import type {
   FocusSession,
   Material,
   NotebookEntry,
+  Profile,
   Question,
   QuestionDifficulty,
   Task,
@@ -156,5 +157,28 @@ export function normalizeAttempt(raw: unknown): Attempt | null {
     correct: raw.correct,
     date: isValidDateKey(raw.date) ? raw.date : toLocalDateKey(new Date(createdAt)),
     createdAt,
+  };
+}
+
+/** Curso padrão quando nada foi salvo (como no app original). */
+export const DEFAULT_COURSE = 'Medicina';
+
+export const DEFAULT_PROFILE: Profile = {
+  curso: DEFAULT_COURSE,
+  periodo: '',
+  materias: '',
+  metas: '',
+  preferencias: '',
+};
+
+/** Campos ausentes ou inválidos voltam ao padrão; um curso salvo em branco continua em branco. */
+export function normalizeProfile(raw: unknown): Profile {
+  if (!isRecord(raw)) return { ...DEFAULT_PROFILE };
+  return {
+    curso: stringOr(raw.curso, DEFAULT_PROFILE.curso),
+    periodo: stringOr(raw.periodo, ''),
+    materias: stringOr(raw.materias, ''),
+    metas: stringOr(raw.metas, ''),
+    preferencias: stringOr(raw.preferencias, ''),
   };
 }

@@ -103,6 +103,16 @@ export interface Attempt {
   createdAt: number;
 }
 
+/** Perfil acadêmico (dados locais, só neste aparelho até existir login). */
+export interface Profile {
+  curso: string;
+  periodo: string;
+  /** Matérias que está cursando, separadas por vírgula (texto livre). */
+  materias: string;
+  metas: string;
+  preferencias: string;
+}
+
 export type NewTask = Omit<Task, 'id' | 'createdAt'>;
 export type NewCalendarEvent = Omit<CalendarEvent, 'id' | 'createdAt'>;
 export type NewNotebookEntry = Omit<NotebookEntry, 'id' | 'createdAt'>;

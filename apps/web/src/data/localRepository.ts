@@ -6,12 +6,14 @@ import {
   normalizeFocusSession,
   normalizeMaterial,
   normalizeNotebookEntry,
+  normalizeProfile,
   normalizeQuestion,
   normalizeTask,
 } from './normalize';
 import type { MedFocoRepository } from './repository';
 import type {
   DailySuggestion,
+  Profile,
   NewAppIdea,
   NewAttempt,
   NewCalendarEvent,
@@ -31,6 +33,7 @@ export const STORAGE_KEYS = {
   events: 'medfoco:v1:events',
   notebook: 'medfoco:v1:notebook',
   appIdeas: 'medfoco:v1:appIdeas',
+  profile: 'medfoco:v1:profile',
   focusSessions: 'medfoco:v1:focusSessions',
   dailySuggestion: 'medfoco:v1:dailySuggestion',
   schedule: 'medfoco:v1:schedule',
@@ -214,6 +217,14 @@ export function createLocalRepository(
     async saveSchedule(text: string) {
       backupIfUnreadable(STORAGE_KEYS.schedule, isSchedule);
       storage.setItem(STORAGE_KEYS.schedule, JSON.stringify({ text }));
+    },
+
+    async getProfile() {
+      return normalizeProfile(parse(STORAGE_KEYS.profile));
+    },
+    async saveProfile(profile: Profile) {
+      backupIfUnreadable(STORAGE_KEYS.profile, isRecord);
+      storage.setItem(STORAGE_KEYS.profile, JSON.stringify(normalizeProfile(profile)));
     },
 
     async getDailySuggestion() {

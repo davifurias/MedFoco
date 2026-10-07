@@ -14,6 +14,7 @@ import type {
   NewQuestion,
   NewTask,
   NotebookEntry,
+  Profile,
   Question,
   Task,
 } from './types';
@@ -54,6 +55,10 @@ export interface MedFocoRepository {
 
   listFocusSessions(): Promise<FocusSession[]>;
   addFocusSession(session: NewFocusSession): Promise<FocusSession>;
+
+  /** Perfil acadêmico; sem nada salvo, devolve o padrão (curso "Medicina"). */
+  getProfile(): Promise<Profile>;
+  saveProfile(profile: Profile): Promise<void>;
 
   getDailySuggestion(): Promise<DailySuggestion | null>;
 
