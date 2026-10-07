@@ -1,0 +1,47 @@
+/* Estilos do Mapa, reproduzindo legacy/MedFoco.html (renderMapa). */
+.mapa-legend {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+}
+
+.mapa-scroll {
+  overflow-x: auto;
+}
+
+.mapa-svg {
+  width: 100%;
+  min-width: 600px;
+  height: auto;
+}
+
+.mapa-node {
+  cursor: pointer;
+}
+
+.mapa-node:focus-visible {
+  outline: 3px solid var(--primary-text);
+  outline-offset: 2px;
+}
+
+.mapa-detalhes {
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+.mapa-notas {
+  white-space: pre-wrap;
+}
+
+.mapa-subtitle {
+  font-size: 0.85rem;
+  margin: 12px 0 6px;
+  color: var(--primary-text);
+}
+
+.mapa-conexoes {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
