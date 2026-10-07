@@ -25,7 +25,7 @@ A ferramenta **Release Please** faz o trabalho:
    - `docs:`, `chore:`, `test:`… → não geram versão sozinhos.
 2. Quando quiser publicar, **aprove e faça merge desse PR de release**.
 3. A tag `vX.Y.Z` e a Release no GitHub são criadas automaticamente.
-4. A partir da Fase 2: dispare o deploy de produção dessa tag (ver [deploy.md](deploy.md)).
+4. A partir da Fase 3: dispare o deploy de produção dessa tag (ver [deploy.md](deploy.md)).
 
 > **Observação:** PRs criados pelo token padrão do GitHub não disparam o CI. Como a `main` exige
 > CI verde, configure o segredo `RELEASE_PLEASE_TOKEN` (ver

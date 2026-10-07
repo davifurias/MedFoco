@@ -179,7 +179,7 @@ Nunca apagar histórico: desfazer é sempre uma nova mudança.
 | `apps/web`              | Aplicativo web (React + TypeScript + Vite); funcionalidades em `src/features` |
 | `apps/web/src/data`     | Acesso a dados: interface do repositório + implementação local provisória     |
 | `packages/`             | Código compartilhado (a partir da Fase 1: `packages/core`, regras de negócio) |
-| `supabase/`             | Migrações, seeds e funções do backend (a partir da Fase 2)                    |
+| `supabase/`             | Migrações, seeds e funções do backend (a partir da Fase 3)                    |
 | `scripts/`              | Scripts de verificação do repositório                                         |
 | `docs/`                 | Documentação (comece por `docs/fluxo-de-trabalho.md`)                         |
 | `.github/`              | CI, template de PR, Dependabot                                                |

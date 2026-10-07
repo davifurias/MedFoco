@@ -113,6 +113,9 @@ export interface Profile {
   preferencias: string;
 }
 
+/** Tema visual do app; o escuro é o padrão. */
+export type Theme = 'escuro' | 'claro';
+
 export type NewTask = Omit<Task, 'id' | 'createdAt'>;
 export type NewCalendarEvent = Omit<CalendarEvent, 'id' | 'createdAt'>;
 export type NewNotebookEntry = Omit<NotebookEntry, 'id' | 'createdAt'>;

@@ -457,6 +457,46 @@ describe('perfil acadêmico', () => {
   });
 });
 
+describe('tema', () => {
+  it('sem escolha salva, o padrão é o escuro e nada é gravado', async () => {
+    const storage = createMemoryStorage();
+    expect(await createLocalRepository(storage).getTheme()).toBe('escuro');
+    expect(storage.getItem(STORAGE_KEYS.theme)).toBeNull();
+  });
+
+  it('guarda a escolha como texto simples, na mesma chave de antes (não perde a escolha de quem já usava)', async () => {
+    const storage = createMemoryStorage();
+    await createLocalRepository(storage).saveTheme('claro');
+    expect(storage.getItem('medfoco:v1:theme')).toBe('claro');
+    expect(await createLocalRepository(storage).getTheme()).toBe('claro');
+    storage.setItem('medfoco:v1:theme', 'escuro');
+    expect(await createLocalRepository(storage).getTheme()).toBe('escuro');
+  });
+
+  it('valor desconhecido ou leitura bloqueada voltam ao escuro', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(STORAGE_KEYS.theme, '{"theme":"claro"}');
+    expect(await createLocalRepository(storage).getTheme()).toBe('escuro');
+    const blocked = createLocalRepository({
+      getItem: () => {
+        throw new Error('bloqueado');
+      },
+      setItem: () => {},
+    });
+    expect(await blocked.getTheme()).toBe('escuro');
+  });
+
+  it('avisa quando não consegue gravar (quem chama decide o que fazer)', async () => {
+    const repo = createLocalRepository({
+      getItem: () => null,
+      setItem: () => {
+        throw new Error('cheio');
+      },
+    });
+    await expect(repo.saveTheme('claro')).rejects.toThrow('cheio');
+  });
+});
+
 describe('newId', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
