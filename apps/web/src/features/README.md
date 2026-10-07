@@ -1,12 +1,13 @@
 # features/
 
 Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes, lógica e testes
-juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
-original (`legacy/MedFoco.html`).
+juntos. Todas as áreas do app original (`legacy/MedFoco.html`) já foram reconstruídas.
 
-**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`), Questões (`questoes/`), Foco (`foco/`), Assessora IA (`assessora/`) e Ideias (`ideias/`, `caderno/`) Busca (`busca/`) e Perfil (`perfil/`),
-cada uma com `components/`, `hooks/`, `services/` e `utils/` conforme a necessidade. O Mapa só lê
-os materiais de Matérias; assuntos-chave são comparados sem acento nem maiúsculas.
+**Áreas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`),
+Questões (`questoes/`), Foco (`foco/`), Assessora IA (`assessora/`), Ideias (`ideias/`, `caderno/`),
+Busca (`busca/`) e Perfil (`perfil/`), cada uma com `components/`, `hooks/`, `services/` e
+`utils/` conforme a necessidade. O Mapa só lê os materiais de Matérias; assuntos-chave são
+comparados sem acento nem maiúsculas.
 
 **Foco:** o timer fica no `FocoProvider` (`foco/FocoContext.tsx`), acima das telas, e continua
 contando ao navegar; ao fechar ou recarregar a página ele se perde. O tempo é calculado pelo horário
@@ -32,7 +33,7 @@ digitadas rápido.
 apagado e salvo fica em branco. Nada do perfil é enviado a lugar nenhum (a IA é da Fase 3).
 
 **Tema:** o app abre no tema escuro; o botão ☀️/🌙 do cabeçalho alterna para o claro e a escolha
-fica guardada neste navegador (`shared/theme.ts`, chave `medfoco:v1:theme`). As cores de cada tema
+fica guardada neste navegador (pelo repositório: `getTheme`/`saveTheme`, chave `medfoco:v1:theme`; `shared/theme.ts` só aplica o tema na página). As cores de cada tema
 ficam em `styles/global.css`.
 
 ## Dados

@@ -110,31 +110,31 @@ provisórias.
 
 ### 2.2 — Início
 
-**Status: em revisão no PR #4.** Resumo do dia, Travou?, Sugestão da IA (sem IA real), Ações
+**Status: concluída** (PR #4). Resumo do dia, Travou?, Sugestão da IA (sem IA real), Ações
 rápidas, Próximos eventos e Editar perfil, com persistência local. Regras na seção 8.
 
 ### 2.3 — Agenda
 
-**Status: não iniciada.** Eventos, tarefas e horários (sub-abas Eventos, Tarefas, Horários).
+**Status: concluída** (PR #6). Eventos, tarefas e horários (sub-abas Eventos, Tarefas, Horários).
 Referência: criar evento (título, data, categoria, observação), lista de eventos; tarefas com
 matéria, prazo e prioridade, pendentes e concluídas; horários fixos em texto livre. O recurso
 "Organizar minha semana com IA" existe no legado, mas a IA real é da Fase 3.
 
 ### 2.4 — Matérias
 
-**Status: não iniciada.** Reconstrução da área de matérias e estruturas relacionadas existentes no
+**Status: concluída** (PR #10). Reconstrução da área de matérias e estruturas relacionadas existentes no
 legado: materiais do tipo arquivo/nota ou aula em vídeo, com matéria, título, anotações e
 assuntos-chave, agrupados por matéria. O armazenamento de arquivos enviados depende de storage
 (Fase 3): decidir o tratamento antes de implementar. Resumo/questões por IA são da Fase 3.
 
 ### 2.5 — Mapa
 
-**Status: não iniciada.** Reconstrução do mapa visual e suas interações existentes: materiais
+**Status: concluída** (PR #12). Reconstrução do mapa visual e suas interações existentes: materiais
 agrupados por matéria, ligados por assuntos-chave em comum, com detalhes ao tocar num material.
 
 ### 2.6 — Questões
 
-**Status: não iniciada.** Reconstrução do banco e da resolução de questões conforme o legado:
+**Status: concluída** (PR #14). Reconstrução do banco e da resolução de questões conforme o legado:
 desempenho por assunto, prática com filtros de matéria e dificuldade, cadastro de questão com 4
 alternativas e explicação, lista de questões.
 
@@ -143,7 +143,7 @@ app; esse efeito colateral não deve ser reproduzido).
 
 ### 2.7 — Foco
 
-**Status: não iniciada.** Reconstrução do sistema de foco/Pomodoro e das sessões de estudo:
+**Status: concluída** (PR #16). Reconstrução do sistema de foco/Pomodoro e das sessões de estudo:
 técnicas do legado (25/5, 50/10, 52/17, 15/3 e personalizado), iniciar/pausar/continuar/encerrar,
 minutos de hoje e histórico.
 
@@ -152,7 +152,7 @@ para o Início (`FocusSession`, tipos `work` e `break`).
 
 ### 2.8 — Assessora IA
 
-**Status: não iniciada.** Reconstrução da interface e dos estados da Assessora (aula guiada, chat,
+**Status: concluída** (PR #17). Reconstrução da interface e dos estados da Assessora (aula guiada, chat,
 atalhos, anexar material), **sem IA real**. A arquitetura fica preparada para a integração futura
 (um serviço com ponto de entrada único, como `features/inicio/services/sugestaoDoDia.ts`).
 
@@ -161,7 +161,7 @@ enviados à IA que o estudante tem TDAH; isso não deve ser reproduzido).
 
 ### 2.9 — Ideias + Caderno
 
-**Status: não iniciada.** Manter a distinção entre:
+**Status: concluída** (PR #18). Manter a distinção entre:
 
 - **Ideias do App** — mural de sugestões para o MedFoco;
 - **Caderno pessoal** — ideias soltas do próprio usuário.
@@ -172,19 +172,19 @@ compartilhamento é da Fase 3.
 
 ### 2.10 — Busca
 
-**Status: não iniciada.** Reconstrução da busca existente (eventos, matérias, tarefas, questões,
+**Status: concluída** (PR #19). Reconstrução da busca existente (eventos, matérias, tarefas, questões,
 ideias do app e caderno; mínimo de 2 letras), corrigindo problemas conhecidos sem alterar o
 objetivo (ex.: no legado, o resultado "Tarefas" abria a sub-aba Eventos).
 
 ### 2.11 — Perfil
 
-**Status: não iniciada.** Reconstrução do perfil e das preferências existentes no legado: curso,
+**Status: concluída** (PR #20). Reconstrução do perfil e das preferências existentes no legado: curso,
 período, matérias, metas e preferências de estudo. Enquanto não houver autenticação, **os dados
 são locais**.
 
 ### 2.12 — Integração entre módulos
 
-**Status: não iniciada.** Verificar que os módulos compartilham corretamente os mesmos dados e
+**Status: concluída** (PR #21). Verificar que os módulos compartilham corretamente os mesmos dados e
 regras. Exemplos:
 
 - Agenda → Início (eventos e contador de próximos eventos);
@@ -194,23 +194,23 @@ regras. Exemplos:
 
 ### 2.13 — Auditoria de segurança
 
-**Status: não iniciada.** Verificar XSS, HTML inseguro, URLs `javascript:`, execução dinâmica, URLs
+**Status: concluída** (PR #22). Verificar XSS, HTML inseguro, URLs `javascript:`, execução dinâmica, URLs
 perigosas (ex.: links de vídeo), dados sensíveis, segredos e dependências.
 
 ### 2.14 — Auditoria de acessibilidade
 
-**Status: não iniciada.** Verificar teclado, foco, labels, ARIA, diálogos, contraste, navegação e
+**Status: concluída** (PR #23). Verificar teclado, foco, labels, ARIA, diálogos, contraste, navegação e
 responsividade.
 
 ### 2.15 — Testes E2E completos
 
-**Status: não iniciada.** Testar os fluxos completos em computador e celular, nos temas claro e
+**Status: concluída** (PR #24). Testar os fluxos completos em computador e celular, nos temas claro e
 escuro. A ferramenta E2E automatizada ainda não está no projeto (`docs/testes.md`: Playwright "a
 definir"); adicioná-la é uma nova dependência e segue a seção 13.
 
 ### 2.16 — Auditoria final da Fase 2
 
-**Status: não iniciada.** Verificar arquitetura, funcionalidades, persistência, segurança, testes
+**Status: concluída** (auditoria final; ver `docs/preparacao-fase-3.md`). Verificar arquitetura, funcionalidades, persistência, segurança, testes
 e preparação para a Fase 3 (seções 14 e 15).
 
 ## 6. Regras de persistência
@@ -382,5 +382,5 @@ ponto de entrada único) **sem antecipar** essas implementações.
 > `docs/banco-e-migracoes.md`, `docs/variaveis-de-ambiente.md`, `docs/testes.md`, `docs/setup.md`,
 > `docs/releases.md`, `docs/runbooks/rollback.md`, `supabase/README.md` e o mapa do `AGENTS.md`)
 > ainda mencionam o Supabase/backend "a partir da Fase 2", seguindo a numeração do plano
-> inicial. **Pela definição atual, esse conteúdo pertence à Fase 3.** A atualização desses
-> documentos depende de autorização do dono do projeto.
+> inicial. **Pela definição atual, esse conteúdo pertence à Fase 3.** Esses documentos foram
+> atualizados na etapa 2.16, com autorização do dono do projeto.

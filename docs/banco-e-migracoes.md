@@ -1,6 +1,6 @@
 # Banco de dados e migrações
 
-> Entra em uso na **Fase 2** (Supabase). Estas são as regras que valerão a partir de então.
+> Entra em uso na **Fase 3** (Supabase). Estas são as regras que valerão a partir de então.
 
 ## Regras
 

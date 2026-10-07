@@ -6,9 +6,11 @@ projeto pedir.
 
 Status: `nova` · `aprovada` · `em andamento` · `feita` · `descartada`
 
-| Data       | Ideia                                                                                            | Status |
-| ---------- | ------------------------------------------------------------------------------------------------ | ------ |
-| 2026-09-25 | Botão "Exportar meus dados" no app antigo (Artifact), para migrar usuários existentes            | nova   |
-| 2026-10-07 | Ícone do app na aba do navegador (favicon): hoje o navegador pede `/favicon.ico` e recebe 404    | nova   |
-| 2026-10-07 | Rótulos sempre visíveis nos campos dos formulários (hoje o texto de exemplo faz esse papel)      | nova   |
-| 2026-10-07 | Testes ponta a ponta também em Firefox e Safari (WebKit), principalmente antes do app de celular | nova   |
+| Data       | Ideia                                                                                                                                                                     | Status |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| 2026-09-25 | Botão "Exportar meus dados" no app antigo (Artifact), para migrar usuários existentes                                                                                     | nova   |
+| 2026-10-07 | Ícone do app na aba do navegador (favicon): hoje o navegador pede `/favicon.ico` e recebe 404                                                                             | nova   |
+| 2026-10-07 | Rótulos sempre visíveis nos campos dos formulários (hoje o texto de exemplo faz esse papel)                                                                               | nova   |
+| 2026-10-07 | Testes ponta a ponta também em Firefox e Safari (WebKit), principalmente antes do app de celular                                                                          | nova   |
+| 2026-10-07 | Matérias escritas com grafias diferentes ("Cardio" e "cardio") formam grupos separados em Matérias, Mapa e Questões: juntar só na exibição, sem alterar o que está salvo? | nova   |
+| 2026-10-07 | Anotações longas aparecem cortadas (200 caracteres) na lista de Matérias: oferecer "ver tudo"                                                                             | nova   |

@@ -3,9 +3,12 @@
 Aplicativo de organização e estudos para estudantes de Medicina: agenda, tarefas, materiais,
 banco de questões, timer de foco e uma assessora de estudos com IA pensada para quem tem TDAH.
 
-> **Estado atual: Fase 0 (fundação).** O aplicativo original, exportado de um Claude Artifact,
-> está preservado em [`legacy/MedFoco.html`](legacy/) e na tag `v0.0.1-artifact`. A nova versão
-> independente começa na Fase 1.
+> **Estado atual: Fase 2 concluída (reconstrução local, sem backend).** Todas as áreas do
+> aplicativo original foram reconstruídas em React + TypeScript, com dados guardados só no
+> aparelho de quem usa; a IA, o login e a sincronização entre aparelhos são da **Fase 3**. O
+> aplicativo original, exportado de um Claude Artifact, está preservado em
+> [`legacy/MedFoco.html`](legacy/) e na tag `v0.0.1-artifact`. O que a Fase 3 recebe pronto está em
+> [docs/preparacao-fase-3.md](docs/preparacao-fase-3.md).
 
 ## Rodar em 5 minutos
 

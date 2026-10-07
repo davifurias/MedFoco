@@ -15,7 +15,7 @@ se alguma falhar, o PR não pode ser incorporado.
 | Dependências vulneráveis     | `pnpm audit`        | local + CI    | Fase 0 |
 | Segurança do código (CodeQL) | —                   | CI            | Fase 0 |
 | Título do PR                 | —                   | CI            | Fase 0 |
-| Banco + RLS (pgTAP)          | a definir           | CI (+ Docker) | Fase 2 |
+| Banco + RLS (pgTAP)          | a definir           | CI (+ Docker) | Fase 3 |
 | Ponta a ponta (Playwright)   | `pnpm e2e`          | local + CI    | Fase 2 |
 
 ## Testes ponta a ponta (`pnpm e2e`)
