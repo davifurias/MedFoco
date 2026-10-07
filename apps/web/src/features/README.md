@@ -4,7 +4,7 @@ Cada funcionalidade do MedFoco tem sua própria pasta, com páginas, componentes
 juntos. As áreas ainda não migradas mostram uma página provisória listando o que oferecem no app
 original (`legacy/MedFoco.html`).
 
-**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`) e Mapa (`mapa/`),
+**Migradas:** Início (`inicio/`), Agenda (`agenda/`), Matérias (`materias/`), Mapa (`mapa/`) e Questões (`questoes/`),
 cada uma com `components/`, `hooks/`, `services/` e `utils/` conforme a necessidade. O Mapa só lê
 os materiais de Matérias; assuntos-chave são comparados sem acento nem maiúsculas.
 

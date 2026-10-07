@@ -241,6 +241,104 @@ const insecureCrypto: Pick<Crypto, 'getRandomValues'> = {
   getRandomValues: (array) => realCrypto.getRandomValues(array),
 };
 
+describe('questões e respostas', () => {
+  const question = {
+    subject: 'Cardiologia',
+    topic: 'IC',
+    difficulty: 'médio' as const,
+    question: 'Qual exame?',
+    options: ['A', 'B', 'C', 'D'] as [string, string, string, string],
+    correctIndex: 2,
+    explanation: 'Porque sim.',
+  };
+
+  it('começa vazio, sem criar questões de exemplo', async () => {
+    const repo = createLocalRepository(createMemoryStorage());
+    expect(await repo.listQuestions()).toEqual([]);
+    expect(await repo.listAttempts()).toEqual([]);
+  });
+
+  it('cria, mantém após recarregar e exclui apenas a questão indicada', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    const first = await repo.addQuestion(question);
+    const second = await repo.addQuestion({ ...question, question: 'Outra?' });
+    expect((await createLocalRepository(storage).listQuestions()).map((q) => q.id)).toEqual([
+      first.id,
+      second.id,
+    ]);
+    await repo.deleteQuestion(first.id);
+    expect((await repo.listQuestions()).map((q) => q.id)).toEqual([second.id]);
+  });
+
+  it('guarda as respostas com a data local e mantém após recarregar', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    const attempt = await repo.addAttempt({
+      subject: 'Cardiologia',
+      topic: 'IC',
+      correct: true,
+      date: '2026-10-07',
+    });
+    expect(await createLocalRepository(storage).listAttempts()).toEqual([attempt]);
+  });
+
+  it('ignora questões e respostas danificadas, sem esconder as válidas nem apagá-las', async () => {
+    const storage = createMemoryStorage();
+    const valid = { ...question, id: 'q1', createdAt: 1 };
+    storage.setItem(
+      STORAGE_KEYS.questions,
+      JSON.stringify([
+        valid,
+        null,
+        'x',
+        { id: 'q2', question: 'Sem alternativas' },
+        { ...valid, id: 'q3', options: ['a', 'b', 'c'] },
+      ]),
+    );
+    storage.setItem(
+      STORAGE_KEYS.attempts,
+      JSON.stringify([
+        { id: 'a1', subject: 'X', correct: true, date: '2026-10-07' },
+        { id: 'a2', correct: 'sim' },
+        7,
+      ]),
+    );
+    const repo = createLocalRepository(storage);
+    expect((await repo.listQuestions()).map((q) => q.id)).toEqual(['q1']);
+    expect((await repo.listAttempts()).map((a) => a.id)).toEqual(['a1']);
+    await repo.addQuestion(question);
+    expect(JSON.parse(storage.getItem(STORAGE_KEYS.questions) ?? '[]')).toHaveLength(6);
+  });
+
+  it('completa campos ausentes: matéria vazia vira "Geral", dificuldade inválida vira médio, gabarito inválido vira A', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(
+      STORAGE_KEYS.questions,
+      JSON.stringify([
+        {
+          id: 'q1',
+          question: 'E?',
+          options: ['a', 'b', 'c', 'd'],
+          difficulty: 'impossível',
+          correctIndex: 9,
+        },
+      ]),
+    );
+    storage.setItem(
+      STORAGE_KEYS.attempts,
+      JSON.stringify([
+        { id: 'a1', correct: false, createdAt: new Date(2026, 9, 7, 23, 30).getTime() },
+      ]),
+    );
+    const repo = createLocalRepository(storage);
+    expect(await repo.listQuestions()).toMatchObject([
+      { subject: 'Geral', topic: '', difficulty: 'médio', correctIndex: 0, explanation: '' },
+    ]);
+    expect(await repo.listAttempts()).toMatchObject([{ subject: 'Geral', date: '2026-10-07' }]);
+  });
+});
+
 describe('newId', () => {
   afterEach(() => {
     vi.unstubAllGlobals();

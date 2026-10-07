@@ -67,7 +67,35 @@ export interface Material {
   createdAt: number;
 }
 
+export type QuestionDifficulty = 'fácil' | 'médio' | 'difícil';
+
+/** Questão de múltipla escolha com 4 alternativas; `correctIndex` (0 a 3) indica a correta. */
+export interface Question {
+  id: string;
+  subject: string;
+  topic: string;
+  difficulty: QuestionDifficulty;
+  question: string;
+  options: [string, string, string, string];
+  correctIndex: number;
+  explanation: string;
+  createdAt: number;
+}
+
+/** Resposta dada na prática; alimenta o desempenho por matéria e assunto. */
+export interface Attempt {
+  id: string;
+  subject: string;
+  topic: string;
+  correct: boolean;
+  /** Dia da resposta, no fuso horário local. */
+  date: DateKey;
+  createdAt: number;
+}
+
 export type NewTask = Omit<Task, 'id' | 'createdAt'>;
 export type NewCalendarEvent = Omit<CalendarEvent, 'id' | 'createdAt'>;
 export type NewNotebookEntry = Omit<NotebookEntry, 'id' | 'createdAt'>;
 export type NewMaterial = Omit<Material, 'id' | 'createdAt'>;
+export type NewQuestion = Omit<Question, 'id' | 'createdAt'>;
+export type NewAttempt = Omit<Attempt, 'id' | 'createdAt'>;
