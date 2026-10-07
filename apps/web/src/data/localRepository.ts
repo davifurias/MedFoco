@@ -1,14 +1,12 @@
+import {
+  isRecord,
+  normalizeEvent,
+  normalizeFocusSession,
+  normalizeNotebookEntry,
+  normalizeTask,
+} from './normalize';
 import type { MedFocoRepository } from './repository';
-import type {
-  CalendarEvent,
-  DailySuggestion,
-  FocusSession,
-  NewCalendarEvent,
-  NewNotebookEntry,
-  NewTask,
-  NotebookEntry,
-  Task,
-} from './types';
+import type { DailySuggestion, NewCalendarEvent, NewNotebookEntry, NewTask } from './types';
 
 /** O mínimo de `Storage` (localStorage) de que o repositório precisa. */
 export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem'>;
@@ -20,6 +18,7 @@ export const STORAGE_KEYS = {
   notebook: 'medfoco:v1:notebook',
   focusSessions: 'medfoco:v1:focusSessions',
   dailySuggestion: 'medfoco:v1:dailySuggestion',
+  schedule: 'medfoco:v1:schedule',
 } as const;
 
 type IdCrypto = Pick<Crypto, 'getRandomValues'> & { randomUUID?: () => string };
@@ -47,18 +46,45 @@ export function createLocalRepository(
   storage: KeyValueStorage,
   now: () => number = Date.now,
 ): MedFocoRepository {
-  function readList<T>(key: string): T[] {
+  /** Conteúdo salvo interpretado, ou `undefined` se estiver ilegível (JSON inválido). */
+  function parse(key: string): unknown {
     const raw = storage.getItem(key);
-    if (!raw) return [];
+    if (raw === null) return null;
     try {
-      const parsed: unknown = JSON.parse(raw);
-      return Array.isArray(parsed) ? (parsed as T[]) : [];
+      return JSON.parse(raw) as unknown;
     } catch {
-      return [];
+      return undefined;
     }
   }
 
-  function writeList<T>(key: string, items: T[]): void {
+  /** Lista bruta como está salva (itens desconhecidos são preservados nas gravações). */
+  function readRaw(key: string): unknown[] {
+    const parsed = parse(key);
+    return Array.isArray(parsed) ? parsed : [];
+  }
+
+  /**
+   * Antes de gravar por cima de um conteúdo que não é uma lista legível, guarda uma cópia em
+   * `<chave>:backup:<momento>`. Nenhum dado existente é descartado em silêncio.
+   */
+  function backupIfUnreadable(key: string, isExpectedShape: (parsed: unknown) => boolean): void {
+    const raw = storage.getItem(key);
+    if (raw === null) return;
+    if (!isExpectedShape(parse(key))) storage.setItem(`${key}:backup:${now()}`, raw);
+  }
+
+  const isSchedule = (parsed: unknown): parsed is { text: string } =>
+    isRecord(parsed) && typeof parsed.text === 'string';
+
+  /** Itens válidos da lista; itens danificados são ignorados na leitura (mas não apagados). */
+  function readList<T>(key: string, normalize: (raw: unknown) => T | null): T[] {
+    return readRaw(key)
+      .map(normalize)
+      .filter((item): item is T => item !== null);
+  }
+
+  function writeRaw(key: string, items: unknown[]): void {
+    backupIfUnreadable(key, Array.isArray);
     storage.setItem(key, JSON.stringify(items));
   }
 
@@ -67,41 +93,66 @@ export function createLocalRepository(
     data: Omit<T, 'id' | 'createdAt'>,
   ): T {
     const item = { ...data, id: newId(), createdAt: now() } as T;
-    writeList(key, [...readList<T>(key), item]);
+    writeRaw(key, [...readRaw(key), item]);
     return item;
+  }
+
+  function updateById(key: string, id: string, patch: Record<string, unknown>): void {
+    writeRaw(
+      key,
+      readRaw(key).map((item) => (isRecord(item) && item.id === id ? { ...item, ...patch } : item)),
+    );
+  }
+
+  function removeById(key: string, id: string): void {
+    writeRaw(
+      key,
+      readRaw(key).filter((item) => !(isRecord(item) && item.id === id)),
+    );
   }
 
   return {
     async listTasks() {
-      return readList<Task>(STORAGE_KEYS.tasks);
+      return readList(STORAGE_KEYS.tasks, normalizeTask);
     },
     async addTask(task: NewTask) {
-      return append<Task>(STORAGE_KEYS.tasks, task);
+      return append(STORAGE_KEYS.tasks, task);
+    },
+    async setTaskDone(id: string, done: boolean) {
+      updateById(STORAGE_KEYS.tasks, id, { done });
+    },
+    async deleteTask(id: string) {
+      removeById(STORAGE_KEYS.tasks, id);
     },
 
     async listEvents() {
-      return readList<CalendarEvent>(STORAGE_KEYS.events);
+      return readList(STORAGE_KEYS.events, normalizeEvent);
     },
     async addEvent(event: NewCalendarEvent) {
-      return append<CalendarEvent>(STORAGE_KEYS.events, event);
+      return append(STORAGE_KEYS.events, event);
     },
     async deleteEvent(id: string) {
-      const events = readList<CalendarEvent>(STORAGE_KEYS.events);
-      writeList(
-        STORAGE_KEYS.events,
-        events.filter((event) => event.id !== id),
-      );
+      removeById(STORAGE_KEYS.events, id);
     },
 
     async listNotebookEntries() {
-      return readList<NotebookEntry>(STORAGE_KEYS.notebook);
+      return readList(STORAGE_KEYS.notebook, normalizeNotebookEntry);
     },
     async addNotebookEntry(entry: NewNotebookEntry) {
-      return append<NotebookEntry>(STORAGE_KEYS.notebook, entry);
+      return append(STORAGE_KEYS.notebook, entry);
     },
 
     async listFocusSessions() {
-      return readList<FocusSession>(STORAGE_KEYS.focusSessions);
+      return readList(STORAGE_KEYS.focusSessions, normalizeFocusSession);
+    },
+
+    async getSchedule() {
+      const parsed = parse(STORAGE_KEYS.schedule);
+      return isSchedule(parsed) ? parsed.text : '';
+    },
+    async saveSchedule(text: string) {
+      backupIfUnreadable(STORAGE_KEYS.schedule, isSchedule);
+      storage.setItem(STORAGE_KEYS.schedule, JSON.stringify({ text }));
     },
 
     async getDailySuggestion() {

@@ -1,0 +1,30 @@
+/* Estilos da Agenda, reproduzindo legacy/MedFoco.html (renderTarefas). */
+.task-label {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  cursor: pointer;
+}
+
+.task-label input[type='checkbox'] {
+  width: auto;
+  margin: 3px 0 0;
+}
+
+.task-done {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.task-subject,
+.task-priority {
+  margin-left: 6px;
+}
+
+.task-deadline {
+  display: block;
+}
+
+.organizar-semana {
+  margin-top: 10px;
+}

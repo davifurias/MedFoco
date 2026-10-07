@@ -5,12 +5,9 @@
  * (nunca direto do navegador). Até lá, esta função apenas informa que o recurso está
  * indisponível — não simula resposta e não envia nenhum dado para fora do aparelho.
  */
-export class AiUnavailableError extends Error {
-  constructor() {
-    super('A IA ainda não está disponível nesta versão do MedFoco.');
-    this.name = 'AiUnavailableError';
-  }
-}
+import { AiUnavailableError } from '../../../shared/ai';
+
+export { AiUnavailableError };
 
 export type GenerateDailySuggestion = () => Promise<string>;
 

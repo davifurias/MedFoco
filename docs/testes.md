@@ -29,5 +29,10 @@ se alguma falhar, o PR não pode ser incorporado.
   CI, para detectar erros de data que só aparecem fora do UTC.
 
 - Toda mudança de comportamento vem com teste.
+- Para verificar outro fuso, rode a suíte com uma cópia do `vitest.config.mjs` alterando
+  `process.env.TZ` (ex.: `UTC`, `Asia/Tokyo`). Só o teste que confere o fuso do Brasil deve falhar.
+- Em testes automatizados de navegador (Playwright/Chromium), o campo `<input type="date">` segue
+  o formato mês/dia/ano ao **digitar**, mesmo com idioma pt-BR. Preencha a data com
+  `fill('AAAA-MM-DD')`. O app não é afetado: ele só lê o valor do campo, que é sempre `AAAA-MM-DD`.
 - Testes nunca usam dados reais de usuários.
 - Nunca desativar um teste para "fazer passar".

@@ -17,6 +17,8 @@ import type {
 export interface MedFocoRepository {
   listTasks(): Promise<Task[]>;
   addTask(task: NewTask): Promise<Task>;
+  setTaskDone(id: string, done: boolean): Promise<void>;
+  deleteTask(id: string): Promise<void>;
 
   listEvents(): Promise<CalendarEvent[]>;
   addEvent(event: NewCalendarEvent): Promise<CalendarEvent>;
@@ -28,4 +30,8 @@ export interface MedFocoRepository {
   listFocusSessions(): Promise<FocusSession[]>;
 
   getDailySuggestion(): Promise<DailySuggestion | null>;
+
+  /** Horários fixos da semana, em texto livre ('' quando nunca foram salvos). */
+  getSchedule(): Promise<string>;
+  saveSchedule(text: string): Promise<void>;
 }

@@ -63,7 +63,9 @@
 
 .tabbar a {
   flex: 1;
-  padding: 10px 4px 8px;
+  /* Os 8 itens dividem a largura mesmo em telas muito estreitas (sem empurrar o último). */
+  min-width: 0;
+  padding: 10px 2px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -75,7 +77,7 @@
 }
 
 .tabbar a.active {
-  color: var(--primary);
+  color: var(--primary-text);
 }
 
 .tabbar .ic {
@@ -87,8 +89,15 @@
     display: none;
   }
 
+  /* Em telas médias (ex.: tablet), a navegação desce para uma segunda linha se não couber. */
+  .app-header {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
   .topnav {
     display: flex;
+    flex-wrap: wrap;
     gap: 4px;
   }
 
