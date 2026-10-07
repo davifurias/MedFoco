@@ -1,0 +1,12 @@
+@import '../ideias/ideias.css';
+
+.organizar {
+  margin-top: 10px;
+}
+
+.subject-group h3 {
+  font-size: 0.85rem;
+  margin: 0 0 6px;
+  color: var(--primary-text);
+  overflow-wrap: anywhere;
+}

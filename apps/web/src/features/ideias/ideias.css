@@ -1,0 +1,16 @@
+/* Estilos de Ideias do App e Caderno, reproduzindo legacy/MedFoco.html (renderIdeias). */
+.ideia-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ideia-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ideia-texto {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
