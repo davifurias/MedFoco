@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { readableTextColor } from '../../shared/contrast';
 import { useMateriais } from '../materias/hooks/useMateriais';
 import './mapa.css';
 import {
@@ -63,7 +64,10 @@ export function MapaPage() {
       <ul className="quick mapa-legend" aria-label="Matérias">
         {layout.subjects.map((subject) => (
           <li key={subject.name}>
-            <span className="pill" style={{ background: subject.color }}>
+            <span
+              className="pill"
+              style={{ background: subject.color, color: readableTextColor(subject.color) }}
+            >
               {subject.name}
             </span>
           </li>

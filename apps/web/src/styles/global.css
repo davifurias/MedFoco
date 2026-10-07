@@ -15,10 +15,17 @@
   --primary-d: #5847d1;
   --accent: #00b894;
   --danger: #e74c3c;
+  /* Versões para TEXTO (contraste mínimo de 4,5:1 sobre o fundo de cada tema). */
+  --accent-text: #00b894;
+  --danger-text: #ff6b5e;
+  --warn-text: #f39c12;
+  /* Fundo de botão/pílula vermelha com texto branco. */
+  --danger-strong: #d63a2c;
+  --text-on-light: #1c1c28;
   --border: #302e42;
   --radius: 16px;
   --c-trabalho: #f39c12;
-  --c-provas: #e74c3c;
+  --c-provas: #d63a2c;
   --c-ferias: #00b894;
   --c-aulas: #6c5ce7;
   --c-outro: #636e72;
@@ -31,7 +38,10 @@
   --card: #ffffff;
   --text: #1c1c28;
   --muted: #6b6b7b;
-  --primary-text: #6c5ce7;
+  --primary-text: #5b4bd6;
+  --accent-text: #007a62;
+  --danger-text: #c0392b;
+  --warn-text: #9a5700;
   --border: #e6e4f0;
 }
 
@@ -155,7 +165,7 @@ select {
 }
 
 .btn.danger {
-  background: var(--danger);
+  background: var(--danger-strong);
 }
 
 .row {
@@ -199,12 +209,14 @@ select {
 
 .cat-trabalho {
   background: var(--c-trabalho);
+  color: var(--text-on-light);
 }
 .cat-provas {
   background: var(--c-provas);
 }
 .cat-ferias {
   background: var(--c-ferias);
+  color: var(--text-on-light);
 }
 .cat-aulas {
   background: var(--c-aulas);

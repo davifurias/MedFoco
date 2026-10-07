@@ -32,6 +32,7 @@ Containers usam a configuração em `.devcontainer/`. Detalhes em [docs/setup.md
 | Rodar os testes                             | [docs/testes.md](docs/testes.md)                               |
 | Variáveis de ambiente e segredos            | [docs/variaveis-de-ambiente.md](docs/variaveis-de-ambiente.md) |
 | Segurança: o que está protegido e os riscos | [docs/seguranca.md](docs/seguranca.md)                         |
+| Acessibilidade: regras e como medir         | [docs/acessibilidade.md](docs/acessibilidade.md)               |
 | Criar uma release                           | [docs/releases.md](docs/releases.md)                           |
 | Abrir o app no celular (link de teste)      | [docs/link-de-teste.md](docs/link-de-teste.md)                 |
 | Deploy                                      | [docs/deploy.md](docs/deploy.md)                               |

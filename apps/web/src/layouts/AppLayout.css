@@ -39,6 +39,28 @@
   font-family: inherit;
 }
 
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -64px;
+  z-index: 100;
+  background: var(--primary);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Aparece só quando recebe o foco do teclado (primeiro item a cada tela). */
+.skip-link:focus {
+  top: 8px;
+}
+
+.app-main:focus {
+  outline: none;
+}
+
 .app-main {
   flex: 1;
   overflow-y: auto;

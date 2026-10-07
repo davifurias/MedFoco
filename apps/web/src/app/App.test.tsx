@@ -165,3 +165,48 @@ describe('Sub-abas', () => {
     expect(pageTitle()).toBe('Horários');
   });
 });
+
+describe('Navegação por teclado e leitor de tela', () => {
+  const announcer = () => document.querySelector('.app > [aria-live]') as HTMLElement;
+
+  it('o título da aba muda a cada tela, sem anunciar a tela da primeira abertura', () => {
+    const router = renderApp();
+    expect(document.title).toBe('Início · MedFoco');
+    expect(announcer().textContent).toBe('');
+    fireEvent.click(within(desktopNav()).getByRole('link', { name: 'Agenda' }));
+    expect(router.state.location.pathname).toBe('/agenda');
+    expect(document.title).toBe('Agenda · Eventos · MedFoco');
+    expect(announcer().textContent).toBe('Agenda · Eventos');
+    fireEvent.click(within(mobileNav()).getByRole('link', { name: 'Matérias' }));
+    expect(document.title).toBe('Matérias · MedFoco');
+    expect(announcer().textContent).toBe('Matérias');
+  });
+
+  it('as sub-abas e as telas fora da barra também têm nome', () => {
+    renderApp('/agenda');
+    const tabs = screen.getByRole('navigation', { name: 'Seções da Agenda' });
+    fireEvent.click(within(tabs).getByRole('link', { name: /Tarefas/ }));
+    expect(document.title).toBe('Agenda · Tarefas · MedFoco');
+    expect(announcer().textContent).toBe('Agenda · Tarefas');
+    fireEvent.click(screen.getByRole('link', { name: 'Buscar' }));
+    expect(document.title).toBe('Busca · MedFoco');
+  });
+
+  it('o aviso não rouba o foco do teclado', () => {
+    renderApp();
+    const link = within(desktopNav()).getByRole('link', { name: 'Foco' });
+    link.focus();
+    fireEvent.click(link);
+    expect(document.activeElement).toBe(link);
+  });
+
+  it('"Pular para o conteúdo" é o primeiro item e leva o foco ao conteúdo, sem mudar o endereço', () => {
+    const router = renderApp('/agenda');
+    const skip = document.querySelector('.app')?.firstElementChild as HTMLAnchorElement;
+    expect(skip.textContent).toBe('Pular para o conteúdo');
+    fireEvent.click(skip);
+    expect(document.activeElement).toBe(screen.getByRole('main'));
+    expect(router.state.location.pathname).toBe('/agenda');
+    expect(router.state.location.hash).toBe('');
+  });
+});
