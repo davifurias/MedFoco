@@ -6,6 +6,7 @@ import type {
   Material,
   NewAttempt,
   NewCalendarEvent,
+  NewFocusSession,
   NewMaterial,
   NewNotebookEntry,
   NewQuestion,
@@ -45,6 +46,7 @@ export interface MedFocoRepository {
   addAttempt(attempt: NewAttempt): Promise<Attempt>;
 
   listFocusSessions(): Promise<FocusSession[]>;
+  addFocusSession(session: NewFocusSession): Promise<FocusSession>;
 
   getDailySuggestion(): Promise<DailySuggestion | null>;
 
