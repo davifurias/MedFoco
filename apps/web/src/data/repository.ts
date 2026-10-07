@@ -17,6 +17,7 @@ import type {
   Profile,
   Question,
   Task,
+  Theme,
 } from './types';
 
 /**
@@ -61,6 +62,10 @@ export interface MedFocoRepository {
   saveProfile(profile: Profile): Promise<void>;
 
   getDailySuggestion(): Promise<DailySuggestion | null>;
+
+  /** Tema escolhido; sem escolha salva (ou com valor inválido), devolve o escuro. */
+  getTheme(): Promise<Theme>;
+  saveTheme(theme: Theme): Promise<void>;
 
   /** Horários fixos da semana, em texto livre ('' quando nunca foram salvos). */
   getSchedule(): Promise<string>;

@@ -23,7 +23,7 @@ O projeto roda igual em qualquer lugar. Os comandos são sempre os mesmos:
    pnpm install
    pnpm check
    ```
-3. A partir da Fase 2, o banco local exige [Docker](https://www.docker.com/) (ver
+3. A partir da Fase 3, o banco local exige [Docker](https://www.docker.com/) (ver
    [banco-e-migracoes.md](banco-e-migracoes.md)).
 
 ## GitHub Codespaces, Gitpod, VS Code Dev Containers, DevPod

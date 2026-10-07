@@ -22,6 +22,7 @@ import type {
   NewNotebookEntry,
   NewQuestion,
   NewTask,
+  Theme,
 } from './types';
 
 /** O mínimo de `Storage` (localStorage) de que o repositório precisa. */
@@ -34,6 +35,8 @@ export const STORAGE_KEYS = {
   notebook: 'medfoco:v1:notebook',
   appIdeas: 'medfoco:v1:appIdeas',
   profile: 'medfoco:v1:profile',
+  /** Texto simples ('escuro' ou 'claro'), não JSON. */
+  theme: 'medfoco:v1:theme',
   focusSessions: 'medfoco:v1:focusSessions',
   dailySuggestion: 'medfoco:v1:dailySuggestion',
   schedule: 'medfoco:v1:schedule',
@@ -225,6 +228,18 @@ export function createLocalRepository(
     async saveProfile(profile: Profile) {
       backupIfUnreadable(STORAGE_KEYS.profile, isRecord);
       storage.setItem(STORAGE_KEYS.profile, JSON.stringify(normalizeProfile(profile)));
+    },
+
+    async getTheme() {
+      try {
+        const saved = storage.getItem(STORAGE_KEYS.theme);
+        return saved === 'claro' || saved === 'escuro' ? saved : 'escuro';
+      } catch {
+        return 'escuro';
+      }
+    },
+    async saveTheme(theme: Theme) {
+      storage.setItem(STORAGE_KEYS.theme, theme);
     },
 
     async getDailySuggestion() {
