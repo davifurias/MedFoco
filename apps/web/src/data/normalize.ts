@@ -1,9 +1,11 @@
 import { isValidDateKey } from '../shared/date';
+import { toSafeHttpUrl } from '../shared/url';
 import { EVENT_CATEGORY_LABELS } from './categories';
 import type {
   CalendarEvent,
   EventCategory,
   FocusSession,
+  Material,
   NotebookEntry,
   Task,
   TaskPriority,
@@ -90,6 +92,25 @@ export function normalizeFocusSession(raw: unknown): FocusSession | null {
     minutes,
     subject: typeof raw.subject === 'string' ? raw.subject : null,
     date: raw.date,
+    createdAt: timestamp(raw.createdAt),
+  };
+}
+
+/** Assunto padrão quando o material não tem matéria (como no app original). */
+export const DEFAULT_SUBJECT = 'Geral';
+
+export function normalizeMaterial(raw: unknown): Material | null {
+  if (!isRecord(raw) || !nonEmptyString(raw.id) || !nonEmptyString(raw.title)) return null;
+  const type = raw.type === 'video' ? 'video' : 'nota';
+  return {
+    id: raw.id,
+    subject: nonEmptyString(raw.subject) ? raw.subject.trim() : DEFAULT_SUBJECT,
+    title: raw.title,
+    notes: stringOr(raw.notes, ''),
+    tags: Array.isArray(raw.tags) ? raw.tags.filter(nonEmptyString) : [],
+    type,
+    // Dados salvos podem ter sido alterados: só links http(s) válidos são mantidos.
+    videoLink: (type === 'video' ? toSafeHttpUrl(raw.videoLink) : null) ?? '',
     createdAt: timestamp(raw.createdAt),
   };
 }

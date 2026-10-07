@@ -20,6 +20,7 @@ const PAGE_BY_REGION: Record<string, string> = {
   'Resumo do dia': 'Início',
   'Novo evento': 'Eventos',
   'Nova tarefa': 'Tarefas',
+  'Adicionar material': 'Matérias',
   'Seus horários fixos da semana': 'Horários',
 };
 

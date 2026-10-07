@@ -169,6 +169,70 @@ describe('itens danificados', () => {
   });
 });
 
+describe('materiais', () => {
+  const material = {
+    subject: 'Cardiologia',
+    title: 'Aula 1',
+    notes: 'resumo',
+    tags: ['coração'],
+    type: 'video' as const,
+    videoLink: 'https://youtube.com/watch?v=x',
+  };
+
+  it('cria, lista, mantém após recarregar e exclui apenas o indicado', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    expect(await repo.listMaterials()).toEqual([]);
+    const a = await repo.addMaterial(material);
+    const b = await repo.addMaterial({ ...material, title: 'Aula 2' });
+    expect(await createLocalRepository(storage).listMaterials()).toEqual([a, b]);
+    await repo.deleteMaterial(a.id);
+    expect(await repo.listMaterials()).toEqual([b]);
+  });
+
+  it('descarta links perigosos adulterados nos dados salvos, mantendo o material', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(
+      STORAGE_KEYS.materials,
+      JSON.stringify([
+        { id: 'm1', title: 'Mau', type: 'video', videoLink: 'javascript:alert(1)' },
+        { id: 'm2', title: 'Bom', type: 'video', videoLink: 'youtube.com/x' },
+        { id: 'm3', title: 'Nota com link', type: 'nota', videoLink: 'https://exemplo.com' },
+      ]),
+    );
+    const list = await createLocalRepository(storage).listMaterials();
+    expect(list.map((m) => [m.id, m.videoLink])).toEqual([
+      ['m1', ''],
+      ['m2', 'https://youtube.com/x'],
+      ['m3', ''],
+    ]);
+  });
+
+  it('completa campos ausentes: matéria vazia vira "Geral", tipo antigo "arquivo" vira nota', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(
+      STORAGE_KEYS.materials,
+      JSON.stringify([
+        { id: 'm1', title: 'Texto', type: 'arquivo', subject: '  ', tags: ['a', 1, ''] },
+        { id: 'x' },
+        null,
+      ]),
+    );
+    expect(await createLocalRepository(storage).listMaterials()).toEqual([
+      {
+        id: 'm1',
+        title: 'Texto',
+        type: 'nota',
+        subject: 'Geral',
+        notes: '',
+        tags: ['a'],
+        videoLink: '',
+        createdAt: 0,
+      },
+    ]);
+  });
+});
+
 const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 
 /** Simula um navegador em contexto não seguro (http://<IP-da-rede>): sem crypto.randomUUID. */
