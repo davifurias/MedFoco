@@ -34,10 +34,10 @@
   overflow-wrap: anywhere;
   font-size: 0.85rem;
   color: var(--text);
-  text-decoration: none;
 }
 
-.file-row > a:hover {
+/* Links sublinhados: não dependem só da cor para serem reconhecidos. */
+.file-row > a {
   text-decoration: underline;
 }
 

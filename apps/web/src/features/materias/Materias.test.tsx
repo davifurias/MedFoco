@@ -72,7 +72,7 @@ describe('Matérias › formulário', () => {
   });
 
   it('cria nota: matéria vazia vira "Geral", tags em minúsculas, foco volta ao título', async () => {
-    const { repository } = renderApp();
+    const { repository, storage } = renderApp();
     fireEvent.change(field('Título do material'), { target: { value: ' Resumo de ECG ' } });
     fireEvent.change(field('Anotações'), { target: { value: 'ondas P, QRS e T' } });
     fireEvent.change(field('Assuntos-chave'), { target: { value: 'Coração, ECG,, coração' } });
@@ -89,6 +89,9 @@ describe('Matérias › formulário', () => {
     expect(await screen.findByText('Material salvo!')).toBeTruthy();
     expect(document.activeElement).toBe(field('Título do material'));
     expect((field('Título do material') as HTMLInputElement).value).toBe('');
+    // O que é realmente gravado já traz "Geral" (não depende só da leitura).
+    const saved = JSON.parse(storage.getItem(STORAGE_KEYS.materials) ?? '[]') as Material[];
+    expect(saved.map((m) => m.subject)).toEqual(['Geral']);
     expect(await repository.listMaterials()).toEqual([
       expect.objectContaining({
         subject: 'Geral',
