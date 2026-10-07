@@ -80,6 +80,8 @@ jobs:
         run: pnpm exec supabase start -x realtime,storage-api,imgproxy,edge-runtime,logflare,vector,studio,mailpit,postgres-meta,supavisor
       - name: Confere se o banco bate com as migrações
         run: pnpm exec supabase db reset
+      - name: Testes de isolamento entre pessoas (RLS)
+        run: pnpm exec supabase test db
       - name: Para o banco
         if: always()
         run: pnpm exec supabase stop --no-backup
