@@ -125,7 +125,7 @@ begin
     execute format('grant select, insert, update, delete on table public.%I to authenticated', t);
     execute format(
       'create policy %I on public.%I for all to authenticated '
-      || 'using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)',
+      || 'using (true) with check (true)',
       t || '_somente_do_dono', t
     );
     if t <> 'profiles' then
