@@ -29,12 +29,12 @@ Resultado da auditoria da etapa 2.14 da Fase 2 e regras para manter. Meta: WCAG 
 - Campo novo: `<label>` (pode ser `sr-only`) ligado ao campo por `htmlFor`/`id`.
 - Mudança visual de estado (certo/errado, ativo, pausado): inclua texto ou ícone, não só cor.
 
-## Como medir (sem dependência no projeto)
+## Como medir
 
-A auditoria foi feita com o verificador **axe** (axe-core) injetado no Chromium, em 13 telas, nos
-dois temas e em 1100px e 375px de largura, mais um percurso de Tab em todas as telas. Resultado
-final: **0 falhas**. A etapa 2.15 (testes ponta a ponta) decide se esse verificador entra como
-ferramenta fixa do projeto (nova dependência: segue a seção 13 do plano da Fase 2).
+O verificador **axe** (`@axe-core/playwright`) roda nos testes ponta a ponta
+(`e2e/acessibilidade.spec.ts`): 13 telas, nos dois temas e em 1100px e 375px, mais o diálogo de
+exclusão aberto e a questão respondida. Resultado: **0 falhas**, e qualquer nova falha quebra o
+teste. Veja `docs/testes.md` (`pnpm e2e`).
 
 ## Fora do escopo desta etapa (ideias)
 

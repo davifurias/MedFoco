@@ -39,6 +39,7 @@ título "v0.0.1-artifact — app original (Claude Artifact)" → **Publish relea
     - `Dependências vulneráveis`
     - `Título no padrão Conventional Commits`
     - `Análise de segurança (CodeQL)`
+    - `Testes ponta a ponta (Playwright)` (depois que o passo rodar uma vez no CI)
 
     (Os nomes só aparecem na lista depois que o CI rodou pelo menos uma vez — ou seja, depois do
     PR da Fase 0.)

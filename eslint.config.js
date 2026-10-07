@@ -29,4 +29,9 @@ export default tseslint.config(
     files: ['**/*.{ts,tsx}'],
     extends: [tseslint.configs.recommended, reactHooks.configs.flat.recommended],
   },
+  {
+    // Os "use" das fixtures do Playwright não são Hooks do React.
+    files: ['e2e/**/*.ts'],
+    rules: { 'react-hooks/rules-of-hooks': 'off' },
+  },
 );
