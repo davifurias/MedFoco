@@ -82,7 +82,8 @@ desenvolvimento).
 
 ### 3.2 — Banco de dados e regras de acesso
 
-**Status: não iniciada.** Migrações versionadas para as 11 listas e o perfil (mapa em
+**Status: em andamento** (migração, testes de isolamento e seed prontos para revisão; staging
+automático em PR próprio depois; `daily_suggestions` fica para a 3.7). Migrações versionadas para as 11 listas e o perfil (mapa em
 [preparacao-fase-3.md](preparacao-fase-3.md), seção 2); **regras de acesso por pessoa (RLS) em
 toda tabela**; testes automáticos de isolamento (a pessoa A **nunca** lê, grava nem apaga dado da
 pessoa B); dados fictícios para desenvolvimento. Sem mudança nas telas. Padrão **expandir →

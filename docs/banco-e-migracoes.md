@@ -4,8 +4,38 @@
 >
 > **Situação (etapa 3.1):** `supabase/config.toml` existe (cadastro aberto desligado, e-mail
 > confirmado, senha de no mínimo 8 caracteres) e o CI tem o job "Migrações do banco (Supabase)", que
-> sobe um banco local e aplica as migrações do zero. Ainda não há migrações (começam na etapa 3.2) e
-> o staging **não** recebe migrações automaticamente: isso entra quando houver migrações a aplicar.
+> sobe um banco local e aplica as migrações do zero. As migrações começam na etapa 3.2 (seção abaixo) e
+> o staging **não** recebe migrações automaticamente: isso entra num PR próprio, depois da 3.2.
+
+## Tabelas e regras de acesso (etapa 3.2)
+
+Migração `20261007120000_cria_tabelas_e_regras_de_acesso.sql`: `tasks`, `events`, `materials`,
+`questions`, `attempts`, `focus_sessions`, `notebook_entries`, `app_ideas` e `profiles` (inclui
+horários fixos e tema). A Sugestão do dia (`daily_suggestions`) entra na etapa 3.7.
+
+- **Dono:** toda linha tem `user_id` (preenchido pelo banco com quem está logado). Apagar a conta
+  apaga os dados dela.
+- **Acesso:** RLS ligado em toda tabela; só quem está logado, só as próprias linhas, para ler,
+  criar, editar e apagar. Visitante não acessa nada. O acesso é liberado explicitamente por tabela
+  (o projeto de staging não expõe tabelas automaticamente).
+- **Validações:** valores válidos de prioridade, categoria, dificuldade, tipo e tema; 4 alternativas
+  por questão e resposta de 0 a 3; datas como `date`, momentos como `timestamptz`; limites de
+  tamanho de texto generosos (título 500, matéria e assunto 200, anotações 20 mil caracteres, link
+  2048). **Ao migrar os dados locais (etapa 3.5), o que passar de um limite não é descartado: a
+  pessoa é avisada.**
+- **Identificadores:** `uuid`. O app já gera UUID; ids fora desse formato (dados muito antigos) serão
+  tratados na migração (3.5).
+- **Perfil:** uma linha por pessoa, criada pelo app ao salvar (sem gatilho no banco). Pode ter dado
+  de saúde em texto livre: sensível pela LGPD.
+- **Mural "Ideias do App":** `app_ideas` é pessoal, como decidido.
+
+**Testes:** `supabase/tests/database/isolamento.test.sql` (pgTAP, roda no CI com
+`supabase test db`) prova que a pessoa A nunca lê, grava, altera nem apaga dado da pessoa B, que o
+visitante não acessa nada e que o banco barra dado malformado. Um teste falha se existir tabela
+nova sem RLS. **Para criar uma tabela nova:** inclua-a na lista do teste e nas regras de acesso da
+migração.
+
+**Dados fictícios:** `supabase/seed.sql` (só local, `supabase db reset`).
 
 ## Banco local no seu computador
 
