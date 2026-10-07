@@ -24,6 +24,7 @@ const PAGE_BY_REGION: Record<string, string> = {
   'Seus horários fixos da semana': 'Horários',
   Praticar: 'Banco de questões',
   'Escolha uma técnica': 'Foco',
+  'Aula guiada': 'Assessora IA',
 };
 
 /** Título da página atual. */
