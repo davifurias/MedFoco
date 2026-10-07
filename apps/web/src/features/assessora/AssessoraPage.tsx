@@ -1,12 +1,36 @@
-import { PlaceholderPage } from '../../components/PlaceholderPage';
+import { useMateriais } from '../materias/hooks/useMateriais';
+import { AulaGuiada } from './components/AulaGuiada';
+import { Chat } from './components/Chat';
+import {
+  createLessonQuestions,
+  generateLesson,
+  sendChatMessage,
+  type CreateLessonQuestions,
+  type GenerateLesson,
+  type SendChatMessage,
+} from './services/assessora';
+import './assessora.css';
 
-const LEGACY_FEATURES = [
-  'Aula guiada: um assunto explicado em passos curtos, com analogias e checagem',
-  'Chat com a assessora de estudos',
-  'Atalhos: Estou perdido, Planejar semana, Me explique algo, Priorizar provas',
-  'Explicar um material salvo ou um arquivo enviado do computador',
-];
+interface AssessoraPageProps {
+  generate?: GenerateLesson;
+  send?: SendChatMessage;
+  createQuestions?: CreateLessonQuestions;
+}
 
-export function AssessoraPage() {
-  return <PlaceholderPage title="Assessora IA" legacyFeatures={LEGACY_FEATURES} />;
+export function AssessoraPage({
+  generate = generateLesson,
+  send = sendChatMessage,
+  createQuestions = createLessonQuestions,
+}: AssessoraPageProps) {
+  const { materials } = useMateriais();
+  return (
+    <>
+      <p className="note ai-notice" role="note">
+        A IA da assessora ainda não está disponível nesta versão do MedFoco: ela chega numa próxima
+        fase. Enquanto isso, você já pode conhecer a tela e preparar anexos.
+      </p>
+      <AulaGuiada generate={generate} createQuestions={createQuestions} />
+      <Chat materials={materials.filter((m) => m.notes.trim())} send={send} />
+    </>
+  );
 }

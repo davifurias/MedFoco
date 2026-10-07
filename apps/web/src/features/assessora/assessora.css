@@ -1,0 +1,97 @@
+/* Estilos da Assessora IA, reproduzindo legacy/MedFoco.html (renderAssessora). */
+.ai-notice {
+  margin: 0 0 12px;
+}
+
+.lesson-step {
+  margin-top: 10px;
+  background: var(--bg);
+}
+
+.lesson-step h3 {
+  font-size: 1rem;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+
+.lesson-step p,
+.lesson-step summary {
+  overflow-wrap: anywhere;
+}
+
+.lesson-step summary {
+  cursor: pointer;
+  color: var(--primary-text);
+}
+
+.quick .quick-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.file-button {
+  text-align: center;
+  display: block;
+  cursor: pointer;
+}
+
+.file-button:focus-within {
+  outline: 3px solid var(--primary-text);
+  outline-offset: 2px;
+}
+
+.anexo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+
+.anexo .anexo-remover {
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  padding: 0 2px;
+}
+
+.chatmsgs {
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 8px 0;
+}
+
+.bubble {
+  padding: 8px 12px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  max-width: 90%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.bubble.user {
+  background: var(--primary);
+  color: #fff;
+  margin-left: auto;
+}
+
+.bubble.assist {
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.chatinput {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.chatinput textarea {
+  flex: 1;
+  min-width: 0;
+}
