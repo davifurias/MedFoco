@@ -2,6 +2,8 @@
 -- e quem não está logado não acessa nada. Rodam no CI (`supabase test db`).
 -- Tudo acontece numa transação que é desfeita no fim: nada fica gravado.
 begin;
+-- O Supabase tem gatilhos em auth.users que procuram tabelas do schema auth sem prefixo.
+set local search_path = public, extensions, auth;
 select * from no_plan();
 
 -- Ajudantes (existem só durante este teste). Executam com os poderes de quem chamou.
