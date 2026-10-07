@@ -1,5 +1,6 @@
 import { Link, NavLink, Outlet } from 'react-router';
 import { MAIN_AREAS } from '../app/navigation';
+import { ThemeToggle } from '../components/ThemeToggle';
 import './AppLayout.css';
 
 export function AppLayout() {
@@ -10,6 +11,7 @@ export function AppLayout() {
           <span aria-hidden="true">🧠</span> MedFoco
         </h1>
         <div className="app-header-actions">
+          <ThemeToggle />
           <Link to="/busca" className="icon-button" aria-label="Buscar" title="Buscar">
             <span aria-hidden="true">🔍</span>
           </Link>

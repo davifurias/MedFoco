@@ -8,6 +8,10 @@ original (`legacy/MedFoco.html`).
 cada uma com `components/`, `hooks/`, `services/` e `utils/` conforme a necessidade. O Mapa só lê
 os materiais de Matérias; assuntos-chave são comparados sem acento nem maiúsculas.
 
+**Tema:** o app abre no tema escuro; o botão ☀️/🌙 do cabeçalho alterna para o claro e a escolha
+fica guardada neste navegador (`shared/theme.ts`, chave `medfoco:v1:theme`). As cores de cada tema
+ficam em `styles/global.css`.
+
 ## Dados
 
 Componentes nunca acessam o armazenamento diretamente: usam `useRepository()`
