@@ -391,6 +391,70 @@ describe('ideias: mural e caderno', () => {
   });
 });
 
+describe('perfil acadêmico', () => {
+  const full = {
+    curso: 'Medicina',
+    periodo: '4º período',
+    materias: 'Neuro, Cardio',
+    metas: 'Passar',
+    preferencias: 'Manhã',
+  };
+
+  it('sem nada salvo, devolve o padrão (curso "Medicina") sem gravar', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    expect(await repo.getProfile()).toEqual({
+      curso: 'Medicina',
+      periodo: '',
+      materias: '',
+      metas: '',
+      preferencias: '',
+    });
+    expect(storage.getItem(STORAGE_KEYS.profile)).toBeNull();
+  });
+
+  it('salva, mantém após recarregar e preserva um curso em branco', async () => {
+    const storage = createMemoryStorage();
+    const repo = createLocalRepository(storage);
+    await repo.saveProfile({ ...full, curso: '' });
+    expect(await createLocalRepository(storage).getProfile()).toEqual({ ...full, curso: '' });
+  });
+
+  it('completa campos ausentes ou de tipo errado com o padrão', async () => {
+    const storage = createMemoryStorage();
+    storage.setItem(STORAGE_KEYS.profile, JSON.stringify({ periodo: 3, metas: 'M' }));
+    expect(await createLocalRepository(storage).getProfile()).toEqual({
+      curso: 'Medicina',
+      periodo: '',
+      materias: '',
+      metas: 'M',
+      preferencias: '',
+    });
+    storage.setItem(STORAGE_KEYS.profile, JSON.stringify([1, 2]));
+    expect((await createLocalRepository(storage).getProfile()).curso).toBe('Medicina');
+  });
+
+  it('guarda cópia de segurança antes de gravar por cima de conteúdo ilegível, e só então', async () => {
+    const storage = createMemoryStorage();
+    const keys: string[] = [];
+    const spy = {
+      getItem: storage.getItem,
+      setItem: (k: string, v: string) => {
+        keys.push(k);
+        storage.setItem(k, v);
+      },
+    };
+    const repo = createLocalRepository(spy, () => 123);
+    await repo.saveProfile(full);
+    expect(keys).toEqual([STORAGE_KEYS.profile]);
+    spy.setItem(STORAGE_KEYS.profile, '{quebrado');
+    keys.length = 0;
+    await repo.saveProfile(full);
+    expect(keys).toEqual([`${STORAGE_KEYS.profile}:backup:123`, STORAGE_KEYS.profile]);
+    expect(storage.getItem(`${STORAGE_KEYS.profile}:backup:123`)).toBe('{quebrado');
+  });
+});
+
 describe('newId', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
