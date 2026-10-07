@@ -136,6 +136,29 @@ describe('Matérias › formulário', () => {
     expect(await repository.listMaterials()).toEqual([]);
   });
 
+  it('recusa link com usuário e senha, explicando o motivo', async () => {
+    const { repository } = renderApp();
+    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.change(field('Título do material'), { target: { value: 'Aula' } });
+    fireEvent.change(field('Link do vídeo'), {
+      target: { value: 'https://usuario:senha@site.com/v' },
+    });
+    save();
+    expect(await screen.findByText('Links com usuário e senha não são aceitos.')).toBeTruthy();
+    expect(document.activeElement).toBe(field('Link do vídeo'));
+    expect(await repository.listMaterials()).toEqual([]);
+  });
+
+  it('aceita link com porta e sem https://', async () => {
+    const { repository } = renderApp();
+    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.change(field('Título do material'), { target: { value: 'Aula' } });
+    fireEvent.change(field('Link do vídeo'), { target: { value: 'meusite.com:8080/video' } });
+    save();
+    await screen.findByText('Material salvo!');
+    expect((await repository.listMaterials())[0]?.videoLink).toBe('https://meusite.com:8080/video');
+  });
+
   it('vídeo sem link é aceito; o link digitado é descartado ao trocar para Nota', async () => {
     const { repository } = renderApp();
     fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));

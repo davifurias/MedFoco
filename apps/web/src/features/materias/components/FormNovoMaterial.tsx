@@ -1,6 +1,6 @@
 import { useId, useRef, useState, type FormEvent } from 'react';
 import type { MaterialType, NewMaterial } from '../../../data/types';
-import { toSafeHttpUrl } from '../../../shared/url';
+import { checkHttpUrl } from '../../../shared/url';
 import { DEFAULT_SUBJECT, parseTags } from '../utils/materias';
 
 const TYPES: { type: MaterialType; label: string }[] = [
@@ -44,14 +44,18 @@ export function FormNovoMaterial({ onSave }: { onSave: (material: NewMaterial) =
     }
     let videoLink = '';
     if (isVideo && link.trim()) {
-      const safe = toSafeHttpUrl(link);
-      if (!safe) {
+      const check = checkHttpUrl(link);
+      if (!check.ok) {
         setInvalid('link');
-        setStatus('Informe um link válido, começando com http:// ou https://.');
+        setStatus(
+          check.reason === 'credentials'
+            ? 'Links com usuário e senha não são aceitos.'
+            : 'Informe um link válido, começando com http:// ou https://.',
+        );
         linkRef.current?.focus();
         return;
       }
-      videoLink = safe;
+      videoLink = check.url;
     }
     setInvalid(null);
     setSaving(true);

@@ -24,21 +24,22 @@ Containers usam a configuração em `.devcontainer/`. Detalhes em [docs/setup.md
 
 ## Documentação
 
-| Para…                                      | Leia                                                           |
-| ------------------------------------------ | -------------------------------------------------------------- |
-| Pedir mudanças à IA, aprovar, desfazer     | [docs/fluxo-de-trabalho.md](docs/fluxo-de-trabalho.md)         |
-| Regras que toda IA/pessoa segue no projeto | [AGENTS.md](AGENTS.md)                                         |
-| Configurar o ambiente                      | [docs/setup.md](docs/setup.md)                                 |
-| Rodar os testes                            | [docs/testes.md](docs/testes.md)                               |
-| Variáveis de ambiente e segredos           | [docs/variaveis-de-ambiente.md](docs/variaveis-de-ambiente.md) |
-| Criar uma release                          | [docs/releases.md](docs/releases.md)                           |
-| Abrir o app no celular (link de teste)     | [docs/link-de-teste.md](docs/link-de-teste.md)                 |
-| Deploy                                     | [docs/deploy.md](docs/deploy.md)                               |
-| Banco de dados e migrações                 | [docs/banco-e-migracoes.md](docs/banco-e-migracoes.md)         |
-| Voltar para uma versão anterior            | [docs/runbooks/rollback.md](docs/runbooks/rollback.md)         |
-| Configurações manuais do GitHub            | [docs/configuracao-github.md](docs/configuracao-github.md)     |
-| Ideias futuras                             | [docs/ideias.md](docs/ideias.md)                               |
-| Por que as decisões foram tomadas          | [docs/decisoes/](docs/decisoes/)                               |
+| Para…                                       | Leia                                                           |
+| ------------------------------------------- | -------------------------------------------------------------- |
+| Pedir mudanças à IA, aprovar, desfazer      | [docs/fluxo-de-trabalho.md](docs/fluxo-de-trabalho.md)         |
+| Regras que toda IA/pessoa segue no projeto  | [AGENTS.md](AGENTS.md)                                         |
+| Configurar o ambiente                       | [docs/setup.md](docs/setup.md)                                 |
+| Rodar os testes                             | [docs/testes.md](docs/testes.md)                               |
+| Variáveis de ambiente e segredos            | [docs/variaveis-de-ambiente.md](docs/variaveis-de-ambiente.md) |
+| Segurança: o que está protegido e os riscos | [docs/seguranca.md](docs/seguranca.md)                         |
+| Criar uma release                           | [docs/releases.md](docs/releases.md)                           |
+| Abrir o app no celular (link de teste)      | [docs/link-de-teste.md](docs/link-de-teste.md)                 |
+| Deploy                                      | [docs/deploy.md](docs/deploy.md)                               |
+| Banco de dados e migrações                  | [docs/banco-e-migracoes.md](docs/banco-e-migracoes.md)         |
+| Voltar para uma versão anterior             | [docs/runbooks/rollback.md](docs/runbooks/rollback.md)         |
+| Configurações manuais do GitHub             | [docs/configuracao-github.md](docs/configuracao-github.md)     |
+| Ideias futuras                              | [docs/ideias.md](docs/ideias.md)                               |
+| Por que as decisões foram tomadas           | [docs/decisoes/](docs/decisoes/)                               |
 
 ## Princípios
 
