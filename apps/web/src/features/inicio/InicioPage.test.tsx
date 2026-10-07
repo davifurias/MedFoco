@@ -8,6 +8,8 @@ import {
   type KeyValueStorage,
 } from '../../data/localRepository';
 import { RepositoryProvider } from '../../data/RepositoryContext';
+import type { MedFocoRepository } from '../../data/repository';
+import { FocoProvider } from '../foco/FocoContext';
 import type { CalendarEvent, FocusSession, Task } from '../../data/types';
 import { InicioPage } from './InicioPage';
 import { AiUnavailableError, type GenerateDailySuggestion } from './services/sugestaoDoDia';
@@ -17,7 +19,12 @@ const TODAY = '2026-09-25';
 function renderInicio({
   storage = createMemoryStorage(),
   generate,
-}: { storage?: KeyValueStorage; generate?: GenerateDailySuggestion } = {}) {
+  repo,
+}: {
+  storage?: KeyValueStorage;
+  generate?: GenerateDailySuggestion;
+  repo?: MedFocoRepository;
+} = {}) {
   const router = createMemoryRouter(
     [
       { path: '/', element: <InicioPage generateSuggestion={generate} /> },
@@ -26,8 +33,10 @@ function renderInicio({
     { initialEntries: ['/'] },
   );
   render(
-    <RepositoryProvider repository={createLocalRepository(storage)}>
-      <RouterProvider router={router} />
+    <RepositoryProvider repository={repo ?? createLocalRepository(storage)}>
+      <FocoProvider>
+        <RouterProvider router={router} />
+      </FocoProvider>
     </RepositoryProvider>,
   );
   return { router, storage, repository: createLocalRepository(storage) };
@@ -428,5 +437,50 @@ describe('Sugestão da IA para hoje', () => {
     renderInicio({ storage });
     expect(await screen.findByRole('button', { name: 'Gerar sugestão do dia ✨' })).toBeTruthy();
     expect(screen.queryByText('Antiga.')).toBeNull();
+  });
+});
+
+describe('Início: carregamento dos dados', () => {
+  it('se uma parte não carregar, as outras aparecem e o aviso diz qual falhou', async () => {
+    const storage = createMemoryStorage();
+    store(storage, STORAGE_KEYS.tasks, [task(false, 1), task(false, 2)]);
+    const real = createLocalRepository(storage);
+    renderInicio({ repo: { ...real, listEvents: () => Promise.reject(new Error('x')) } });
+    expect(await screen.findByText(/Não foi possível carregar: eventos\./)).toBeTruthy();
+    await waitFor(() => expect(counter('tarefas pendentes')).toBe('2'));
+  });
+
+  it('avisa quando o histórico de foco não pôde ser lido', async () => {
+    const real = createLocalRepository(createMemoryStorage());
+    renderInicio({ repo: { ...real, listFocusSessions: () => Promise.reject(new Error('x')) } });
+    expect(await screen.findByText(/Não foi possível carregar: minutos de foco\./)).toBeTruthy();
+  });
+
+  it('uma carga atrasada não apaga a tarefa criada nesse meio-tempo', async () => {
+    const real = createLocalRepository(createMemoryStorage());
+    let release: (list: Task[]) => void = () => {};
+    renderInicio({
+      repo: {
+        ...real,
+        listTasks: vi
+          .fn()
+          .mockImplementationOnce(() => new Promise<Task[]>((resolve) => (release = resolve)))
+          .mockImplementation(() => real.listTasks()),
+      },
+    });
+    fireEvent.click(quickToggle('Tarefa'));
+    fireEvent.change(screen.getByLabelText('Título da tarefa'), {
+      target: { value: 'Nova' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Adicionar tarefa' }));
+    await waitFor(() => expect(counter('tarefas pendentes')).toBe('1'));
+    await act(async () => release([]));
+    expect(counter('tarefas pendentes')).toBe('1');
+  });
+
+  it('sem falhas, não mostra aviso', async () => {
+    renderInicio();
+    await screen.findByRole('region', { name: 'Resumo do dia' });
+    expect(screen.queryByText(/Não foi possível carregar/)).toBeNull();
   });
 });

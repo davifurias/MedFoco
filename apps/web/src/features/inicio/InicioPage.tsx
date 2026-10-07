@@ -22,6 +22,12 @@ export function InicioPage({
 
   return (
     <>
+      {data.failedLabels.length > 0 && (
+        <div className="empty" role="alert">
+          Não foi possível carregar: {data.failedLabels.join(', ')}. Os números dessas partes podem
+          aparecer zerados.
+        </div>
+      )}
       <ResumoDoDiaCard
         now={current}
         pendingTasks={countPendingTasks(data.tasks)}

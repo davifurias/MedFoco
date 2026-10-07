@@ -206,7 +206,7 @@ describe('Questões — lista e exclusão', () => {
     await waitFor(() => expect(screen.queryByText('Enunciado 1')).toBeNull());
     expect(screen.getByText('Enunciado 2')).toBeTruthy();
     expect(JSON.parse(storage.getItem(STORAGE_KEYS.questions) ?? '[]')).toHaveLength(1);
-    expect(document.activeElement?.textContent).toBe('Todas as questões (1)');
+    await waitFor(() => expect(document.activeElement?.textContent).toBe('Todas as questões (1)'));
   });
 
   it('mostra erro quando a exclusão falha e mantém a questão', async () => {
@@ -257,7 +257,7 @@ describe('Questões — prática', () => {
     await screen.findByText('Enunciado 1');
     start();
     expect(screen.getByText(/Questão 1 de 2 · Cardiologia · IC · fácil/)).toBeTruthy();
-    expect(document.activeElement?.textContent).toBe('Enunciado 1');
+    await waitFor(() => expect(document.activeElement?.textContent).toBe('Enunciado 1'));
     expect(screen.queryByRole('button', { name: 'Próxima' })).toBeNull();
 
     click(/Certa 1/);
@@ -267,7 +267,7 @@ describe('Questões — prática', () => {
       expect((option as HTMLButtonElement).disabled).toBe(true);
     }
     click('Próxima');
-    expect(document.activeElement?.textContent).toBe('Enunciado 2');
+    await waitFor(() => expect(document.activeElement?.textContent).toBe('Enunciado 2'));
     expect(screen.queryByRole('button', { name: 'Próxima' })).toBeNull();
 
     click(/B 2/);

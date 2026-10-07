@@ -17,7 +17,21 @@ export function BuscaPage() {
   // O texto buscado também fica no endereço (?q=): "voltar" e recarregar mantêm a busca. A caixa
   // usa um estado próprio, porque o endereço atualiza com atraso e comeria letras digitadas rápido.
   const [params, setParams] = useSearchParams();
-  const [query, setQuery] = useState(() => params.get('q') ?? '');
+  const urlQuery = params.get('q') ?? '';
+  const [query, setQuery] = useState(urlQuery);
+  // Valores que nós mesmos gravamos no endereço: quando eles "voltam" pelo roteador (com atraso),
+  // não são uma mudança externa e não podem sobrescrever o que já foi digitado depois.
+  const echoes = useRef(new Set<string>());
+  const lastTyped = useRef(urlQuery);
+  useEffect(() => {
+    if (urlQuery === lastTyped.current) {
+      echoes.current.clear();
+    } else if (!echoes.current.has(urlQuery)) {
+      // Mudança vinda de fora (ex.: link ou histórico para outra busca): a caixa acompanha.
+      lastTyped.current = urlQuery;
+      setQuery(urlQuery);
+    }
+  }, [urlQuery]);
   const { data, failed, loading } = useBuscaData();
 
   // Como no app original, a caixa já abre com o cursor dentro.
@@ -52,6 +66,8 @@ export function BuscaPage() {
           onChange={(e) => {
             const value = e.target.value;
             setQuery(value);
+            lastTyped.current = value;
+            echoes.current.add(value);
             setParams(value ? { q: value } : {}, { replace: true });
           }}
         />

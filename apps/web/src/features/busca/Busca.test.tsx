@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { createMemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it } from 'vitest';
 import { App } from '../../app/App';
@@ -198,6 +198,20 @@ describe('Busca', () => {
     expect(box().value).toBe('valvas');
     await waitFor(() => expect(status()).toBe('1 resultado.'));
     type('');
+    expect(status()).toBe('Digite pelo menos 2 letras para buscar.');
+  });
+
+  it('a caixa acompanha mudanças do endereço feitas de fora, como um link para outra busca', async () => {
+    const router = renderApp('/busca?q=valvas', fullStorage());
+    await waitFor(() => expect(status()).toBe('1 resultado.'));
+    await act(async () => {
+      await router.navigate('/busca?q=ecg');
+    });
+    expect(box().value).toBe('ecg');
+    await act(async () => {
+      await router.navigate('/busca');
+    });
+    expect(box().value).toBe('');
     expect(status()).toBe('Digite pelo menos 2 letras para buscar.');
   });
 

@@ -22,6 +22,8 @@ se alguma falhar, o PR não pode ser incorporado.
 
 - Ao lado do código testado, com o sufixo `.test` (ex.: `timer.test.ts`).
 - Fase 0: `scripts/check-platform-independence.test.mjs`.
+- Integração entre as áreas: `apps/web/src/integracao.test.tsx` (cria numa tela, navega pelo
+  roteador e confere em outra: tarefas, eventos, ideias, materiais, questões, foco, perfil).
 
 ## Regras
 
