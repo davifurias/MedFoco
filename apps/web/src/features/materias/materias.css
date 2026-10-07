@@ -1,0 +1,66 @@
+/* Estilos de Matérias, reproduzindo legacy/MedFoco.html (renderArquivos). */
+.subject-group {
+  margin-bottom: 16px;
+}
+
+.subject-group:last-child {
+  margin-bottom: 0;
+}
+
+.subject-group h3 {
+  font-size: 0.85rem;
+  margin: 0 0 6px;
+  color: var(--primary-text);
+  overflow-wrap: anywhere;
+}
+
+.material-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.file-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.file-row > a,
+.file-row > .file-title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.85rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.file-row > a:hover {
+  text-decoration: underline;
+}
+
+.material .note {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+}
+
+.resumir-video {
+  margin: 6px 0;
+}
+
+.quick button[aria-pressed='true'] {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}

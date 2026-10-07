@@ -51,6 +51,23 @@ export interface DailySuggestion {
   text: string;
 }
 
+export type MaterialType = 'nota' | 'video';
+
+/** Material de estudo (nota de texto ou aula em vídeo), agrupado por matéria. */
+export interface Material {
+  id: string;
+  subject: string;
+  title: string;
+  notes: string;
+  /** Assuntos-chave em minúsculas; ligam os materiais no Mapa. */
+  tags: string[];
+  type: MaterialType;
+  /** Link http(s) do vídeo ('' quando não há). Sempre validado por toSafeHttpUrl. */
+  videoLink: string;
+  createdAt: number;
+}
+
 export type NewTask = Omit<Task, 'id' | 'createdAt'>;
 export type NewCalendarEvent = Omit<CalendarEvent, 'id' | 'createdAt'>;
 export type NewNotebookEntry = Omit<NotebookEntry, 'id' | 'createdAt'>;
+export type NewMaterial = Omit<Material, 'id' | 'createdAt'>;

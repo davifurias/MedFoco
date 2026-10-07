@@ -2,11 +2,18 @@ import {
   isRecord,
   normalizeEvent,
   normalizeFocusSession,
+  normalizeMaterial,
   normalizeNotebookEntry,
   normalizeTask,
 } from './normalize';
 import type { MedFocoRepository } from './repository';
-import type { DailySuggestion, NewCalendarEvent, NewNotebookEntry, NewTask } from './types';
+import type {
+  DailySuggestion,
+  NewCalendarEvent,
+  NewMaterial,
+  NewNotebookEntry,
+  NewTask,
+} from './types';
 
 /** O mínimo de `Storage` (localStorage) de que o repositório precisa. */
 export type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem'>;
@@ -19,6 +26,7 @@ export const STORAGE_KEYS = {
   focusSessions: 'medfoco:v1:focusSessions',
   dailySuggestion: 'medfoco:v1:dailySuggestion',
   schedule: 'medfoco:v1:schedule',
+  materials: 'medfoco:v1:materials',
 } as const;
 
 type IdCrypto = Pick<Crypto, 'getRandomValues'> & { randomUUID?: () => string };
@@ -140,6 +148,16 @@ export function createLocalRepository(
     },
     async addNotebookEntry(entry: NewNotebookEntry) {
       return append(STORAGE_KEYS.notebook, entry);
+    },
+
+    async listMaterials() {
+      return readList(STORAGE_KEYS.materials, normalizeMaterial);
+    },
+    async addMaterial(material: NewMaterial) {
+      return append(STORAGE_KEYS.materials, material);
+    },
+    async deleteMaterial(id: string) {
+      removeById(STORAGE_KEYS.materials, id);
     },
 
     async listFocusSessions() {
