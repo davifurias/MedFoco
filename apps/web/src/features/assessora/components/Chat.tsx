@@ -13,6 +13,7 @@ import {
   explainMaterialPrompt,
   tooLargeMessage,
 } from '../utils/anexos';
+import { Icon } from '../../../components/Icon';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -175,7 +176,7 @@ export function Chat({ materials, send }: ChatProps) {
             <span className="sr-only">Anexo: </span>
             {attachment.title}
             <button type="button" className="anexo-remover" onClick={clearAttachment}>
-              <span aria-hidden="true">✕</span>
+              <Icon name="remover" />
               <span className="sr-only">Remover anexo</span>
             </button>
           </span>

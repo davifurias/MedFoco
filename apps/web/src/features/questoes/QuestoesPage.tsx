@@ -8,6 +8,7 @@ import { Pratica } from './components/Pratica';
 import { useQuestoes } from './hooks/useQuestoes';
 import { DIFFICULTIES, filterQuestions, subjectsOf } from './utils/questoes';
 import './questoes.css';
+import { Icon } from '../../components/Icon';
 
 const LIST_TITLE_ID = 'questoes-lista-title';
 
@@ -115,7 +116,7 @@ export function QuestoesPage() {
                   aria-label={`Excluir questão: ${q.question}`}
                   onClick={() => setPending(q)}
                 >
-                  <span aria-hidden="true">✕</span>
+                  <Icon name="remover" />
                 </button>
               </li>
             ))}

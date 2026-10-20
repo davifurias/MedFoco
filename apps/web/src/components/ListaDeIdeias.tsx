@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ConfirmDialog } from './ConfirmDialog';
 import { useFocusRequest } from '../shared/useFocusRequest';
 import type { TextEntry } from '../shared/useTextEntries';
+import { Icon } from './Icon';
 
 interface ListaDeIdeiasProps<T extends TextEntry> {
   titleId: string;
@@ -68,7 +69,7 @@ export function ListaDeIdeias<T extends TextEntry>({
                 aria-label={`Excluir ideia: ${preview(entry.text)}`}
                 onClick={() => setPending(entry)}
               >
-                <span aria-hidden="true">✕</span>
+                <Icon name="remover" />
               </button>
             </li>
           ))}

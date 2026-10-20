@@ -111,7 +111,10 @@ h2 {
 }
 
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
   background: var(--primary);
   color: #fff;
   border: none;
@@ -142,9 +145,20 @@ h2 {
   border: 1px solid var(--primary);
 }
 
+.btn.secondary:hover {
+  background: var(--card-2);
+}
+
 .btn-block {
-  display: block;
+  display: flex;
   width: 100%;
+}
+
+/* Ícones desenhados (components/Icon.tsx): acompanham o tamanho do texto. */
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
 }
 
 .note {
@@ -164,15 +178,29 @@ h2 {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 0.78rem;
+  padding: 8px 14px;
+  font-size: 0.8rem;
   color: var(--text);
   text-decoration: none;
+  transition:
+    background var(--ease),
+    border-color var(--ease);
+}
+
+.quick a:hover,
+.quick button:hover {
+  background: var(--card-2);
+  border-color: var(--primary-text);
 }
 
 .quick a.active {
   background: var(--primary);
+  border-color: var(--primary);
   color: #fff;
+}
+
+.quick a.active:hover {
+  background: var(--primary-d);
 }
 
 /* Formulários, listas e pílulas do app original. */
@@ -206,6 +234,10 @@ select:hover {
   background: var(--danger-strong);
 }
 
+.btn.danger:hover {
+  background: color-mix(in srgb, var(--danger-strong) 85%, black);
+}
+
 .row {
   display: flex;
   gap: 8px;
@@ -231,7 +263,7 @@ select:hover {
 .empty {
   color: var(--muted);
   font-size: 0.85rem;
-  padding: 8px 0;
+  padding: 12px 0;
 }
 
 .pill {
@@ -300,27 +332,39 @@ select:hover {
 }
 
 .del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: none;
   border: none;
-  color: var(--danger);
+  border-radius: var(--radius-sm);
+  color: var(--danger-text);
   font-size: 1.1rem;
   padding: 2px 6px;
   cursor: pointer;
+  transition: background var(--ease);
   /* Área de toque confortável no celular, sem mudar o visual do ✕. */
   min-width: 36px;
   min-height: 36px;
   flex-shrink: 0;
 }
 
+.del:hover {
+  background: var(--card-2);
+}
+
 .quick button {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 0.78rem;
+  padding: 8px 14px;
+  font-size: 0.8rem;
   font-family: inherit;
   color: var(--text);
   cursor: pointer;
+  transition:
+    background var(--ease),
+    border-color var(--ease);
 }
 
 .quick button.active {
@@ -328,7 +372,7 @@ select:hover {
 }
 
 :focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--primary-text);
   outline-offset: 2px;
 }
 
@@ -353,13 +397,15 @@ select:hover {
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
 }
 
 .dialog {
   width: 100%;
   max-width: 360px;
   margin: 0;
+  box-shadow: var(--shadow-2);
 }
 
 .dialog-title {

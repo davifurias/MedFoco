@@ -15,6 +15,11 @@ import { AiUnavailableError } from '../../shared/ai';
 import { TarefasPage } from './TarefasPage';
 import type { OrganizeWeek } from './services/organizarSemana';
 
+/** Os únicos `svg` permitidos são os ícones de "remover"; texto digitado nunca cria outros. */
+function svgForaDosIcones(root: ParentNode): Element[] {
+  return [...root.querySelectorAll('svg')].filter((svg) => !svg.closest('button.del'));
+}
+
 function renderApp(path: string, storage: KeyValueStorage = createMemoryStorage()) {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
   render(<App router={router} repository={createLocalRepository(storage)} />);
@@ -467,7 +472,8 @@ describe('Agenda › entradas maliciosas são tratadas como texto', () => {
     const card = await screen.findByRole('region', { name: /^Pendentes/ });
     await within(card).findAllByRole('listitem');
     for (const payload of PAYLOADS) expect(card.textContent).toContain(payload);
-    expect(card.querySelector('img, script, svg, a[href^="javascript"]')).toBeNull();
+    expect(card.querySelector('img, script, a[href^="javascript"], [onload]')).toBeNull();
+    expect(svgForaDosIcones(card)).toEqual([]);
   });
 
   it('eventos criados pelo formulário', async () => {
@@ -481,7 +487,8 @@ describe('Agenda › entradas maliciosas são tratadas como texto', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Adicionar ao calendário' }));
       await within(region('Todos os eventos')).findByText(payload);
     }
-    expect(region('Todos os eventos').querySelector('img, script, svg, a')).toBeNull();
+    expect(region('Todos os eventos').querySelector('img, script, a, [onload]')).toBeNull();
+    expect(svgForaDosIcones(region('Todos os eventos'))).toEqual([]);
   });
 
   it('horários', async () => {
@@ -492,7 +499,8 @@ describe('Agenda › entradas maliciosas são tratadas como texto', () => {
       name: 'Horários fixos da semana',
     })) as HTMLTextAreaElement;
     expect(field.value).toBe(PAYLOADS.join('\n'));
-    expect(document.querySelector('main img, main script, main svg')).toBeNull();
+    expect(document.querySelector('main img, main script, main [onload]')).toBeNull();
+    expect(svgForaDosIcones(document.querySelector('main') as ParentNode)).toEqual([]);
   });
 });
 
