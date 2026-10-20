@@ -21,7 +21,9 @@
 
 ## Fluxo
 
-1. Merge na `main` → deploy automático em **staging** (app + migrações).
+1. Merge na `main` → migrações aplicadas automaticamente no **staging** (fluxo "Staging
+   (migrações do banco)", ver [banco-e-migracoes.md](banco-e-migracoes.md)); o deploy do app em
+   staging virá na etapa 3.9.
 2. Merge do PR de release → tag `vX.Y.Z`.
 3. Deploy de **produção**: GitHub → Actions → "Deploy produção" → escolher a tag → Run.
    Um backup do banco é feito antes, automaticamente.
