@@ -145,7 +145,7 @@ export function Chat({ materials, send }: ChatProps) {
           </button>
         ))}
       </div>
-      <div className="row">
+      <div className="row campos">
         <label htmlFor={ids.select} className="sr-only">
           Explicar um material salvo
         </label>

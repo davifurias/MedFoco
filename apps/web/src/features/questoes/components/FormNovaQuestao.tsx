@@ -82,7 +82,7 @@ export function FormNovaQuestao({ onSave }: { onSave: (question: NewQuestion) =>
     <section className="card" aria-labelledby="nova-questao-title">
       <h2 id="nova-questao-title">Adicionar questão</h2>
       <form onSubmit={handleSubmit} noValidate>
-        <div className="row">
+        <div className="row campos">
           <label htmlFor={ids.subject} className="sr-only">
             Matéria
           </label>
@@ -152,7 +152,9 @@ export function FormNovaQuestao({ onSave }: { onSave: (question: NewQuestion) =>
             />
           </div>
         ))}
-        <label htmlFor={ids.correct}>Alternativa correta</label>
+        <label htmlFor={ids.correct} className="field-label">
+          Alternativa correta
+        </label>
         <select
           id={ids.correct}
           value={correctIndex}

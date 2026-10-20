@@ -46,7 +46,7 @@ export function FormPerfil({ initial, onSave }: FormPerfilProps) {
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <div className="row">
+      <div className="row campos">
         <label htmlFor={ids.curso} className="sr-only">
           Curso
         </label>

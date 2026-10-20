@@ -6,14 +6,16 @@ só começa com autorização. Nenhuma etapa muda funções, dados ou endereços
 
 ## Etapas
 
-| #   | Etapa                                                                                      | Status                                 |
-| --- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
-| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                     |
-| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                     |
-| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36)                     |
-| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | concluída (PR #37)                     |
-| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | em revisão                             |
-| 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início |
+| #   | Etapa                                                                                      | Status             |
+| --- | ------------------------------------------------------------------------------------------ | ------------------ |
+| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33) |
+| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35) |
+| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36) |
+| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | concluída (PR #37) |
+| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | em revisão         |
+| 4A  | Telas: formulários e celular (campos que cortavam texto, aviso da Assessora, rótulo solto) | em revisão         |
+| 4B  | Telas: Início com números em cartinhas                                                     | não iniciada       |
+| 4C  | Telas: estados vazios com ícone                                                            | não iniciada       |
 
 "Mais" (celular) guarda Mapa, Questões, Assessora IA, Ideias e Perfil: **todas as áreas continuam
 acessíveis**. Dependência prevista na etapa 2: `lucide-react` (ícones SVG, só os usados entram no
@@ -100,3 +102,21 @@ app).
 - **Testes ponta a ponta:** o auxiliar `irParaArea` usa a barra de baixo ou passa por "Mais"; há um
   teste do fluxo no celular (e a página `/mais` entra nas varreduras de acessibilidade e de
   rolagem lateral).
+
+## Telas (etapa 4)
+
+Decisões do dono: 3 PRs (4A, 4B e 4C); o **Mapa** continua rolando para os lados dentro do cartão no
+celular (largura mínima de 600 px, escolha antiga para manter a legibilidade); **rótulos visíveis
+nos campos** e o anel de progresso do **Foco** ficam para depois.
+
+### 4A, formulários e celular
+
+- **Linhas de campos (`.row.campos`):** cada campo ocupa no mínimo 200 px; se não couber (celular),
+  vai para a linha de baixo, em vez de cortar o texto ("Todas as matér…"). No computador continuam
+  lado a lado. Há teste ponta a ponta que mede os campos (provado com a regra antiga de CSS, que o
+  faz falhar no celular).
+- **Aviso da Assessora:** o parágrafo solto virou um cartão de aviso com ícone (`role="note"` e o
+  texto continuam iguais).
+- **"Alternativa correta":** passa a usar `.field-label`, no mesmo tom das outras notas.
+- **Pendente (junto com os rótulos visíveis):** dicas muito longas em campo de linha única, como
+  "Matérias que está cursando (separadas por vírgula)", ainda aparecem cortadas no celular.

@@ -258,6 +258,29 @@ select:hover {
   min-width: 120px;
 }
 
+/*
+ * Linha de campos de formulário: cada campo ocupa pelo menos 200px e, se não couber (celular),
+ * vai para a linha de baixo em vez de cortar o texto. O espaço entre linhas vem da própria linha.
+ */
+.row.campos {
+  margin-bottom: 8px;
+}
+
+.row.campos > * {
+  flex: 1 1 200px;
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+/* Rótulo visível de um campo (no mesmo tom das notas). */
+.field-label {
+  display: block;
+  margin: 4px 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
 .meta {
   color: var(--muted);
   font-size: 0.8rem;

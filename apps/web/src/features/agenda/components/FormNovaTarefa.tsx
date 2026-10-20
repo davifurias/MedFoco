@@ -74,7 +74,7 @@ export function FormNovaTarefa({ onSave }: { onSave: (task: NewTask) => Promise<
             if (invalid === 'title') setInvalid(null);
           }}
         />
-        <div className="row">
+        <div className="row campos">
           <div>
             <label htmlFor={ids.subject} className="sr-only">
               Matéria (opcional)

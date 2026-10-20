@@ -51,7 +51,7 @@ export function FormNovoEvento({ onSave }: { onSave: (event: NewCalendarEvent) =
     <section className="card" aria-labelledby="novo-evento-title">
       <h2 id="novo-evento-title">Novo evento</h2>
       <form onSubmit={handleSubmit} noValidate>
-        <div className="row">
+        <div className="row campos">
           <div>
             <label htmlFor={ids.title} className="sr-only">
               Título do evento
