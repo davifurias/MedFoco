@@ -24,7 +24,7 @@ test('Foco: iniciar, ir ao Início, terminar a fase com o relógio acelerado e v
   await expect(resumo).toContainText('25min estudados hoje');
 
   await irParaArea(page, 'Foco');
-  await expect(page.getByRole('heading', { name: '🍅 Foco' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Foco', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Encerrar' }).click();
   await expect(page.getByText('25 min de foco')).toBeVisible();
   await expect(page.getByRole('region', { name: 'Histórico recente' })).toContainText(

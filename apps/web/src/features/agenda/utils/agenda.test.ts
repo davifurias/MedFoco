@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { CalendarEvent, Task } from '../../../data/types';
-import { priorityMarker, sortEventsByDate, splitTasks } from './agenda';
+import { priorityBadge, sortEventsByDate, splitTasks } from './agenda';
 
 const event = (id: string, date: string, createdAt: number): CalendarEvent => ({
   id,
@@ -59,10 +59,10 @@ describe('splitTasks', () => {
   });
 });
 
-describe('priorityMarker', () => {
-  it('usa 🔴 para alta, 🟡 para média e nada para baixa', () => {
-    expect(priorityMarker('alta')).toBe('🔴');
-    expect(priorityMarker('média')).toBe('🟡');
-    expect(priorityMarker('baixa')).toBe('');
+describe('priorityBadge', () => {
+  it('tem texto (nunca só cor): Alta em vermelho, Média em âmbar e nada para baixa', () => {
+    expect(priorityBadge('alta')).toEqual({ text: 'Alta', className: 'cat-provas' });
+    expect(priorityBadge('média')).toEqual({ text: 'Média', className: 'cat-trabalho' });
+    expect(priorityBadge('baixa')).toBeNull();
   });
 });

@@ -6,6 +6,7 @@ import {
   type GenerateLesson,
   type LessonStep,
 } from '../services/assessora';
+import { Icon } from '../../../components/Icon';
 
 interface AulaGuiadaProps {
   generate: GenerateLesson;
@@ -74,7 +75,7 @@ export function AulaGuiada({ generate, createQuestions }: AulaGuiadaProps) {
     setQuestionsStatus('Criando questões...');
     try {
       await createQuestions(lesson.topic, lesson.steps);
-      setQuestionsStatus('Questões adicionadas ao Banco de Questões ✅');
+      setQuestionsStatus('Questões adicionadas ao Banco de Questões');
     } catch (error) {
       setQuestionsStatus(
         error instanceof AiUnavailableError
@@ -125,7 +126,11 @@ export function AulaGuiada({ generate, createQuestions }: AulaGuiadaProps) {
             {step.title}
           </h3>
           <p>{step.explanation}</p>
-          {step.analogy && <p className="note">💡 Analogia: {step.analogy}</p>}
+          {step.analogy && (
+            <p className="note">
+              <Icon name="ideia" /> Analogia: {step.analogy}
+            </p>
+          )}
           {step.check && (
             <p>
               <strong>Checagem:</strong> {step.check}
@@ -149,7 +154,8 @@ export function AulaGuiada({ generate, createQuestions }: AulaGuiadaProps) {
               </button>
             ) : (
               <button type="button" className="btn" onClick={handleCreateQuestions}>
-                Criar questões desta aula ✨
+                <Icon name="ia" />
+                Criar questões desta aula
               </button>
             )}
           </div>

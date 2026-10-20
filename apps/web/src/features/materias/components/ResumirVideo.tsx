@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AiUnavailableError } from '../../../shared/ai';
 import type { SummarizeMaterial } from '../services/resumirMaterial';
+import { Icon } from '../../../components/Icon';
 
 type Status = 'idle' | 'loading' | 'unavailable' | 'error';
 
@@ -40,7 +41,8 @@ export function ResumirVideo({
         onClick={handleClick}
         disabled={status === 'loading'}
       >
-        Gerar resumo e questões com IA ✨
+        <Icon name="ia" />
+        Gerar resumo e questões com IA
       </button>
       <div className="note" aria-live="polite">
         {status === 'idle' ? '' : MESSAGES[status]}

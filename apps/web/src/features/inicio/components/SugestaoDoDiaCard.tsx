@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { DailySuggestion, DateKey } from '../../../data/types';
 import { AiUnavailableError, type GenerateDailySuggestion } from '../services/sugestaoDoDia';
+import { Icon } from '../../../components/Icon';
 
 type Status = 'idle' | 'loading' | 'unavailable' | 'error';
 
@@ -48,7 +49,17 @@ export function SugestaoDoDiaCard({ suggestion, today, generate }: SugestaoDoDia
         onClick={handleGenerate}
         disabled={status === 'loading'}
       >
-        {todaysText ? 'Gerar de novo 🔄' : 'Gerar sugestão do dia ✨'}
+        {todaysText ? (
+          <>
+            <Icon name="atualizar" />
+            Gerar de novo
+          </>
+        ) : (
+          <>
+            <Icon name="ia" />
+            Gerar sugestão do dia
+          </>
+        )}
       </button>
       <div className="status" aria-live="polite">
         {status === 'idle' ? '' : MESSAGES[status]}

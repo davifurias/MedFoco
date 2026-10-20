@@ -14,11 +14,14 @@ export function splitTasks(tasks: readonly Task[]): { pending: Task[]; done: Tas
   };
 }
 
-/** Marcador visual de prioridade do app original: 🔴 alta, 🟡 média, nenhum para baixa. */
-export function priorityMarker(priority: TaskPriority): string {
-  if (priority === 'alta') return '🔴';
-  if (priority === 'média') return '🟡';
-  return '';
+/**
+ * Selo de prioridade: texto + bandeira, nunca só cor. Alta (vermelho) e média (âmbar); a baixa não
+ * tem selo, como no app original.
+ */
+export function priorityBadge(priority: TaskPriority): { text: string; className: string } | null {
+  if (priority === 'alta') return { text: 'Alta', className: 'cat-provas' };
+  if (priority === 'média') return { text: 'Média', className: 'cat-trabalho' };
+  return null;
 }
 
 export const PRIORITY_LABELS: Record<TaskPriority, string> = {

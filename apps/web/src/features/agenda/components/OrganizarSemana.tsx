@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AiUnavailableError } from '../../../shared/ai';
 import type { OrganizeWeek } from '../services/organizarSemana';
+import { Icon } from '../../../components/Icon';
 
 type Status = 'idle' | 'loading' | 'unavailable' | 'error';
 
@@ -34,7 +35,8 @@ export function OrganizarSemana({ organize }: { organize: OrganizeWeek }) {
         onClick={handleClick}
         disabled={status === 'loading'}
       >
-        Organizar minha semana com IA 🧭
+        <Icon name="organizar" />
+        Organizar minha semana com IA
       </button>
       <div className="note" aria-live="polite">
         {status === 'idle' ? '' : MESSAGES[status]}

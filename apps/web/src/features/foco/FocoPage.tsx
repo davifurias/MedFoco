@@ -5,6 +5,7 @@ import { TimerAtivo } from './components/TimerAtivo';
 import { useFoco } from './FocoContext';
 import { focusMinutesOn, recentSessions } from './utils/sessoes';
 import './foco.css';
+import { Icon } from '../../components/Icon';
 
 export function FocoPage() {
   const { timer, seconds, sessions, notice, recordError, configure, resume, pause, stop } =
@@ -52,7 +53,7 @@ export function FocoPage() {
             {recent.map((session) => (
               <li key={session.id} className="item">
                 <div className="historico-info">
-                  <span aria-hidden="true">{session.type === 'work' ? '🍅' : '☕'}</span>
+                  <Icon name={session.type === 'work' ? 'foco' : 'pausa'} />
                   <span className="sr-only">{session.type === 'work' ? 'Foco' : 'Pausa'}</span>{' '}
                   {session.minutes} min{session.subject ? ` · ${session.subject}` : ''}
                 </div>

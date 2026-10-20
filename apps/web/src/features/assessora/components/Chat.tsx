@@ -150,7 +150,7 @@ export function Chat({ materials, send }: ChatProps) {
           Explicar um material salvo
         </label>
         <select id={ids.select} value={materialId} onChange={(e) => pickMaterial(e.target.value)}>
-          <option value="">📚 Explicar um material salvo...</option>
+          <option value="">Explicar um material salvo...</option>
           {materials.map((material) => (
             <option key={material.id} value={material.id}>
               {material.subject} — {material.title}
@@ -158,7 +158,8 @@ export function Chat({ materials, send }: ChatProps) {
           ))}
         </select>
         <label htmlFor={ids.file} className="btn secondary file-button">
-          💻 Enviar do computador
+          <Icon name="computador" />
+          Enviar do computador
           <input
             id={ids.file}
             ref={fileRef}
@@ -172,7 +173,8 @@ export function Chat({ materials, send }: ChatProps) {
       {attachment && (
         <div className="quick">
           <span className="pill cat-aulas anexo">
-            <span aria-hidden="true">📎 {attachment.kind === 'image' ? '🖼️' : '📄'}</span>
+            <Icon name="anexo" />
+            <Icon name={attachment.kind === 'image' ? 'imagem' : 'arquivo'} />
             <span className="sr-only">Anexo: </span>
             {attachment.title}
             <button type="button" className="anexo-remover" onClick={clearAttachment}>

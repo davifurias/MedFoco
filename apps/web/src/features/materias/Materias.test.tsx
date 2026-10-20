@@ -12,9 +12,17 @@ import type { MedFocoRepository } from '../../data/repository';
 import type { Material } from '../../data/types';
 import { routes } from '../../routes/routes';
 
-/** Os únicos `svg` permitidos são os ícones de "remover"; texto digitado nunca cria outros. */
+/** Os únicos `svg` permitidos são os ícones do app (componente Icon); texto digitado nunca cria outros. */
 function svgForaDosIcones(root: ParentNode): Element[] {
-  return [...root.querySelectorAll('svg')].filter((svg) => !svg.closest('button.del'));
+  return [...root.querySelectorAll('svg')].filter(
+    (svg) =>
+      !(
+        svg.classList.contains('lucide') &&
+        svg.classList.contains('icon') &&
+        svg.getAttribute('aria-hidden') === 'true' &&
+        ![...svg.attributes].some((attribute) => attribute.name.startsWith('on'))
+      ),
+  );
 }
 
 function renderApp(storage: KeyValueStorage = createMemoryStorage(), repo?: MedFocoRepository) {
@@ -57,9 +65,7 @@ afterEach(cleanup);
 describe('Matérias › formulário', () => {
   it('começa em Nota, sem campo de link nem de arquivo, e mostra estado vazio', async () => {
     renderApp();
-    expect(screen.getByRole('button', { name: '📝 Nota' }).getAttribute('aria-pressed')).toBe(
-      'true',
-    );
+    expect(screen.getByRole('button', { name: 'Nota' }).getAttribute('aria-pressed')).toBe('true');
     expect(screen.queryByLabelText('Link do vídeo')).toBeNull();
     expect(document.querySelector('input[type="file"]')).toBeNull();
     expect(await within(list()).findByText('Nenhum material ainda.')).toBeTruthy();
@@ -84,7 +90,7 @@ describe('Matérias › formulário', () => {
     save();
 
     await within(list()).findByText('Geral');
-    expect(within(list()).getByText('📝 Resumo de ECG')).toBeTruthy();
+    expect(within(list()).getByText('Resumo de ECG')).toBeTruthy();
     expect(within(list()).getByText('ondas P, QRS e T')).toBeTruthy();
     expect(
       within(within(list()).getByRole('list', { name: 'Assuntos-chave' }))
@@ -110,7 +116,7 @@ describe('Matérias › formulário', () => {
 
   it('cria aula em vídeo com link normalizado e abre em nova aba com segurança', async () => {
     const { repository } = renderApp();
-    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Aula em vídeo' }));
     expect(screen.getByText(/O app não consegue assistir ao vídeo sozinho/)).toBeTruthy();
     fireEvent.change(field('Matéria'), { target: { value: 'Fisiologia' } });
     fireEvent.change(field('Título do material'), { target: { value: 'Aula 1' } });
@@ -129,7 +135,7 @@ describe('Matérias › formulário', () => {
 
   it('recusa link javascript: no formulário e leva o foco ao campo', async () => {
     const { repository } = renderApp();
-    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Aula em vídeo' }));
     fireEvent.change(field('Título do material'), { target: { value: 'Aula' } });
     fireEvent.change(field('Link do vídeo'), { target: { value: 'javascript:alert(1)' } });
     save();
@@ -143,7 +149,7 @@ describe('Matérias › formulário', () => {
 
   it('recusa link com usuário e senha, explicando o motivo', async () => {
     const { repository } = renderApp();
-    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Aula em vídeo' }));
     fireEvent.change(field('Título do material'), { target: { value: 'Aula' } });
     fireEvent.change(field('Link do vídeo'), {
       target: { value: 'https://usuario:senha@site.com/v' },
@@ -156,7 +162,7 @@ describe('Matérias › formulário', () => {
 
   it('aceita link com porta e sem https://', async () => {
     const { repository } = renderApp();
-    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Aula em vídeo' }));
     fireEvent.change(field('Título do material'), { target: { value: 'Aula' } });
     fireEvent.change(field('Link do vídeo'), { target: { value: 'meusite.com:8080/video' } });
     save();
@@ -166,7 +172,7 @@ describe('Matérias › formulário', () => {
 
   it('vídeo sem link é aceito; o link digitado é descartado ao trocar para Nota', async () => {
     const { repository } = renderApp();
-    fireEvent.click(screen.getByRole('button', { name: '🎥 Aula em vídeo' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Aula em vídeo' }));
     fireEvent.change(field('Título do material'), { target: { value: 'Sem link' } });
     save();
     await screen.findByText('Material salvo!');
@@ -174,7 +180,7 @@ describe('Matérias › formulário', () => {
 
     fireEvent.change(field('Título do material'), { target: { value: 'Virou nota' } });
     fireEvent.change(field('Link do vídeo'), { target: { value: 'https://exemplo.com' } });
-    fireEvent.click(screen.getByRole('button', { name: '📝 Nota' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Nota' }));
     save();
     await waitFor(async () => expect(await repository.listMaterials()).toHaveLength(2));
     expect(
@@ -224,17 +230,17 @@ describe('Matérias › lista', () => {
     renderApp(storage);
     fireEvent.change(field('Título do material'), { target: { value: 'Persistente' } });
     save();
-    await within(list()).findByText('📝 Persistente');
+    await within(list()).findByText('Persistente');
     cleanup();
     renderApp(storage);
-    expect(await within(list()).findByText('📝 Persistente')).toBeTruthy();
+    expect(await within(list()).findByText('Persistente')).toBeTruthy();
   });
 
   it('um item danificado salvo não derruba a tela nem esconde os válidos', async () => {
     const storage = createMemoryStorage();
     store(storage, [{ id: 'x' }, null, 42, mat('1')]);
     renderApp(storage);
-    expect(await within(list()).findByText('📝 Material 1')).toBeTruthy();
+    expect(await within(list()).findByText('Material 1')).toBeTruthy();
     expect(within(list()).getAllByRole('listitem')).toHaveLength(1);
   });
 
@@ -255,9 +261,9 @@ describe('Matérias › lista', () => {
     renderApp(createMemoryStorage(), slow);
     fireEvent.change(field('Título do material'), { target: { value: 'Novo' } });
     save();
-    await within(list()).findByText('📝 Novo');
+    await within(list()).findByText('Novo');
     await act(async () => release());
-    expect(within(list()).getByText('📝 Novo')).toBeTruthy();
+    expect(within(list()).getByText('Novo')).toBeTruthy();
   });
 });
 
@@ -284,7 +290,7 @@ describe('Matérias › exclusão', () => {
     const { repository } = setup();
     fireEvent.click(await screen.findByRole('button', { name: 'Excluir material Material 1' }));
     fireEvent.click(screen.getByRole('button', { name: 'Excluir' }));
-    await waitFor(() => expect(within(list()).queryByText('📝 Material 1')).toBeNull());
+    await waitFor(() => expect(within(list()).queryByText('Material 1')).toBeNull());
     await waitFor(() =>
       expect(document.activeElement).toBe(
         within(list()).getByRole('heading', { name: 'Seus materiais' }),
@@ -302,7 +308,7 @@ describe('Matérias › exclusão', () => {
     expect(
       await screen.findByText('Não foi possível excluir o material. Tente novamente.'),
     ).toBeTruthy();
-    expect(within(list()).getByText('📝 Material 1')).toBeTruthy();
+    expect(within(list()).getByText('Material 1')).toBeTruthy();
   });
 });
 
@@ -316,7 +322,7 @@ describe('Matérias › resumo com IA', () => {
     ]);
     renderApp(storage);
     await within(list()).findAllByRole('listitem');
-    const buttons = screen.getAllByRole('button', { name: 'Gerar resumo e questões com IA ✨' });
+    const buttons = screen.getAllByRole('button', { name: 'Gerar resumo e questões com IA' });
     expect(buttons).toHaveLength(1);
     fireEvent.click(buttons[0]!);
     expect(await screen.findByText(/O resumo com IA ainda não está disponível/)).toBeTruthy();
@@ -354,7 +360,7 @@ describe('Matérias › segurança', () => {
     const storage = createMemoryStorage();
     store(storage, [mat('1', { type: 'video', videoLink: 'javascript:alert(1)', title: 'Mau' })]);
     renderApp(storage);
-    await within(list()).findByText('🎥 Mau');
+    await within(list()).findByText('Mau');
     expect(document.querySelector('a[href^="javascript"]')).toBeNull();
     expect(within(list()).queryByRole('link')).toBeNull();
   });

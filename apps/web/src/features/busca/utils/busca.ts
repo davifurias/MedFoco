@@ -8,6 +8,7 @@ import type {
 } from '../../../data/types';
 import { formatShortDate } from '../../../shared/date';
 import { foldText } from '../../../shared/text';
+import type { IconName } from '../../../components/Icon';
 
 /** A busca só começa com este número de letras (como no app original). */
 export const MIN_QUERY_LENGTH = 2;
@@ -36,7 +37,7 @@ export interface SearchItem {
 export interface SearchSection {
   key: SectionKey;
   label: string;
-  icon: string;
+  icon: IconName;
   /** Aba onde estão todos os itens da área. */
   to: string;
   total: number;
@@ -44,13 +45,13 @@ export interface SearchSection {
 }
 
 /** Ordem das áreas na tela, como no app original. */
-export const SECTIONS: readonly { key: SectionKey; label: string; icon: string; to: string }[] = [
-  { key: 'eventos', label: 'Eventos', icon: '📅', to: '/agenda' },
-  { key: 'materias', label: 'Matérias', icon: '📚', to: '/materias' },
-  { key: 'tarefas', label: 'Tarefas', icon: '✅', to: '/agenda/tarefas' },
-  { key: 'questoes', label: 'Questões', icon: '📝', to: '/questoes' },
-  { key: 'ideiasApp', label: 'Ideias do app', icon: '💡', to: '/ideias' },
-  { key: 'caderno', label: 'Caderno de ideias', icon: '📓', to: '/ideias/caderno' },
+export const SECTIONS: readonly { key: SectionKey; label: string; icon: IconName; to: string }[] = [
+  { key: 'eventos', label: 'Eventos', icon: 'evento', to: '/agenda' },
+  { key: 'materias', label: 'Matérias', icon: 'materias', to: '/materias' },
+  { key: 'tarefas', label: 'Tarefas', icon: 'tarefa', to: '/agenda/tarefas' },
+  { key: 'questoes', label: 'Questões', icon: 'questoes', to: '/questoes' },
+  { key: 'ideiasApp', label: 'Ideias do app', icon: 'ideia', to: '/ideias' },
+  { key: 'caderno', label: 'Caderno de ideias', icon: 'caderno', to: '/ideias/caderno' },
 ];
 
 /** Quantidade de letras que valem para o mínimo (espaços nas pontas não contam). */

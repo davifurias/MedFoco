@@ -10,6 +10,7 @@ import {
   totalResults,
 } from './utils/busca';
 import './busca.css';
+import { Icon } from '../../components/Icon';
 
 export function BuscaPage() {
   const inputId = useId();
@@ -84,7 +85,7 @@ export function BuscaPage() {
       {sections.map((section) => (
         <section key={section.key} className="card" aria-labelledby={`busca-${section.key}`}>
           <h2 id={`busca-${section.key}`}>
-            <span aria-hidden="true">{section.icon}</span> {section.label} ({section.total})
+            <Icon name={section.icon} /> {section.label} ({section.total})
           </h2>
           <ul className="busca-list">
             {section.items.map((item) => (

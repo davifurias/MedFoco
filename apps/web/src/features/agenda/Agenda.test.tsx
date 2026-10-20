@@ -15,9 +15,17 @@ import { AiUnavailableError } from '../../shared/ai';
 import { TarefasPage } from './TarefasPage';
 import type { OrganizeWeek } from './services/organizarSemana';
 
-/** Os únicos `svg` permitidos são os ícones de "remover"; texto digitado nunca cria outros. */
+/** Os únicos `svg` permitidos são os ícones do app (componente Icon); texto digitado nunca cria outros. */
 function svgForaDosIcones(root: ParentNode): Element[] {
-  return [...root.querySelectorAll('svg')].filter((svg) => !svg.closest('button.del'));
+  return [...root.querySelectorAll('svg')].filter(
+    (svg) =>
+      !(
+        svg.classList.contains('lucide') &&
+        svg.classList.contains('icon') &&
+        svg.getAttribute('aria-hidden') === 'true' &&
+        ![...svg.attributes].some((attribute) => attribute.name.startsWith('on'))
+      ),
+  );
 }
 
 function renderApp(path: string, storage: KeyValueStorage = createMemoryStorage()) {
@@ -266,7 +274,9 @@ describe('Agenda › Tarefas', () => {
     expect(item.textContent).toContain('Ler cap. 4');
     expect(item.textContent).toContain('Cardio');
     expect(item.textContent).toContain('Prazo: 01 de out. de 2026');
-    expect(within(item).getByRole('img', { name: 'Prioridade alta' }).textContent).toBe('🔴');
+    expect(within(item).getByText('Alta').closest('.task-priority')?.textContent).toBe(
+      'Prioridade Alta',
+    );
     expect(within(pendingCard()).getByRole('heading').textContent).toBe('Pendentes (1)');
     expect(document.activeElement).toBe(screen.getByLabelText('Título da tarefa'));
     expect((screen.getByLabelText('Prioridade') as HTMLSelectElement).value).toBe('média');
@@ -390,9 +400,7 @@ describe('Agenda › Tarefas', () => {
     it('informa que a IA não está disponível, sem simular resultado', async () => {
       const storage = withPending();
       renderApp('/agenda/tarefas', storage);
-      fireEvent.click(
-        await screen.findByRole('button', { name: 'Organizar minha semana com IA 🧭' }),
-      );
+      fireEvent.click(await screen.findByRole('button', { name: 'Organizar minha semana com IA' }));
       expect(
         await screen.findByText(/ainda não está disponível nesta versão do MedFoco/),
       ).toBeTruthy();
@@ -407,7 +415,7 @@ describe('Agenda › Tarefas', () => {
         });
       renderTarefas(organize, withPending());
       const button = await screen.findByRole('button', {
-        name: 'Organizar minha semana com IA 🧭',
+        name: 'Organizar minha semana com IA',
       });
       fireEvent.click(button);
       expect(await screen.findByText('Organizando...')).toBeTruthy();
@@ -418,9 +426,7 @@ describe('Agenda › Tarefas', () => {
 
     it('mostra mensagem amigável em caso de erro', async () => {
       renderTarefas(() => Promise.reject(new Error('falha')), withPending());
-      fireEvent.click(
-        await screen.findByRole('button', { name: 'Organizar minha semana com IA 🧭' }),
-      );
+      fireEvent.click(await screen.findByRole('button', { name: 'Organizar minha semana com IA' }));
       expect(await screen.findByText(/Não consegui organizar a semana agora/)).toBeTruthy();
     });
   });
@@ -577,7 +583,7 @@ describe('Agenda › acessibilidade', () => {
     ]);
     renderApp('/agenda/tarefas', storage);
     const full = await screen.findByRole('checkbox', { name: 'Tarefa t1' });
-    expect(description(full)).toBe('Matéria: Cardio | Prioridade alta | Prazo: 01 de out. de 2026');
+    expect(description(full)).toBe('Matéria: Cardio | Prioridade Alta | Prazo: 01 de out. de 2026');
     const plain = screen.getByRole('checkbox', { name: 'Tarefa t2' });
     expect(plain.getAttribute('aria-describedby')).toBeNull();
   });

@@ -9,6 +9,7 @@ import { useInicioData } from './hooks/useInicioData';
 import { generateDailySuggestion, type GenerateDailySuggestion } from './services/sugestaoDoDia';
 import { countPendingTasks, focusedMinutesToday, upcomingEvents } from './utils/resumo';
 import './InicioPage.css';
+import { Icon } from '../../components/Icon';
 
 export function InicioPage({
   generateSuggestion = generateDailySuggestion,
@@ -44,7 +45,8 @@ export function InicioPage({
       <ProximosEventosCard events={upcoming} onDelete={data.deleteEvent} />
       <section className="card">
         <Link to="/perfil" className="btn secondary btn-block">
-          ⚙️ Editar perfil acadêmico
+          <Icon name="perfil" />
+          Editar perfil acadêmico
         </Link>
       </section>
     </>

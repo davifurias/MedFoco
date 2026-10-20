@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { NewAttempt, Question } from '../../../data/types';
 import { now, toLocalDateKey } from '../../../shared/date';
 import { OPTION_LETTERS, shuffleOptions, type PracticeQuestion } from '../utils/questoes';
+import { Icon } from '../../../components/Icon';
 
 interface PraticaProps {
   questions: readonly Question[];
@@ -87,8 +88,8 @@ export function Pratica({ questions, onRecord, onExit }: PraticaProps) {
                 onClick={() => answer(position)}
               >
                 <strong>{OPTION_LETTERS[position]})</strong> {question.options[originalIndex]}
-                {answered !== null && isCorrect && <span aria-hidden="true"> ✔</span>}
-                {answered !== null && isChosen && !isCorrect && <span aria-hidden="true"> ✖</span>}
+                {answered !== null && isCorrect && <Icon name="acerto" />}
+                {answered !== null && isChosen && !isCorrect && <Icon name="erro" />}
                 {answered !== null && isCorrect && <span className="sr-only"> (correta)</span>}
                 {answered !== null && isChosen && !isCorrect && (
                   <span className="sr-only"> (sua resposta, incorreta)</span>
@@ -101,7 +102,15 @@ export function Pratica({ questions, onRecord, onExit }: PraticaProps) {
       <div className="note feedback" role="status">
         {answered !== null && (
           <>
-            {answered === current.correctPosition ? '✅ Correto! ' : '❌ Não foi dessa vez. '}
+            {answered === current.correctPosition ? (
+              <>
+                <Icon name="correto" /> Correto!{' '}
+              </>
+            ) : (
+              <>
+                <Icon name="errado" /> Não foi dessa vez.{' '}
+              </>
+            )}
             {question.explanation}
           </>
         )}

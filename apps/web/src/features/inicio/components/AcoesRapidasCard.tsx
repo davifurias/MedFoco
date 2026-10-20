@@ -1,15 +1,16 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router';
+import { Icon, type IconName } from '../../../components/Icon';
 import { FormEventoRapido } from './FormEventoRapido';
 import { FormIdeiaRapida } from './FormIdeiaRapida';
 import { FormTarefaRapida } from './FormTarefaRapida';
 
 type QuickForm = 'tarefa' | 'evento' | 'ideia';
 
-const TOGGLES: { form: QuickForm; icon: string; label: string }[] = [
-  { form: 'tarefa', icon: '✅', label: 'Tarefa' },
-  { form: 'evento', icon: '📅', label: 'Evento' },
-  { form: 'ideia', icon: '💡', label: 'Ideia' },
+const TOGGLES: { form: QuickForm; icon: IconName; label: string }[] = [
+  { form: 'tarefa', icon: 'tarefa', label: 'Tarefa' },
+  { form: 'evento', icon: 'evento', label: 'Evento' },
+  { form: 'ideia', icon: 'ideia', label: 'Ideia' },
 ];
 
 const FORM_ID: Record<QuickForm, string> = {
@@ -53,14 +54,14 @@ export function AcoesRapidasCard({ onAddTask, onAddEvent, onAddIdea }: Props) {
             className={open === form ? 'active' : undefined}
             onClick={() => setOpen((current) => (current === form ? null : form))}
           >
-            <span aria-hidden="true">{icon}</span> {label}
+            <Icon name={icon} /> {label}
           </button>
         ))}
         <Link to="/materias">
-          <span aria-hidden="true">📄</span> Material
+          <Icon name="material" /> Material
         </Link>
         <Link to="/assessora">
-          <span aria-hidden="true">💬</span> Perguntar
+          <Icon name="perguntar" /> Perguntar
         </Link>
       </div>
       {open === 'tarefa' && (

@@ -378,7 +378,7 @@ describe('Navegação', () => {
     ['Estou perdido, o que faço agora?', '/assessora'],
     ['Material', '/materias'],
     ['Perguntar', '/assessora'],
-    ['⚙️ Editar perfil acadêmico', '/perfil'],
+    ['Editar perfil acadêmico', '/perfil'],
   ])('"%s" leva para %s', async (name, path) => {
     const { router } = renderInicio();
     fireEvent.click(screen.getByRole('link', { name }));
@@ -396,12 +396,12 @@ describe('Navegação', () => {
 describe('Sugestão da IA para hoje', () => {
   it('informa que a IA ainda não está disponível, sem simular resposta', async () => {
     const { storage } = renderInicio();
-    fireEvent.click(screen.getByRole('button', { name: 'Gerar sugestão do dia ✨' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Gerar sugestão do dia' }));
     expect(
       await screen.findByText(/ainda não está disponível nesta versão do MedFoco/),
     ).toBeTruthy();
     expect(storage.getItem(STORAGE_KEYS.dailySuggestion)).toBeNull();
-    expect(screen.getByRole('button', { name: 'Gerar sugestão do dia ✨' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Gerar sugestão do dia' })).toBeTruthy();
   });
 
   it('mostra "Pensando..." e desativa o botão enquanto gera', async () => {
@@ -411,7 +411,7 @@ describe('Sugestão da IA para hoje', () => {
         finish = () => reject(new AiUnavailableError());
       });
     renderInicio({ generate });
-    const button = screen.getByRole('button', { name: 'Gerar sugestão do dia ✨' });
+    const button = screen.getByRole('button', { name: 'Gerar sugestão do dia' });
     fireEvent.click(button);
     expect(await screen.findByText('Pensando...')).toBeTruthy();
     expect((button as HTMLButtonElement).disabled).toBe(true);
@@ -421,7 +421,7 @@ describe('Sugestão da IA para hoje', () => {
 
   it('mostra mensagem amigável em caso de erro', async () => {
     renderInicio({ generate: () => Promise.reject(new Error('falha')) });
-    fireEvent.click(screen.getByRole('button', { name: 'Gerar sugestão do dia ✨' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Gerar sugestão do dia' }));
     expect(await screen.findByText(/Não consegui gerar a sugestão agora/)).toBeTruthy();
   });
 
@@ -430,12 +430,12 @@ describe('Sugestão da IA para hoje', () => {
     store(storage, STORAGE_KEYS.dailySuggestion, { date: TODAY, text: 'Revise Cardiologia.' });
     renderInicio({ storage });
     expect(await screen.findByText('Revise Cardiologia.')).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Gerar de novo 🔄' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Gerar de novo' })).toBeTruthy();
 
     cleanup();
     store(storage, STORAGE_KEYS.dailySuggestion, { date: '2026-09-24', text: 'Antiga.' });
     renderInicio({ storage });
-    expect(await screen.findByRole('button', { name: 'Gerar sugestão do dia ✨' })).toBeTruthy();
+    expect(await screen.findByRole('button', { name: 'Gerar sugestão do dia' })).toBeTruthy();
     expect(screen.queryByText('Antiga.')).toBeNull();
   });
 });

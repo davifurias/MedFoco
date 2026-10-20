@@ -1,6 +1,6 @@
 import type { Task } from '../../../data/types';
 import { formatShortDate } from '../../../shared/date';
-import { PRIORITY_LABELS, priorityMarker } from '../utils/agenda';
+import { priorityBadge } from '../utils/agenda';
 import { Icon } from '../../../components/Icon';
 
 export function taskCheckboxId(id: string): string {
@@ -20,10 +20,10 @@ export function TarefaItem({ task, onToggle, onDelete }: TarefaItemProps) {
   const subjectId = `${checkboxId}-materia`;
   const priorityId = `${checkboxId}-prioridade`;
   const deadlineId = `${checkboxId}-prazo`;
-  const marker = priorityMarker(task.priority);
+  const badge = priorityBadge(task.priority);
   // Leitores de tela anunciam matéria, prioridade e prazo junto com a caixa de marcar.
   const describedBy =
-    [task.subject && subjectId, marker && priorityId, task.deadline && deadlineId]
+    [task.subject && subjectId, badge && priorityId, task.deadline && deadlineId]
       .filter(Boolean)
       .join(' ') || undefined;
 
@@ -48,14 +48,11 @@ export function TarefaItem({ task, onToggle, onDelete }: TarefaItemProps) {
               {task.subject}
             </span>
           )}
-          {marker && (
-            <span
-              id={priorityId}
-              className="task-priority"
-              role="img"
-              aria-label={PRIORITY_LABELS[task.priority]}
-            >
-              {marker}
+          {badge && (
+            <span id={priorityId} className={`pill task-priority ${badge.className}`}>
+              <Icon name="prioridade" />
+              <span className="sr-only">Prioridade </span>
+              {badge.text}
             </span>
           )}
           {task.deadline && (
