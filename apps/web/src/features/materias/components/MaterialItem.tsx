@@ -2,6 +2,7 @@ import type { Material } from '../../../data/types';
 import type { SummarizeMaterial } from '../services/resumirMaterial';
 import { notesPreview } from '../utils/materias';
 import { ResumirVideo } from './ResumirVideo';
+import { Icon } from '../../../components/Icon';
 
 interface MaterialItemProps {
   material: Material;
@@ -31,7 +32,7 @@ export function MaterialItem({ material, onDelete, summarize }: MaterialItemProp
           aria-label={`Excluir material ${material.title}`}
           onClick={() => onDelete(material)}
         >
-          <span aria-hidden="true">✕</span>
+          <Icon name="remover" />
         </button>
       </div>
       {material.notes && <div className="note">{notesPreview(material.notes)}</div>}

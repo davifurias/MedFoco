@@ -1,6 +1,7 @@
 import type { Task } from '../../../data/types';
 import { formatShortDate } from '../../../shared/date';
 import { PRIORITY_LABELS, priorityMarker } from '../utils/agenda';
+import { Icon } from '../../../components/Icon';
 
 export function taskCheckboxId(id: string): string {
   return `tarefa-${id}`;
@@ -70,7 +71,7 @@ export function TarefaItem({ task, onToggle, onDelete }: TarefaItemProps) {
         aria-label={`Excluir tarefa ${task.title}`}
         onClick={() => onDelete(task)}
       >
-        <span aria-hidden="true">✕</span>
+        <Icon name="remover" />
       </button>
     </li>
   );

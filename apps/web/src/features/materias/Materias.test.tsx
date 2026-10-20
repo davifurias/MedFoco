@@ -12,6 +12,11 @@ import type { MedFocoRepository } from '../../data/repository';
 import type { Material } from '../../data/types';
 import { routes } from '../../routes/routes';
 
+/** Os únicos `svg` permitidos são os ícones de "remover"; texto digitado nunca cria outros. */
+function svgForaDosIcones(root: ParentNode): Element[] {
+  return [...root.querySelectorAll('svg')].filter((svg) => !svg.closest('button.del'));
+}
+
 function renderApp(storage: KeyValueStorage = createMemoryStorage(), repo?: MedFocoRepository) {
   const router = createMemoryRouter(routes, { initialEntries: ['/materias'] });
   render(<App router={router} repository={repo ?? createLocalRepository(storage)} />);
@@ -341,7 +346,8 @@ describe('Matérias › segurança', () => {
     renderApp(storage);
     await within(list()).findAllByRole('listitem');
     for (const payload of PAYLOADS) expect(list().textContent).toContain(payload);
-    expect(list().querySelector('img, script, svg, a')).toBeNull();
+    expect(list().querySelector('img, script, a, [onload]')).toBeNull();
+    expect(svgForaDosIcones(list())).toEqual([]);
   });
 
   it('um link javascript: adulterado nos dados salvos nunca vira link clicável', async () => {

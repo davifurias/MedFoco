@@ -1,6 +1,7 @@
 import type { CalendarEvent } from '../data/types';
 import { formatShortDate } from '../shared/date';
 import { CategoriaPill } from './CategoriaPill';
+import { Icon } from './Icon';
 
 interface EventoItemProps {
   event: CalendarEvent;
@@ -25,7 +26,7 @@ export function EventoItem({ event, onDelete }: EventoItemProps) {
         aria-label={`Excluir evento ${event.title}`}
         onClick={() => onDelete(event)}
       >
-        <span aria-hidden="true">✕</span>
+        <Icon name="remover" />
       </button>
     </li>
   );
