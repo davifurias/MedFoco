@@ -125,7 +125,7 @@
 
 .tabbar a {
   flex: 1;
-  /* Os 8 itens dividem a largura mesmo em telas muito estreitas (sem empurrar o último). */
+  /* Os itens dividem a largura mesmo em telas muito estreitas (sem empurrar o último). */
   min-width: 0;
   padding: 10px 2px 8px;
   display: flex;
