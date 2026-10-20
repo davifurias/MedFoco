@@ -59,3 +59,26 @@ test('nenhuma tela tem rolagem lateral', async ({ page }) => {
   // data só para garantir que o helper é usado em todos os projetos
   expect(dataEm(0)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 });
+
+test('no computador a barra lateral traz Perfil, Buscar e Tema; no celular só Buscar e Tema', async ({
+  page,
+}) => {
+  await page.goto('/');
+  const larguraComputador = (page.viewportSize()?.width ?? 0) >= 900;
+  const perfil = page.getByRole('link', { name: 'Perfil', exact: true });
+  const buscar = page.getByRole('link', { name: 'Buscar' });
+  const tema = page.getByRole('button', { name: /^Mudar para o tema/ });
+  await expect(buscar).toBeVisible();
+  await expect(tema).toBeVisible();
+  if (larguraComputador) {
+    await expect(perfil).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Navegação principal' })).toBeVisible();
+    await perfil.click();
+    await expect(page).toHaveTitle('Perfil acadêmico · MedFoco');
+  } else {
+    await expect(perfil).toBeHidden();
+    await expect(
+      page.getByRole('navigation', { name: 'Navegação principal (celular)' }),
+    ).toBeVisible();
+  }
+});

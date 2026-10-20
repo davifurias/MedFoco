@@ -1,23 +1,25 @@
+import type { IconName } from '../components/Icon';
+
 /**
- * Áreas principais do MedFoco, na mesma ordem, com os mesmos nomes e ícones da navegação do app
- * original (VIEWS em legacy/MedFoco.html). Usadas pela barra superior (computador) e pela barra
- * inferior (celular).
+ * Áreas principais do MedFoco, na mesma ordem e com os mesmos nomes da navegação do app original
+ * (VIEWS em legacy/MedFoco.html), com ícones desenhados. Usadas pela barra lateral (computador) e
+ * pela barra inferior (celular).
  */
 export interface NavArea {
   path: string;
   label: string;
-  icon: string;
+  icon: IconName;
 }
 
 export const MAIN_AREAS: readonly NavArea[] = [
-  { path: '/', label: 'Início', icon: '🏠' },
-  { path: '/agenda', label: 'Agenda', icon: '📅' },
-  { path: '/materias', label: 'Matérias', icon: '📚' },
-  { path: '/mapa', label: 'Mapa', icon: '🕸️' },
-  { path: '/questoes', label: 'Questões', icon: '📝' },
-  { path: '/foco', label: 'Foco', icon: '🍅' },
-  { path: '/assessora', label: 'Assessora IA', icon: '💬' },
-  { path: '/ideias', label: 'Ideias', icon: '💡' },
+  { path: '/', label: 'Início', icon: 'inicio' },
+  { path: '/agenda', label: 'Agenda', icon: 'agenda' },
+  { path: '/materias', label: 'Matérias', icon: 'materias' },
+  { path: '/mapa', label: 'Mapa', icon: 'mapa' },
+  { path: '/questoes', label: 'Questões', icon: 'questoes' },
+  { path: '/foco', label: 'Foco', icon: 'foco' },
+  { path: '/assessora', label: 'Assessora IA', icon: 'assessora' },
+  { path: '/ideias', label: 'Ideias', icon: 'ideia' },
 ];
 
 /** Nome de cada tela (para o título da aba e o aviso a leitores de tela ao trocar de tela). */

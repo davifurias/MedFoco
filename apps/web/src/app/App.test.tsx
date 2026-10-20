@@ -111,6 +111,27 @@ describe('Navegação principal', () => {
     },
   );
 
+  it('Perfil, Buscar e Tema existem uma só vez, fora das duas listas de áreas', () => {
+    renderApp();
+    const perfil = screen.getAllByRole('link', { name: 'Perfil' });
+    expect(perfil).toHaveLength(1);
+    expect(perfil[0]?.getAttribute('href')).toBe('/perfil');
+    expect(screen.getAllByRole('link', { name: 'Buscar' })).toHaveLength(1);
+    expect(screen.getAllByRole('button', { name: /^Mudar para o tema/ })).toHaveLength(1);
+    for (const nav of [desktopNav(), mobileNav()]) {
+      expect(within(nav).queryByRole('link', { name: 'Perfil' })).toBeNull();
+      expect(within(nav).queryByRole('link', { name: 'Buscar' })).toBeNull();
+    }
+  });
+
+  it('o rótulo visível do tema está contido no nome acessível do botão', () => {
+    renderApp();
+    const button = screen.getByRole('button', { name: /^Mudar para o tema/ });
+    const visible = button.querySelector('.rotulo')?.textContent ?? '';
+    expect(visible).toMatch(/^Tema (claro|escuro)$/);
+    expect(button.getAttribute('aria-label')?.toLowerCase()).toContain(visible.toLowerCase());
+  });
+
   it('abre a Busca pelo botão do cabeçalho', () => {
     const router = renderApp();
     fireEvent.click(screen.getByRole('link', { name: 'Buscar' }));
