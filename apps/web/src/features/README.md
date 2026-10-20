@@ -63,6 +63,6 @@ Antes de gravar por cima de um conteúdo ilegível, o repositório guarda uma c�
 | `busca/`     | `/busca`                                         | Busca global (botão 🔍 do cabeçalho)         |
 | `perfil/`    | `/perfil`                                        | Perfil acadêmico (botão na tela Início)      |
 
-Estrutura do app: `routes/routes.tsx` (endereços), `layouts/AppLayout.tsx` (cabeçalho e barras de
-navegação), `app/navigation.ts` (as 8 áreas da navegação), `components/` (peças reutilizáveis).
+Estrutura do app: `routes/routes.tsx` (endereços), `layouts/AppLayout.tsx` (barra lateral no
+computador; barra do topo e barra de baixo no celular), `app/navigation.ts` (as 8 áreas da navegação), `components/` (peças reutilizáveis).
 Lógica pura reaproveitável (datas, timer, desempenho) poderá ir para `packages/core`.
