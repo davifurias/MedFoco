@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createLocalRepository, createMemoryStorage } from '../data/localRepository';
 import { routes } from '../routes/routes';
 import { App } from './App';
-import { MAIN_AREAS } from './navigation';
+import { MAIN_AREAS, MOBILE_TABS } from './navigation';
 
 function renderApp(path = '/') {
   const router = createMemoryRouter(routes, { initialEntries: [path] });
@@ -65,7 +65,7 @@ describe('App', () => {
 });
 
 describe('Navegação principal', () => {
-  it('mostra as 8 áreas do app original, na mesma ordem, no computador e no celular', () => {
+  it('mostra as 8 áreas do app original, na mesma ordem, na barra do computador; no celular, 4 áreas + Mais', () => {
     renderApp();
     const expected = MAIN_AREAS.map((area) => area.label);
     expect(expected).toEqual([
@@ -78,11 +78,14 @@ describe('Navegação principal', () => {
       'Assessora IA',
       'Ideias',
     ]);
-    for (const nav of [desktopNav(), mobileNav()]) {
-      const links = within(nav).getAllByRole('link');
-      const inOrder = expected.map((label) => within(nav).getByRole('link', { name: label }));
-      expect(inOrder).toEqual(links);
-    }
+    const desktopLinks = within(desktopNav()).getAllByRole('link');
+    expect(
+      expected.map((label) => within(desktopNav()).getByRole('link', { name: label })),
+    ).toEqual(desktopLinks);
+    const mobileLabels = within(mobileNav())
+      .getAllByRole('link')
+      .map((link) => link.textContent);
+    expect(mobileLabels).toEqual(['Início', 'Agenda', 'Matérias', 'Foco', 'Mais']);
   });
 
   const expectedTitles: Record<string, string> = {
@@ -97,19 +100,64 @@ describe('Navegação principal', () => {
   };
 
   it.each(MAIN_AREAS.map((area) => [area.label, area.path]))(
-    'navega para %s pela barra do computador e pela do celular',
+    'navega para %s pela barra do computador e pelo celular (direto ou pela página Mais)',
     (label, path) => {
       const router = renderApp(path === '/' ? '/foco' : '/');
-      for (const nav of [desktopNav, mobileNav]) {
-        fireEvent.click(within(nav()).getByRole('link', { name: label }));
-        expect(router.state.location.pathname).toBe(path);
-        expect(pageTitle()).toBe(expectedTitles[path]);
-        expect(within(nav()).getByRole('link', { name: label }).getAttribute('aria-current')).toBe(
-          'page',
-        );
+      fireEvent.click(within(desktopNav()).getByRole('link', { name: label }));
+      expect(router.state.location.pathname).toBe(path);
+      expect(pageTitle()).toBe(expectedTitles[path]);
+      expect(
+        within(desktopNav()).getByRole('link', { name: label }).getAttribute('aria-current'),
+      ).toBe('page');
+      // Celular: volta ao começo e chega à mesma tela pela barra de baixo.
+      cleanup();
+      const mobileRouter = renderApp(path === '/' ? '/foco' : '/');
+      const onTabBar = MOBILE_TABS.some((tab) => tab.path === path);
+      if (!onTabBar) {
+        fireEvent.click(within(mobileNav()).getByRole('link', { name: 'Mais' }));
+        expect(mobileRouter.state.location.pathname).toBe('/mais');
+        fireEvent.click(within(screen.getByRole('main')).getByRole('link', { name: label }));
+      } else {
+        fireEvent.click(within(mobileNav()).getByRole('link', { name: label }));
       }
+      expect(mobileRouter.state.location.pathname).toBe(path);
+      expect(pageTitle()).toBe(expectedTitles[path]);
     },
   );
+
+  describe('página Mais (celular)', () => {
+    it('lista Mapa, Questões, Assessora IA, Ideias e Perfil, cada um com o seu endereço', () => {
+      renderApp('/mais');
+      const links = within(screen.getByRole('main')).getAllByRole('link');
+      expect(links.map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
+        ['Mapa', '/mapa'],
+        ['Questões', '/questoes'],
+        ['Assessora IA', '/assessora'],
+        ['Ideias', '/ideias'],
+        ['Perfil', '/perfil'],
+      ]);
+      expect(document.title).toBe('Mais · MedFoco');
+    });
+
+    it('o botão Mais fica ativo na própria página e nas telas listadas nela, e só nelas', () => {
+      const mais = () => within(mobileNav()).getByRole('link', { name: 'Mais' });
+      renderApp('/mais');
+      expect(mais().getAttribute('aria-current')).toBe('page');
+      cleanup();
+      for (const path of ['/mapa', '/questoes', '/assessora', '/ideias/caderno', '/perfil']) {
+        renderApp(path);
+        expect(mais().getAttribute('aria-current'), path).toBe('true');
+        expect(mais().classList.contains('active'), path).toBe(true);
+        cleanup();
+      }
+      for (const path of ['/', '/agenda/tarefas', '/materias', '/foco', '/busca']) {
+        renderApp(path);
+        expect(mais().getAttribute('aria-current'), path).toBeNull();
+        expect(mais().classList.contains('active'), path).toBe(false);
+        cleanup();
+      }
+    });
+  });
 
   it('Perfil, Buscar e Tema existem uma só vez, fora das duas listas de áreas', () => {
     renderApp();

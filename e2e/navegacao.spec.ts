@@ -82,3 +82,29 @@ test('no computador a barra lateral traz Perfil, Buscar e Tema; no celular só B
     ).toBeVisible();
   }
 });
+
+test('celular: a barra de baixo tem 4 áreas + Mais, e Mais leva às demais áreas e ao Perfil', async ({
+  page,
+}) => {
+  test.skip((page.viewportSize()?.width ?? 0) >= 900, 'a página Mais é do celular');
+  await page.goto('/');
+  const barra = page.getByRole('navigation', { name: 'Navegação principal (celular)' });
+  await expect(barra.getByRole('link')).toHaveText([
+    'Início',
+    'Agenda',
+    'Matérias',
+    'Foco',
+    'Mais',
+  ]);
+  await barra.getByRole('link', { name: 'Mais' }).click();
+  await expect(page).toHaveTitle('Mais · MedFoco');
+  const lista = page.getByRole('main').getByRole('link');
+  await expect(lista).toHaveText(['Mapa', 'Questões', 'Assessora IA', 'Ideias', 'Perfil']);
+  await lista.getByText('Mapa', { exact: true }).click();
+  await expect(page).toHaveTitle('Mapa · MedFoco');
+  // Em uma tela da página Mais, o botão Mais continua marcado como ativo.
+  await expect(barra.getByRole('link', { name: 'Mais' })).toHaveAttribute('aria-current', 'true');
+  await barra.getByRole('link', { name: 'Mais' }).click();
+  await page.getByRole('main').getByRole('link', { name: 'Perfil', exact: true }).click();
+  await expect(page).toHaveTitle('Perfil acadêmico · MedFoco');
+});

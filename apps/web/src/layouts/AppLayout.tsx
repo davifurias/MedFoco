@@ -1,5 +1,5 @@
-import { Link, NavLink, Outlet } from 'react-router';
-import { MAIN_AREAS } from '../app/navigation';
+import { Link, NavLink, Outlet, useLocation } from 'react-router';
+import { MAIN_AREAS, MOBILE_TABS, MORE_PATH, isInMore } from '../app/navigation';
 import { Icon } from '../components/Icon';
 import { RouteAnnouncer } from '../components/RouteAnnouncer';
 import { ThemeToggle } from '../components/ThemeToggle';
@@ -9,10 +9,12 @@ const MAIN_ID = 'conteudo-principal';
 
 /**
  * No computador, o cabeçalho é a barra lateral (marca, áreas e, no rodapé, Perfil, Buscar e Tema);
- * no celular, é uma barra fina no topo e as áreas ficam na barra de baixo. Os controles existem uma
+ * no celular, é uma barra fina no topo e a barra de baixo traz 4 áreas + "Mais". Os controles existem uma
  * só vez: o CSS muda de lugar, nunca duplica.
  */
 export function AppLayout() {
+  const { pathname } = useLocation();
+  const inMore = isInMore(pathname);
   return (
     <div className="app">
       <a
@@ -58,12 +60,21 @@ export function AppLayout() {
         <Outlet />
       </main>
       <nav className="tabbar" aria-label="Navegação principal (celular)">
-        {MAIN_AREAS.map((area) => (
+        {MOBILE_TABS.map((area) => (
           <NavLink key={area.path} to={area.path} end={area.path === '/'}>
             <Icon name={area.icon} />
             {area.label}
           </NavLink>
         ))}
+        {/* "Mais" fica ativo na própria página e nas telas listadas nela (Mapa, Questões…). */}
+        <Link
+          to={MORE_PATH}
+          className={inMore ? 'active' : undefined}
+          aria-current={pathname === MORE_PATH ? 'page' : inMore ? 'true' : undefined}
+        >
+          <Icon name="mais" />
+          Mais
+        </Link>
       </nav>
     </div>
   );

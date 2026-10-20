@@ -22,6 +22,33 @@ export const MAIN_AREAS: readonly NavArea[] = [
   { path: '/ideias', label: 'Ideias', icon: 'ideia' },
 ];
 
+/** No celular, a barra de baixo mostra só estas 4 áreas; as demais ficam na página "Mais". */
+const MOBILE_TAB_PATHS: readonly string[] = ['/', '/agenda', '/materias', '/foco'];
+
+export const MOBILE_TABS: readonly NavArea[] = MAIN_AREAS.filter((area) =>
+  MOBILE_TAB_PATHS.includes(area.path),
+);
+
+/** Perfil acadêmico: aparece na barra lateral (computador) e na página "Mais" (celular). */
+export const PROFILE_AREA: NavArea = { path: '/perfil', label: 'Perfil', icon: 'perfil' };
+
+/** O que a página "Mais" lista: as áreas que não estão na barra de baixo, mais o Perfil. */
+export const MORE_AREAS: readonly NavArea[] = [
+  ...MAIN_AREAS.filter((area) => !MOBILE_TAB_PATHS.includes(area.path)),
+  PROFILE_AREA,
+];
+
+/** Endereço da página "Mais". */
+export const MORE_PATH = '/mais';
+
+/** Verdadeiro se o endereço é a página "Mais" ou uma das telas listadas nela (o botão "Mais" fica ativo). */
+export function isInMore(pathname: string): boolean {
+  const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname;
+  return [MORE_PATH, ...MORE_AREAS.map((area) => area.path)].some(
+    (path) => normalized === path || normalized.startsWith(`${path}/`),
+  );
+}
+
 /** Nome de cada tela (para o título da aba e o aviso a leitores de tela ao trocar de tela). */
 const PAGE_NAMES: Record<string, string> = {
   '/': 'Início',
@@ -37,6 +64,7 @@ const PAGE_NAMES: Record<string, string> = {
   '/ideias/caderno': 'Ideias · Caderno de Ideias',
   '/busca': 'Busca',
   '/perfil': 'Perfil acadêmico',
+  '/mais': 'Mais',
 };
 
 export const APP_NAME = 'MedFoco';

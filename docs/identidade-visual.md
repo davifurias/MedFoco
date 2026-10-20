@@ -11,8 +11,8 @@ só começa com autorização. Nenhuma etapa muda funções, dados ou endereços
 | 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                     |
 | 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                     |
 | 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36)                     |
-| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | em revisão                             |
-| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | não iniciada                           |
+| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | concluída (PR #37)                     |
+| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | em revisão                             |
 | 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início |
 
 "Mais" (celular) guarda Mapa, Questões, Assessora IA, Ideias e Perfil: **todas as áreas continuam
@@ -87,3 +87,16 @@ app).
   tema também são desenhados.
 - **Decisões do dono:** "Mais" será uma página própria (`/mais`); no celular ficam Início, Agenda,
   Matérias e Foco; ponto de troca em 900 px.
+
+### Celular (etapa 3B)
+
+- **Barra de baixo:** Início, Agenda, Matérias, Foco e **Mais** (5 itens, no lugar dos 8 apertados).
+- **Página `/mais`** (`features/mais/`): lista Mapa, Questões, Assessora IA, Ideias e **Perfil**, em
+  linhas grandes de toque, com ícone e seta. Todas as áreas continuam acessíveis. A página existe
+  também no computador (pelo endereço), mas não aparece na barra lateral.
+- **Botão Mais ativo** na própria página e nas telas listadas nela (`isInMore` em
+  `app/navigation.ts`): `aria-current="page"` em `/mais` e `aria-current="true"` nas telas dentro
+  do grupo. A divisão (4 áreas na barra, o resto em Mais) tem teste: cada área está em um lugar só.
+- **Testes ponta a ponta:** o auxiliar `irParaArea` usa a barra de baixo ou passa por "Mais"; há um
+  teste do fluxo no celular (e a página `/mais` entra nas varreduras de acessibilidade e de
+  rolagem lateral).

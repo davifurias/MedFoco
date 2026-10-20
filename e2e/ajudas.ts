@@ -35,14 +35,22 @@ export const TODAS_AS_ROTAS = [
   '/ideias/caderno',
   '/busca?q=co',
   '/perfil',
+  '/mais',
 ];
 
-/** Clica na área pela barra de navegação visível (no computador, a de cima; no celular, a de baixo). */
+/**
+ * Clica na área pela navegação visível: no computador, a barra lateral; no celular, a barra de
+ * baixo (4 áreas) ou, para as demais, o botão "Mais" e a lista da página Mais.
+ */
 export async function irParaArea(page: Page, nome: string) {
-  await page
-    .getByRole('navigation', { name: /^Navegação principal/ })
-    .getByRole('link', { name: nome, exact: true })
-    .click();
+  const barra = page.getByRole('navigation', { name: /^Navegação principal/ });
+  const link = barra.getByRole('link', { name: nome, exact: true });
+  if ((await link.count()) > 0) {
+    await link.click();
+    return;
+  }
+  await barra.getByRole('link', { name: 'Mais', exact: true }).click();
+  await page.getByRole('main').getByRole('link', { name: nome, exact: true }).click();
 }
 
 /** Dados de exemplo gravados antes de abrir a página, para varrer telas com conteúdo. */

@@ -49,19 +49,20 @@ valor padrão e itens inutilizáveis são ignorados na tela, **sem** serem apaga
 Antes de gravar por cima de um conteúdo ilegível, o repositório guarda uma cópia em
 `<chave>:backup:<momento>`.
 
-| Pasta        | Endereço                                         | Origem no app original                       |
-| ------------ | ------------------------------------------------ | -------------------------------------------- |
-| `inicio/`    | `/`                                              | Início                                       |
-| `agenda/`    | `/agenda`, `/agenda/tarefas`, `/agenda/horarios` | Agenda (sub-abas Eventos, Tarefas, Horários) |
-| `materias/`  | `/materias`                                      | Matérias                                     |
-| `mapa/`      | `/mapa`                                          | Mapa visual                                  |
-| `questoes/`  | `/questoes`                                      | Banco de questões                            |
-| `foco/`      | `/foco`                                          | Foco (timer)                                 |
-| `assessora/` | `/assessora`                                     | Assessora IA (IA real só a partir da Fase 3) |
-| `ideias/`    | `/ideias`                                        | Ideias (sub-aba "Ideias do App")             |
-| `caderno/`   | `/ideias/caderno`                                | Sub-aba "Caderno de Ideias" dentro de Ideias |
-| `busca/`     | `/busca`                                         | Busca global (botão 🔍 do cabeçalho)         |
-| `perfil/`    | `/perfil`                                        | Perfil acadêmico (botão na tela Início)      |
+| Pasta        | Endereço                                         | Origem no app original                                           |
+| ------------ | ------------------------------------------------ | ---------------------------------------------------------------- |
+| `inicio/`    | `/`                                              | Início                                                           |
+| `agenda/`    | `/agenda`, `/agenda/tarefas`, `/agenda/horarios` | Agenda (sub-abas Eventos, Tarefas, Horários)                     |
+| `materias/`  | `/materias`                                      | Matérias                                                         |
+| `mapa/`      | `/mapa`                                          | Mapa visual                                                      |
+| `questoes/`  | `/questoes`                                      | Banco de questões                                                |
+| `foco/`      | `/foco`                                          | Foco (timer)                                                     |
+| `assessora/` | `/assessora`                                     | Assessora IA (IA real só a partir da Fase 3)                     |
+| `ideias/`    | `/ideias`                                        | Ideias (sub-aba "Ideias do App")                                 |
+| `caderno/`   | `/ideias/caderno`                                | Sub-aba "Caderno de Ideias" dentro de Ideias                     |
+| `busca/`     | `/busca`                                         | Busca global (botão 🔍 do cabeçalho)                             |
+| `perfil/`    | `/perfil`                                        | Perfil acadêmico (botão na tela Início)                          |
+| `mais/`      | `/mais`                                          | Página "Mais" do celular (áreas fora da barra de baixo + Perfil) |
 
 Estrutura do app: `routes/routes.tsx` (endereços), `layouts/AppLayout.tsx` (barra lateral no
 computador; barra do topo e barra de baixo no celular), `app/navigation.ts` (as 8 áreas da navegação), `components/` (peças reutilizáveis).
