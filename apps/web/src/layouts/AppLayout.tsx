@@ -1,11 +1,17 @@
 import { Link, NavLink, Outlet } from 'react-router';
 import { MAIN_AREAS } from '../app/navigation';
+import { Icon } from '../components/Icon';
 import { RouteAnnouncer } from '../components/RouteAnnouncer';
 import { ThemeToggle } from '../components/ThemeToggle';
 import './AppLayout.css';
 
 const MAIN_ID = 'conteudo-principal';
 
+/**
+ * No computador, o cabeçalho é a barra lateral (marca, áreas e, no rodapé, Perfil, Buscar e Tema);
+ * no celular, é uma barra fina no topo e as áreas ficam na barra de baixo. Os controles existem uma
+ * só vez: o CSS muda de lugar, nunca duplica.
+ */
 export function AppLayout() {
   return (
     <div className="app">
@@ -22,22 +28,31 @@ export function AppLayout() {
       </a>
       <RouteAnnouncer />
       <header className="app-header">
-        <h1>
-          <span aria-hidden="true">🧠</span> MedFoco
+        <h1 className="brand">
+          <span className="brand-mark">
+            <Icon name="marca" />
+          </span>
+          MedFoco
         </h1>
-        <div className="app-header-actions">
-          <ThemeToggle />
-          <Link to="/busca" className="icon-button" aria-label="Buscar" title="Buscar">
-            <span aria-hidden="true">🔍</span>
-          </Link>
-        </div>
         <nav className="topnav" aria-label="Navegação principal">
           {MAIN_AREAS.map((area) => (
             <NavLink key={area.path} to={area.path} end={area.path === '/'}>
-              <span aria-hidden="true">{area.icon}</span> {area.label}
+              <Icon name={area.icon} />
+              {area.label}
             </NavLink>
           ))}
         </nav>
+        <div className="app-header-actions">
+          <Link to="/perfil" className="icon-button perfil-link">
+            <Icon name="perfil" />
+            <span className="rotulo">Perfil</span>
+          </Link>
+          <Link to="/busca" className="icon-button" aria-label="Buscar" title="Buscar">
+            <Icon name="busca" />
+            <span className="rotulo">Buscar</span>
+          </Link>
+          <ThemeToggle />
+        </div>
       </header>
       <main id={MAIN_ID} className="app-main" tabIndex={-1}>
         <Outlet />
@@ -45,9 +60,7 @@ export function AppLayout() {
       <nav className="tabbar" aria-label="Navegação principal (celular)">
         {MAIN_AREAS.map((area) => (
           <NavLink key={area.path} to={area.path} end={area.path === '/'}>
-            <span className="ic" aria-hidden="true">
-              {area.icon}
-            </span>
+            <Icon name={area.icon} />
             {area.label}
           </NavLink>
         ))}

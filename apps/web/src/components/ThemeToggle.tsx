@@ -2,6 +2,7 @@ import { useLayoutEffect, useState } from 'react';
 import { useRepository } from '../data/RepositoryContext';
 import type { Theme } from '../data/types';
 import { applyTheme, currentTheme } from '../shared/theme';
+import { Icon } from './Icon';
 
 /**
  * Botão do cabeçalho que alterna entre o tema escuro (padrão) e o claro. Ao abrir, aplica o tema
@@ -42,7 +43,8 @@ export function ThemeToggle() {
       aria-label={`Mudar para o tema ${next}`}
       title={`Mudar para o tema ${next}`}
     >
-      <span aria-hidden="true">{theme === 'escuro' ? '☀️' : '🌙'}</span>
+      <Icon name={theme === 'escuro' ? 'tema-claro' : 'tema-escuro'} />
+      <span className="rotulo">Tema {next}</span>
     </button>
   );
 }

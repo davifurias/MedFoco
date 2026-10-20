@@ -10,8 +10,9 @@ só começa com autorização. Nenhuma etapa muda funções, dados ou endereços
 | --- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
 | 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                     |
 | 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                     |
-| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | em revisão                             |
-| 3   | Navegação: barra lateral (computador) e barra inferior com 4 áreas + "Mais" (celular)      | não iniciada                           |
+| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36)                     |
+| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | em revisão                             |
+| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | não iniciada                           |
 | 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início |
 
 "Mais" (celular) guarda Mapa, Questões, Assessora IA, Ideias e Perfil: **todas as áreas continuam
@@ -71,3 +72,18 @@ app).
 - **Testes de texto digitado:** todo `svg` na tela precisa ser um ícone genuíno do app (classes
   `lucide` e `icon`, `aria-hidden`, sem atributo `on…`). Provado com falhas propositais (título de
   tarefa e de material aceitando HTML).
+
+## Navegação (etapa 3)
+
+- **3A, computador (≥ 900 px):** o cabeçalho vira a **barra lateral** (marca, as 8 áreas e, no
+  rodapé, Perfil, Buscar e Tema). Abaixo de 900 px (celular e tablet em pé), o cabeçalho é uma barra
+  fina com marca, Buscar e Tema, e as áreas ficam na barra de baixo (que só muda na 3B).
+- **Uma só cópia dos controles:** Perfil, Buscar e Tema existem uma vez no código; o CSS muda de
+  lugar, nunca duplica (há teste). O rótulo visível do tema ("Tema claro") está contido no nome
+  acessível do botão ("Mudar para o tema claro").
+- **Perfil na navegação:** novo ponto de acesso, só no computador por enquanto (no celular entra em
+  "Mais", na 3B). O botão "Editar perfil acadêmico" do Início continua.
+- **Logo:** ícone de cérebro num quadrado colorido (no lugar do 🧠). Os ícones da navegação e do
+  tema também são desenhados.
+- **Decisões do dono:** "Mais" será uma página própria (`/mais`); no celular ficam Início, Agenda,
+  Matérias e Foco; ponto de troca em 900 px.
