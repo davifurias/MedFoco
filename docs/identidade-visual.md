@@ -8,8 +8,9 @@ só começa com autorização. Nenhuma etapa muda funções, dados ou endereços
 
 | #   | Etapa                                                                                      | Status                                 |
 | --- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
-| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | em revisão                             |
-| 2   | Componentes base (botões, campos, cartões, pílulas, abas, diálogos) e ícones desenhados    | não iniciada                           |
+| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                     |
+| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | em revisão                             |
+| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | não iniciada                           |
 | 3   | Navegação: barra lateral (computador) e barra inferior com 4 áreas + "Mais" (celular)      | não iniciada                           |
 | 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início |
 
@@ -40,3 +41,19 @@ app).
   `--radius-sm`), sombras (`--shadow-*`) e transição (`--ease`).
 - **Movimento:** transições curtas, desligadas para quem pede menos movimento no aparelho.
 - **Cores que não mudaram:** as das categorias (`--c-*`) e as das matérias no Mapa.
+
+## Componentes base e ícones (etapa 2)
+
+- **`components/Icon.tsx`:** único ponto de uso de `lucide-react` (ISC). Ícones sempre decorativos
+  (`aria-hidden`); o nome acessível fica no botão ou no texto ao lado. Para usar outro ícone,
+  registre-o em `ICONS`. Tamanho pela classe `.icon` (segue o texto); sem `style=""`, por causa da
+  política de segurança (há teste).
+- **Botões:** `.btn` alinha ícone e texto; estados de passar o mouse também no secundário e no
+  perigo; foco visível com `--primary-text` (mais legível nos dois temas).
+- **Abas e filtros (`.quick`)**, **remover (`.del`)** e **diálogos:** áreas de toque maiores,
+  transições curtas, sombra e desfoque no fundo do diálogo.
+- **Decisões do dono:** os emojis 👋 e 😵 ficam (dão calor ao app); prioridade (🔴/🟡) e
+  acerto/erro (✔/✖) ganham texto e ícone, sem depender só da cor (2B); ícones da navegação e do
+  cabeçalho ficam para a etapa 3.
+- **Testes de segurança de texto digitado:** agora aceitam só os `svg` dos botões de remover e
+  proíbem qualquer outro `svg` ou atributo `onload` (provado com uma falha proposital).
