@@ -87,7 +87,7 @@ test('Questões: cadastrar, praticar e ver o desempenho', async ({ page }) => {
   // As alternativas vêm embaralhadas: a correta é a que tem o texto "Opção A".
   await page.getByRole('button', { name: /Opção A/ }).click();
   await expect(page.getByRole('status').filter({ hasText: 'Correto' })).toContainText(
-    '✅ Correto! Porque sim.',
+    'Correto! Porque sim.',
   );
   await page.getByRole('button', { name: 'Ver resultado' }).click();
   await expect(page.getByText('1 / 1 corretas')).toBeVisible();

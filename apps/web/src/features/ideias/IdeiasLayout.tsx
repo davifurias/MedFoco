@@ -3,8 +3,8 @@ import { SubTabs } from '../../components/SubTabs';
 
 // No app original, o Caderno de Ideias é uma sub-aba da área Ideias.
 const TABS = [
-  { to: '/ideias', label: '💡 Ideias do App' },
-  { to: '/ideias/caderno', label: '📓 Caderno de Ideias' },
+  { to: '/ideias', label: 'Ideias do App', icon: 'ideia' as const },
+  { to: '/ideias/caderno', label: 'Caderno de Ideias', icon: 'caderno' as const },
 ];
 
 export function IdeiasLayout() {

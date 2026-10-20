@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { now } from '../../../shared/date';
 import { formatClock, isFresh, type TimerState } from '../utils/timer';
+import { Icon } from '../../../components/Icon';
 
 interface TimerAtivoProps {
   timer: TimerState;
@@ -23,7 +24,7 @@ export function TimerAtivo({ timer, seconds, onResume, onPause, onStop }: TimerA
   return (
     <section className="card timer-card" aria-labelledby="timer-title">
       <h2 id="timer-title" ref={titleRef} tabIndex={-1}>
-        {isWork ? '🍅 Foco' : '☕ Pausa'}
+        <Icon name={isWork ? 'foco' : 'pausa'} /> {isWork ? 'Foco' : 'Pausa'}
         {timer.subject ? ` · ${timer.subject}` : ''}
       </h2>
       <div className="timer-display" role="timer" aria-label={`Tempo restante: ${clock}`}>

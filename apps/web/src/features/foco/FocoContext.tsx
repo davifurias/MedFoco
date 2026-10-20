@@ -117,8 +117,8 @@ export function FocoProvider({ children }: { children: ReactNode }) {
       beep();
       setNotice(
         last.phase === 'work'
-          ? '🍅 Foco concluído! Hora da pausa.'
-          : '☕ Pausa concluída! De volta ao foco.',
+          ? 'Foco concluído! Hora da pausa.'
+          : 'Pausa concluída! De volta ao foco.',
       );
     }
   }, [commit, recordCompleted]);

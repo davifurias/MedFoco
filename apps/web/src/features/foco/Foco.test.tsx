@@ -25,7 +25,7 @@ const stored = (storage: KeyValueStorage) =>
   JSON.parse(storage.getItem(STORAGE_KEYS.focusSessions) ?? '[]') as Record<string, unknown>[];
 const click = (name: string | RegExp) => fireEvent.click(screen.getByRole('button', { name }));
 const clock = () => screen.getByRole('timer').textContent;
-const title = () => screen.getByRole('heading', { level: 2 }).textContent;
+const title = () => screen.getByRole('heading', { level: 2 }).textContent?.trim();
 
 /** Avança o relógio (e os temporizadores) e deixa as gravações assíncronas terminarem. */
 async function advance(ms: number) {
@@ -81,9 +81,9 @@ describe('Foco — tela inicial', () => {
       .getAllByRole('listitem')
       .map((li) => li.textContent);
     expect(items).toEqual([
-      '🍅Foco 50 min06 de out. de 2026',
-      '☕Pausa 5 min07 de out. de 2026',
-      '🍅Foco 25 min · Cardio07 de out. de 2026',
+      'Foco 50 min06 de out. de 2026',
+      'Pausa 5 min07 de out. de 2026',
+      'Foco 25 min · Cardio07 de out. de 2026',
     ]);
   });
 });
@@ -95,7 +95,7 @@ describe('Foco — timer', () => {
       target: { value: '  Cardio ' },
     });
     click('Configurar');
-    expect(title()).toBe('🍅 Foco · Cardio');
+    expect(title()).toBe('Foco · Cardio');
     expect(clock()).toBe('25:00');
     await advance(5_000);
     expect(clock()).toBe('25:00'); // ainda não iniciou
@@ -117,7 +117,7 @@ describe('Foco — timer', () => {
     await advance(25 * MIN);
     expect(beepMock).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('status').textContent).toContain('Foco concluído! Hora da pausa.');
-    expect(title()).toBe('☕ Pausa');
+    expect(title()).toBe('Pausa');
     expect(clock()).toBe('05:00');
     expect(screen.getByText('Ciclos completos hoje: 1')).toBeTruthy();
     expect(stored(storage)).toMatchObject([
@@ -126,7 +126,7 @@ describe('Foco — timer', () => {
 
     await advance(5 * MIN);
     expect(screen.getByRole('status').textContent).toContain('Pausa concluída');
-    expect(title()).toBe('🍅 Foco');
+    expect(title()).toBe('Foco');
     expect(clock()).toBe('25:00');
     expect(stored(storage)).toMatchObject([
       { type: 'work', minutes: 25 },
@@ -167,7 +167,7 @@ describe('Foco — timer', () => {
     click('Configurar');
     click('Iniciar');
     await advance(25 * MIN + 3 * 60_000); // terminou o foco; 3 min de pausa
-    expect(title()).toBe('☕ Pausa');
+    expect(title()).toBe('Pausa');
     click('Encerrar');
     expect(stored(storage)).toHaveLength(1); // só o foco completo
     expect(screen.getByText('25 min de foco')).toBeTruthy();
@@ -179,7 +179,7 @@ describe('Foco — timer', () => {
     click('Iniciar');
     vi.setSystemTime(new Date(2026, 9, 7, 10, 28, 0)); // 28 min depois, sem nenhum tick no meio
     await advance(500);
-    expect(title()).toBe('☕ Pausa');
+    expect(title()).toBe('Pausa');
     expect(clock()).toBe('02:00');
     expect(stored(storage)).toMatchObject([{ type: 'work', minutes: 25 }]);
   });
@@ -223,7 +223,7 @@ describe('Foco — timer', () => {
     expect(screen.getByRole('alert').textContent).toBe(
       'Não foi possível registrar a sessão no histórico.',
     );
-    expect(title()).toBe('☕ Pausa');
+    expect(title()).toBe('Pausa');
   });
 });
 

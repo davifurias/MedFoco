@@ -9,8 +9,8 @@ só começa com autorização. Nenhuma etapa muda funções, dados ou endereços
 | #   | Etapa                                                                                      | Status                                 |
 | --- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
 | 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                     |
-| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | em revisão                             |
-| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | não iniciada                           |
+| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                     |
+| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | em revisão                             |
 | 3   | Navegação: barra lateral (computador) e barra inferior com 4 áreas + "Mais" (celular)      | não iniciada                           |
 | 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início |
 
@@ -57,3 +57,17 @@ app).
   cabeçalho ficam para a etapa 3.
 - **Testes de segurança de texto digitado:** agora aceitam só os `svg` dos botões de remover e
   proíbem qualquer outro `svg` ou atributo `onload` (provado com uma falha proposital).
+
+## Ícones no lugar dos emojis (etapa 2B)
+
+- Todos os emojis que eram ícones (abas, ações rápidas, botões com IA, tipos de material, foco e
+  pausa, anexos, resultados da busca) usam `Icon`. Ficam como emoji, por decisão do dono: 👋 (saudação)
+  e 😵 ("Estou perdido"). A navegação e o cabeçalho (🏠📅… ☀️🌙 🔍 🧠) são da etapa 3.
+- **Prioridade da tarefa:** selo com texto e bandeira (**Alta** em vermelho, **Média** em âmbar), nunca
+  só cor; baixa continua sem selo. Leitores de tela leem "Prioridade Alta".
+- **Prática de questões:** o acerto e o erro ganham ícone; o texto "Correto!" / "Não foi dessa vez."
+  e o aviso "(correta)" / "(sua resposta, incorreta)" para leitores de tela continuam.
+- **Mensagens de texto** (aviso de fim de foco e pausa, "Questões adicionadas…") ficaram sem emoji.
+- **Testes de texto digitado:** todo `svg` na tela precisa ser um ícone genuíno do app (classes
+  `lucide` e `icon`, `aria-hidden`, sem atributo `on…`). Provado com falhas propositais (título de
+  tarefa e de material aceitando HTML).

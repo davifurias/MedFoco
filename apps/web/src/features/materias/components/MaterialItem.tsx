@@ -13,7 +13,11 @@ interface MaterialItemProps {
 /** Material: título (com link, se for vídeo), anotações, assuntos-chave e excluir. */
 export function MaterialItem({ material, onDelete, summarize }: MaterialItemProps) {
   const isVideo = material.type === 'video';
-  const label = `${isVideo ? '🎥' : '📝'} ${material.title}`;
+  const label = (
+    <>
+      <Icon name={isVideo ? 'video' : 'nota'} /> {material.title}
+    </>
+  );
 
   return (
     <li className="material">

@@ -11,6 +11,7 @@ import {
   type ThemeGroup,
 } from './services/organizarCaderno';
 import './caderno.css';
+import { Icon } from '../../components/Icon';
 
 export function CadernoPage({ organize = organizeNotebook }: { organize?: OrganizeNotebook }) {
   const repository = useRepository();
@@ -71,7 +72,8 @@ export function CadernoPage({ organize = organizeNotebook }: { organize?: Organi
             disabled={organizing}
             onClick={handleOrganize}
           >
-            Organizar com IA ✨
+            <Icon name="ia" />
+            Organizar com IA
           </button>
         )}
         <div className="status" role="status">

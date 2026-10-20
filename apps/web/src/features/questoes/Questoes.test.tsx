@@ -261,7 +261,7 @@ describe('Questões — prática', () => {
     expect(screen.queryByRole('button', { name: 'Próxima' })).toBeNull();
 
     click(/Certa 1/);
-    expect(screen.getByRole('status').textContent).toBe('✅ Correto! Explicação 1');
+    expect(screen.getByRole('status').textContent?.trim()).toBe('Correto! Explicação 1');
     expect(screen.getByRole('button', { name: /Certa 1/ }).textContent).toContain('(correta)');
     for (const option of screen.getAllByRole('button', { name: /^[A-D]\)/ })) {
       expect((option as HTMLButtonElement).disabled).toBe(true);
@@ -271,7 +271,7 @@ describe('Questões — prática', () => {
     expect(screen.queryByRole('button', { name: 'Próxima' })).toBeNull();
 
     click(/B 2/);
-    expect(screen.getByRole('status').textContent).toBe('❌ Não foi dessa vez. Explicação 2');
+    expect(screen.getByRole('status').textContent?.trim()).toBe('Não foi dessa vez. Explicação 2');
     expect(screen.getByRole('button', { name: /B 2/ }).textContent).toContain(
       'sua resposta, incorreta',
     );
@@ -301,7 +301,7 @@ describe('Questões — prática', () => {
     await screen.findByText('Enunciado 1');
     start();
     click(/D 1/);
-    expect(screen.getByRole('status').textContent).toContain('✅ Correto!');
+    expect(screen.getByRole('status').textContent).toContain('Correto!');
   });
 
   it('permite sair da prática a qualquer momento', async () => {
@@ -320,7 +320,7 @@ describe('Questões — prática', () => {
     start();
     click(/Certa 1/);
     expect(await screen.findByText('Não foi possível registrar esta resposta.')).toBeTruthy();
-    expect(screen.getByRole('status').textContent).toContain('✅ Correto!');
+    expect(screen.getByRole('status').textContent).toContain('Correto!');
   });
 
   it('usa o dia local ao registrar, mesmo perto da meia-noite', async () => {

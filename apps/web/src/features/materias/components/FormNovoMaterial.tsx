@@ -2,10 +2,11 @@ import { useId, useRef, useState, type FormEvent } from 'react';
 import type { MaterialType, NewMaterial } from '../../../data/types';
 import { checkHttpUrl } from '../../../shared/url';
 import { DEFAULT_SUBJECT, parseTags } from '../utils/materias';
+import { Icon, type IconName } from '../../../components/Icon';
 
-const TYPES: { type: MaterialType; label: string }[] = [
-  { type: 'nota', label: '📝 Nota' },
-  { type: 'video', label: '🎥 Aula em vídeo' },
+const TYPES: { type: MaterialType; label: string; icon: IconName }[] = [
+  { type: 'nota', label: 'Nota', icon: 'nota' },
+  { type: 'video', label: 'Aula em vídeo', icon: 'video' },
 ];
 
 type Invalid = 'title' | 'link' | null;
@@ -95,6 +96,7 @@ export function FormNovoMaterial({ onSave }: { onSave: (material: NewMaterial) =
               aria-pressed={type === option.type}
               onClick={() => setType(option.type)}
             >
+              <Icon name={option.icon} />
               {option.label}
             </button>
           ))}

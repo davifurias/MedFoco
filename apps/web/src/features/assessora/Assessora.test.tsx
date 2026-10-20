@@ -152,7 +152,7 @@ describe('Assessora — aula guiada (interface pronta para a IA)', () => {
     expect(generate).toHaveBeenCalledWith('Ciclo cardíaco');
     expect(screen.getByText('Passo 1 de 2 · Ciclo cardíaco')).toBeTruthy();
     expect(screen.getByRole('heading', { name: 'Passo um' })).toBeTruthy();
-    expect(screen.getByText('💡 Analogia: Como uma bomba')).toBeTruthy();
+    expect(screen.getByText('Analogia: Como uma bomba')).toBeTruthy();
     expect(screen.getByText('Pergunta 1?')).toBeTruthy();
     const details = screen.getByText('Ver resposta').closest('details') as HTMLDetailsElement;
     expect(details.open).toBe(false);
@@ -188,7 +188,7 @@ describe('Assessora — aula guiada (interface pronta para a IA)', () => {
     await start();
     click('Próximo');
     click(/Criar questões desta aula/);
-    expect(await screen.findByText('Questões adicionadas ao Banco de Questões ✅')).toBeTruthy();
+    expect(await screen.findByText('Questões adicionadas ao Banco de Questões')).toBeTruthy();
     expect(createQuestions).toHaveBeenCalledWith('Ciclo cardíaco', steps);
   });
 
@@ -303,11 +303,7 @@ describe('Assessora — anexos', () => {
     const options = [...(field('Explicar um material salvo') as HTMLSelectElement).options].map(
       (o) => o.text,
     );
-    expect(options).toEqual([
-      '📚 Explicar um material salvo...',
-      'Cardio — Aula 1',
-      'Neuro — Aula 3',
-    ]);
+    expect(options).toEqual(['Explicar um material salvo...', 'Cardio — Aula 1', 'Neuro — Aula 3']);
     fireEvent.change(field('Explicar um material salvo'), { target: { value: '1' } });
     expect(screen.getByText('Aula 1', { selector: '.anexo' })).toBeTruthy();
     expect((field('Mensagem para a assessora') as HTMLTextAreaElement).value).toBe(
