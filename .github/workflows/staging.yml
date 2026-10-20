@@ -1,0 +1,53 @@
+# Aplica as migrações do banco no STAGING (nunca em produção).
+# Roda em merge na main que altere supabase/migrations/ e, manualmente, pelo botão "Run workflow"
+# (útil para a primeira aplicação). Nunca roda em Pull Request.
+# Os segredos ficam no Environment "staging" do GitHub (ver docs/configuracao-github.md).
+name: Staging (migrações do banco)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Uma execução por vez, sem cancelar a que já está aplicando migrações.
+concurrency:
+  group: staging-migracoes
+  cancel-in-progress: false
+
+jobs:
+  aplicar:
+    name: Aplicar migrações no staging
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - name: Confere se os segredos do staging existem
+        run: |
+          for nome in SUPABASE_PROJECT_ID SUPABASE_ACCESS_TOKEN SUPABASE_DB_PASSWORD; do
+            if [ -z "${!nome}" ]; then
+              echo "::error::Falta o segredo $nome no Environment 'staging' (Settings > Environments > staging). Veja docs/configuracao-github.md."
+              exit 1
+            fi
+          done
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Vincula ao projeto de staging
+        run: pnpm exec supabase link --project-ref "$SUPABASE_PROJECT_ID"
+      - name: Ensaio (mostra o que seria aplicado)
+        run: pnpm exec supabase db push --dry-run
+      - name: Aplica as migrações
+        run: pnpm exec supabase db push

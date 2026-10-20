@@ -81,6 +81,23 @@ bloqueado pela proteção da `main`.
    New repository secret** → nome `RELEASE_PLEASE_TOKEN`.
 5. Guarde uma cópia no gerenciador de senhas. **Nunca cole o token no chat ou em arquivos.**
 
+## 9. Segredos do staging (migrações do banco)
+
+Necessário para o fluxo "Staging (migrações do banco)". Nunca cole estes valores no chat nem no
+Git: guarde no gerenciador de senhas e coloque direto no GitHub.
+
+1. **ID do projeto:** painel do Supabase → projeto de staging → **Project Settings → General →
+   Project ID**.
+2. **Token de acesso:** `supabase.com/dashboard/account/tokens` → **Generate new token** (nome
+   `medfoco-github-staging`). Ele vale para a **conta toda**; por isso fica só no Environment
+   `staging`. Se vazar, revogue-o no mesmo lugar
+   ([runbooks/vazamento-de-segredo.md](runbooks/vazamento-de-segredo.md)).
+3. **Senha do banco:** a definida ao criar o projeto (ou **Project Settings → Database → Reset
+   database password**).
+4. No GitHub: **Settings → Environments → New environment** `staging` e, dentro dele, em
+   **Environment secrets**, crie `SUPABASE_PROJECT_ID`, `SUPABASE_ACCESS_TOKEN` e
+   `SUPABASE_DB_PASSWORD`.
+
 ## 8. Ativar o link de teste (GitHub Pages)
 
 **Settings → Pages → Build and deployment → Source: "GitHub Actions"**. Detalhes em

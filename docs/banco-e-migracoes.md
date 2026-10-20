@@ -5,7 +5,7 @@
 > **Situação (etapa 3.1):** `supabase/config.toml` existe (cadastro aberto desligado, e-mail
 > confirmado, senha de no mínimo 8 caracteres) e o CI tem o job "Migrações do banco (Supabase)", que
 > sobe um banco local e aplica as migrações do zero. As migrações começam na etapa 3.2 (seção abaixo) e
-> o staging **não** recebe migrações automaticamente: isso entra num PR próprio, depois da 3.2.
+> o staging recebe as migrações pelo fluxo "Staging (migrações do banco)" (seção "Staging" abaixo).
 
 ## Tabelas e regras de acesso (etapa 3.2)
 
@@ -36,6 +36,21 @@ nova sem RLS. **Para criar uma tabela nova:** inclua-a na lista do teste e nas r
 migração.
 
 **Dados fictícios:** `supabase/seed.sql` (só local, `supabase db reset`).
+
+## Staging
+
+O fluxo `.github/workflows/staging.yml` aplica as migrações no projeto de **staging** (nunca em
+produção):
+
+- Roda em merge na `main` que altere `supabase/migrations/` e pelo botão **Actions → Staging
+  (migrações do banco) → Run workflow** (use-o na primeira vez, para aplicar as migrações que já
+  existem). Nunca roda em Pull Request.
+- Faz primeiro um ensaio (`db push --dry-run`) e depois aplica. Não envia o `seed.sql` (dados
+  fictícios são só do banco local).
+- Usa o **Environment `staging`** do GitHub, com os segredos `SUPABASE_PROJECT_ID`,
+  `SUPABASE_ACCESS_TOKEN` e `SUPABASE_DB_PASSWORD` (como criá-los: `docs/configuracao-github.md`,
+  item 9). Sem eles, o fluxo falha com uma mensagem clara.
+- Produção (etapa 3.9) terá Environment próprio (`production`), token próprio e aprovação manual.
 
 ## Banco local no seu computador
 
@@ -68,9 +83,9 @@ Para que voltar o código para a versão anterior nunca exija voltar o banco:
 
 ## Onde aplicar
 
-| Ambiente | Como as migrações são aplicadas                              |
-| -------- | ------------------------------------------------------------ |
-| Local    | `supabase db reset` (recria do zero + seed)                  |
-| CI       | Automaticamente, banco temporário (job "Migrações do banco") |
-| Staging  | Previsto: a cada merge na `main` (a partir da etapa 3.2)     |
-| Produção | No deploy da release, após backup automático                 |
+| Ambiente | Como as migrações são aplicadas                                                                        |
+| -------- | ------------------------------------------------------------------------------------------------------ |
+| Local    | `supabase db reset` (recria do zero + seed)                                                            |
+| CI       | Automaticamente, banco temporário (job "Migrações do banco")                                           |
+| Staging  | Fluxo "Staging (migrações do banco)": merge na `main` que mude `supabase/migrations/`, ou botão manual |
+| Produção | No deploy da release, após backup automático                                                           |
