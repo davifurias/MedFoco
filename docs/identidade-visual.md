@@ -6,14 +6,14 @@ só começa com autorização. Nenhuma etapa muda funções, dados ou endereços
 
 ## Etapas
 
-| #   | Etapa                                                                                      | Status                                 |
-| --- | ------------------------------------------------------------------------------------------ | -------------------------------------- |
-| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                     |
-| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                     |
-| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36)                     |
-| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | concluída (PR #37)                     |
-| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | em revisão                             |
-| 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início |
+| #   | Etapa                                                                                      | Status                                                                            |
+| --- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
+| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                                                                |
+| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                                                                |
+| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36)                                                                |
+| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | concluída (PR #37)                                                                |
+| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | concluída (PR #38); a página /mais foi substituída pelo menu ⋯ (redesenho mobile) |
+| 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início                                            |
 
 "Mais" (celular) guarda Mapa, Questões, Assessora IA, Ideias e Perfil: **todas as áreas continuam
 acessíveis**. Dependência prevista na etapa 2: `lucide-react` (ícones SVG, só os usados entram no
@@ -100,3 +100,25 @@ app).
 - **Testes ponta a ponta:** o auxiliar `irParaArea` usa a barra de baixo ou passa por "Mais"; há um
   teste do fluxo no celular (e a página `/mais` entra nas varreduras de acessibilidade e de
   rolagem lateral).
+
+## Redesenho mobile (Claude Design)
+
+Baseado no protótipo "MedFoco Mobile" do Claude Design: fundo cinza claro, cartões brancos
+arredondados e ciano nas ações. **Nenhuma função, dado ou endereço de tela mudou**, exceto o fim da
+página `/mais` (o endereço antigo volta ao Início).
+
+- **Paleta "Ciano claro":** mesmos nomes de tokens em `styles/global.css`, valores novos. O ciano de
+  ação é `#00708f` (branco sobre ele: 5,6:1). O **tema claro agora é o padrão**; o escuro continua
+  disponível, com o ciano adaptado. Quem já escolheu um tema mantém a escolha (mesma chave salva).
+- **Medidas:** raio do cartão 20 px e do botão 14 px; sombra quase imperceptível.
+- **Celular:** o topo mostra o título grande da tela, uma legenda e o botão ⋯. A barra de baixo
+  fica com as 4 áreas principais (Início, Agenda, Matérias, Foco).
+- **Menu ⋯ (`layouts/MenuCelular.tsx`):** painel que desliza da direita, com a tela escurecida.
+  Fecha pelo X, tocando fora, com Esc ou deslizando para a direita; o foco fica preso nele e volta
+  ao ⋯. Traz o interruptor de **Tema escuro** e todas as áreas em Principais, Estudar e Mais
+  (Ideias, Buscar, Perfil acadêmico). Nenhuma área ficou de fora (há teste).
+- **Computador:** a barra lateral continua igual (só recolorida). Perfil, Buscar e Tema seguem
+  existindo uma vez na barra lateral; no celular saem do ar e o menu ⋯ os oferece.
+- **Fora desta etapa (sugestões):** botão flutuante "+ Novo" com painel de criação, blocos coloridos
+  de números no Início e círculos de marcar nas tarefas, que o protótipo traz mas que mudam a
+  estrutura das telas.

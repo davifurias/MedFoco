@@ -1,6 +1,6 @@
 /*
- * Estrutura do app: no celular (< 900px), barra fina no topo e áreas na barra de baixo; no
- * computador (≥ 900px), o cabeçalho vira a barra lateral. Cores e medidas vêm dos tokens de
+ * Estrutura do app: no celular (< 900px), título grande com o botão ⋯ no topo e 4 áreas na barra de
+ * baixo; no computador (≥ 900px), o cabeçalho vira a barra lateral. Cores e medidas vêm dos tokens de
  * styles/global.css.
  */
 .app {
@@ -100,8 +100,8 @@
 .app-main {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
-  padding-bottom: 90px;
+  padding: 20px;
+  padding-bottom: 100px;
   max-width: 900px;
   margin: 0 auto;
   width: 100%;
@@ -117,7 +117,8 @@
   left: 0;
   right: 0;
   display: flex;
-  background: var(--card);
+  background: color-mix(in srgb, var(--card) 92%, transparent);
+  backdrop-filter: blur(20px);
   border-top: 1px solid var(--border);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   z-index: 5;
@@ -127,27 +128,105 @@
   flex: 1;
   /* Os itens dividem a largura mesmo em telas muito estreitas (sem empurrar o último). */
   min-width: 0;
-  padding: 10px 2px 8px;
+  min-height: 56px;
+  padding: 8px 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  gap: 3px;
   color: var(--muted);
-  font-size: 0.68rem;
+  font-size: 0.75rem;
+  font-weight: 600;
   text-decoration: none;
   text-align: center;
 }
 
 .tabbar .icon {
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 .tabbar a.active {
   color: var(--primary-text);
 }
 
+/*
+ * Celular: o cabeçalho (marca, Perfil, Buscar, Tema) só aparece na barra lateral do computador. Aqui
+ * a marca fica só para leitores de tela e os demais controles saem do ar: o menu ⋯ os oferece.
+ */
+@media (max-width: 899.98px) {
+  .app-header {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .app-header-actions {
+    display: none;
+  }
+}
+
+/* Título grande da tela e botão ⋯ (só no celular). */
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 20px 0;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.page-head-text {
+  min-width: 0;
+}
+
+.page-kicker {
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.page-title {
+  font-size: 2.1rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.menu-botao {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--primary-text);
+  box-shadow: var(--shadow-1);
+  cursor: pointer;
+  font-size: 1.4rem;
+}
+
+.menu-botao:active {
+  transform: scale(0.92);
+}
+
 @media (min-width: 900px) {
+  .page-head {
+    display: none;
+  }
+
   .app {
     display: grid;
     grid-template-columns: 248px minmax(0, 1fr);
@@ -237,5 +316,183 @@
     grid-row: 1;
     padding: 28px 36px;
     padding-bottom: 28px;
+  }
+}
+
+/* Menu ⋯ do celular: painel da direita sobre a tela escurecida. */
+.menu-celular {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+}
+
+.menu-fundo {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 25, 35, 0.45);
+  animation: menu-fundo-entra 0.28s ease;
+}
+
+.menu-painel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(316px, 88vw);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: calc(24px + env(safe-area-inset-top, 0px)) 16px 24px;
+  overflow-y: auto;
+  background: var(--bg);
+  border-radius: 28px 0 0 28px;
+  box-shadow: var(--shadow-2);
+  animation: menu-painel-entra 0.3s cubic-bezier(0.3, 0.8, 0.3, 1);
+}
+
+@keyframes menu-fundo-entra {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes menu-painel-entra {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+.menu-topo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 4px;
+}
+
+.menu-avatar {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.menu-nome {
+  flex: 1;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.menu-fechar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--card-2);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.menu-titulo {
+  margin: 0 8px 8px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.menu-grupo {
+  list-style: none;
+  margin: 0;
+  padding: 0 14px;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow-1);
+}
+
+.menu-grupo li + li .menu-linha {
+  border-top: 1px solid var(--border);
+}
+
+.menu-linha {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 52px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 1.05rem;
+  font-weight: 500;
+}
+
+.menu-link[aria-current='page'] {
+  color: var(--primary-text);
+  font-weight: 700;
+}
+
+.menu-link > .icon:last-child {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.menu-icone {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1.15rem;
+}
+
+.menu-rotulo {
+  flex: 1;
+}
+
+.menu-switch {
+  flex: none;
+  position: relative;
+  width: 52px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--border);
+  cursor: pointer;
+  transition: background var(--ease);
+}
+
+.menu-switch[aria-checked='true'] {
+  background: var(--primary);
+}
+
+.menu-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: left var(--ease);
+}
+
+.menu-switch[aria-checked='true'] .menu-knob {
+  left: 22px;
+}
+
+/* Se a janela ficar larga com o menu aberto (girar o aparelho), ele some junto com o botão ⋯. */
+@media (min-width: 900px) {
+  .menu-celular {
+    display: none;
   }
 }

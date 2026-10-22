@@ -10,7 +10,6 @@ import { FocoPage } from '../features/foco/FocoPage';
 import { IdeiasAppPage } from '../features/ideias/IdeiasAppPage';
 import { IdeiasLayout } from '../features/ideias/IdeiasLayout';
 import { InicioPage } from '../features/inicio/InicioPage';
-import { MaisPage } from '../features/mais/MaisPage';
 import { MapaPage } from '../features/mapa/MapaPage';
 import { MateriasPage } from '../features/materias/MateriasPage';
 import { PerfilPage } from '../features/perfil/PerfilPage';
@@ -47,7 +46,6 @@ export const routes: RouteObject[] = [
       },
       { path: 'busca', element: <BuscaPage /> },
       { path: 'perfil', element: <PerfilPage /> },
-      { path: 'mais', element: <MaisPage /> },
       // Endereço desconhecido: volta para o Início.
       { path: '*', element: <Navigate to="/" replace /> },
     ],

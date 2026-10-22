@@ -2,31 +2,35 @@ import { describe, expect, it } from 'vitest';
 import {
   MAIN_AREAS,
   MOBILE_TABS,
-  MORE_AREAS,
+  MENU_GROUPS,
   documentTitleFor,
-  isInMore,
+  headerFor,
   pageNameFor,
 } from './navigation';
 
 describe('divisão da navegação no celular', () => {
-  it('cada uma das 8 áreas está na barra de baixo ou na página Mais, nunca nas duas', () => {
-    const tabs = MOBILE_TABS.map((area) => area.path);
-    const more = MORE_AREAS.map((area) => area.path);
-    expect(tabs).toEqual(['/', '/agenda', '/materias', '/foco']);
-    expect(more).toEqual(['/mapa', '/questoes', '/assessora', '/ideias', '/perfil']);
-    for (const area of MAIN_AREAS) {
-      expect([tabs.includes(area.path), more.includes(area.path)].filter(Boolean)).toHaveLength(1);
-    }
+  it('a barra de baixo tem 4 áreas e o menu ⋯ lista todas, agrupadas, sem repetir nenhuma', () => {
+    expect(MOBILE_TABS.map((area) => area.path)).toEqual(['/', '/agenda', '/materias', '/foco']);
+    const groups = MENU_GROUPS.map((group) => [group.title, group.areas.map((a) => a.path)]);
+    expect(groups).toEqual([
+      ['Principais', ['/', '/agenda', '/materias', '/foco']],
+      ['Estudar', ['/mapa', '/questoes', '/assessora']],
+      ['Mais', ['/ideias', '/busca', '/perfil']],
+    ]);
+    const listed = MENU_GROUPS.flatMap((group) => group.areas.map((area) => area.path));
+    expect(new Set(listed).size).toBe(listed.length);
+    for (const area of MAIN_AREAS) expect(listed, area.path).toContain(area.path);
   });
-  it('reconhece a página Mais e as telas dela, mas não telas parecidas', () => {
-    expect(isInMore('/mais')).toBe(true);
-    expect(isInMore('/mais/')).toBe(true);
-    expect(isInMore('/ideias/caderno')).toBe(true);
-    expect(isInMore('/mapa')).toBe(true);
-    expect(isInMore('/mapas')).toBe(false);
-    expect(isInMore('/maisfoco')).toBe(false);
-    expect(isInMore('/agenda')).toBe(false);
-    expect(isInMore('/')).toBe(false);
+});
+
+describe('cabeçalho do celular', () => {
+  it('dá título e legenda a cada tela, inclusive sub-abas, e cai no Início', () => {
+    expect(headerFor('/').title).toBe('Início');
+    expect(headerFor('/agenda/tarefas').title).toBe('Agenda');
+    expect(headerFor('/ideias/caderno').title).toBe('Ideias');
+    expect(headerFor('/perfil/').title).toBe('Perfil acadêmico');
+    expect(headerFor('/nao-existe').title).toBe('Início');
+    for (const area of MAIN_AREAS) expect(headerFor(area.path).kicker, area.path).toBeTruthy();
   });
 });
 
@@ -36,7 +40,7 @@ describe('nomes das telas', () => {
   });
   it('ignora a barra final e devolve null para telas desconhecidas', () => {
     expect(pageNameFor('/agenda/')).toBe('Agenda · Eventos');
-    expect(pageNameFor('/mais')).toBe('Mais');
+    expect(pageNameFor('/mais')).toBeNull();
     expect(pageNameFor('/nao-existe')).toBeNull();
   });
   it('o título da aba termina com o nome do app', () => {

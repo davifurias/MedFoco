@@ -1,40 +1,9 @@
-import { useLayoutEffect, useState } from 'react';
-import { useRepository } from '../data/RepositoryContext';
-import type { Theme } from '../data/types';
-import { applyTheme, currentTheme } from '../shared/theme';
+import { useTheme } from '../shared/useTheme';
 import { Icon } from './Icon';
 
-/**
- * Botão do cabeçalho que alterna entre o tema escuro (padrão) e o claro. Ao abrir, aplica o tema
- * salvo (antes de a primeira imagem ser desenhada); a escolha é só uma preferência, então, se não
- * puder ser salva, vale até fechar a página.
- */
+/** Botão do cabeçalho que alterna entre o tema claro (padrão) e o escuro. */
 export function ThemeToggle() {
-  const repository = useRepository();
-  const [theme, setTheme] = useState<Theme>(currentTheme);
-  const next: Theme = theme === 'escuro' ? 'claro' : 'escuro';
-
-  useLayoutEffect(() => {
-    let active = true;
-    repository
-      .getTheme()
-      .then((saved) => {
-        if (!active) return;
-        applyTheme(saved);
-        setTheme(saved);
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, [repository]);
-
-  function toggle() {
-    applyTheme(next);
-    setTheme(next);
-    repository.saveTheme(next).catch(() => {});
-  }
-
+  const { theme, next, toggle } = useTheme();
   return (
     <button
       type="button"
