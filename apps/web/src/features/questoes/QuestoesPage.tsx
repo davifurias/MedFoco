@@ -57,7 +57,7 @@ export function QuestoesPage() {
       <Desempenho attempts={attempts} />
       <section className="card" aria-labelledby="praticar-title">
         <h2 id="praticar-title">Praticar</h2>
-        <div className="row">
+        <div className="row campos">
           <label htmlFor={subjectId} className="sr-only">
             Filtrar por matéria
           </label>

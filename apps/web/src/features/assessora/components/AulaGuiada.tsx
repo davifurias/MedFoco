@@ -94,7 +94,7 @@ export function AulaGuiada({ generate, createQuestions }: AulaGuiadaProps) {
         Escolha um assunto e receba uma aula dividida em passos curtos, com analogias e uma pergunta
         de checagem em cada etapa — em vez de um texto corrido.
       </p>
-      <form className="row" onSubmit={handleSubmit} noValidate>
+      <form className="row campos" onSubmit={handleSubmit} noValidate>
         <label htmlFor={ids.topic} className="sr-only">
           Assunto da aula
         </label>

@@ -1,19 +1,22 @@
 # Identidade visual e renovação do visual
 
-Decisão do dono: **renovação visual (opção B)** com a paleta **"Índigo refinado"**, fonte Inter,
-ícones desenhados no lugar dos emojis da navegação e navegação nova. Cada etapa é um PR separado e
+Decisão do dono: **renovação visual (opção B)**, com fonte Inter, ícones desenhados no lugar dos
+emojis e navegação nova. A paleta começou como **"Índigo refinado"** e foi trocada pela **"Ciano
+claro"** no redesenho mobile (PR #41), mais abaixo. Cada etapa é um PR separado e
 só começa com autorização. Nenhuma etapa muda funções, dados ou endereços das telas.
 
 ## Etapas
 
-| #   | Etapa                                                                                      | Status                                                                            |
-| --- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------- |
-| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                    | concluída (PR #33)                                                                |
-| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`              | concluída (PR #35)                                                                |
-| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                               | concluída (PR #36)                                                                |
-| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação    | concluída (PR #37)                                                                |
-| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                | concluída (PR #38); a página /mais foi substituída pelo menu ⋯ (redesenho mobile) |
-| 4   | Telas, em PRs separados: Início → Agenda e Matérias → Mapa, Questões e Foco → demais telas | só depois de ver a fundação e o Início                                            |
+| #   | Etapa                                                                                                                             | Status                                                                            |
+| --- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| 1   | **Fundação**: cores, fonte, escalas, sombras, movimento                                                                           | concluída (PR #33)                                                                |
+| 2A  | Componentes base (botões, abas, pílulas, itens, diálogos) e componente `Icon`                                                     | concluída (PR #35)                                                                |
+| 2B  | Troca dos emojis-ícones por ícones desenhados, tela por tela                                                                      | concluída (PR #36)                                                                |
+| 3A  | Barra lateral no computador (marca, áreas, Perfil, Buscar e Tema) e ícones da navegação                                           | concluída (PR #37)                                                                |
+| 3B  | Celular: barra de baixo com 4 áreas + "Mais" (página /mais)                                                                       | concluída (PR #38); a página /mais foi substituída pelo menu ⋯ (redesenho mobile) |
+| 4A  | Telas: formulários e celular (campos que cortavam texto, aviso da Assessora, rótulo solto)                                        | em revisão (PR #39)                                                               |
+| 4B  | Telas: botão "+ Novo", números do Início em blocos coloridos e círculos de marcar nas tarefas (próxima etapa do protótipo mobile) | não iniciada                                                                      |
+| 4C  | Telas: estados vazios com ícone                                                                                                   | não iniciada                                                                      |
 
 "Mais" (celular) guarda Mapa, Questões, Assessora IA, Ideias e Perfil: **todas as áreas continuam
 acessíveis**. Dependência prevista na etapa 2: `lucide-react` (ícones SVG, só os usados entram no
@@ -122,3 +125,22 @@ página `/mais` (o endereço antigo volta ao Início).
 - **Fora desta etapa (sugestões):** botão flutuante "+ Novo" com painel de criação, blocos coloridos
   de números no Início e círculos de marcar nas tarefas, que o protótipo traz mas que mudam a
   estrutura das telas.
+
+## Telas (etapa 4)
+
+Decisões do dono: 3 PRs (4A, 4B e 4C; depois do redesenho mobile, o 4B passou a seguir as
+sugestões do protótipo, listadas acima); o **Mapa** continua rolando para os lados dentro do cartão no
+celular (largura mínima de 600 px, escolha antiga para manter a legibilidade); **rótulos visíveis
+nos campos** e o anel de progresso do **Foco** ficam para depois.
+
+### 4A, formulários e celular
+
+- **Linhas de campos (`.row.campos`):** cada campo ocupa no mínimo 200 px; se não couber (celular),
+  vai para a linha de baixo, em vez de cortar o texto ("Todas as matér…"). No computador continuam
+  lado a lado. Há teste ponta a ponta que mede os campos (provado com a regra antiga de CSS, que o
+  faz falhar no celular).
+- **Aviso da Assessora:** o parágrafo solto virou um cartão de aviso com ícone (`role="note"` e o
+  texto continuam iguais).
+- **"Alternativa correta":** passa a usar `.field-label`, no mesmo tom das outras notas.
+- **Pendente (junto com os rótulos visíveis):** dicas muito longas em campo de linha única, como
+  "Matérias que está cursando (separadas por vírgula)", ainda aparecem cortadas no celular.

@@ -59,7 +59,7 @@ export function FormTecnica({ onConfigure }: FormTecnicaProps) {
           <option value={CUSTOM_KEY}>Personalizado</option>
         </select>
         {isCustom && (
-          <div className="row">
+          <div className="row campos">
             <label htmlFor={ids.work} className="sr-only">
               Minutos de foco
             </label>

@@ -1,6 +1,23 @@
 /* Estilos da Assessora IA, reproduzindo legacy/MedFoco.html (renderAssessora). */
 .ai-notice {
-  margin: 0 0 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card-2);
+  font-size: 0.85rem;
+}
+
+.ai-notice p {
+  margin: 0;
+}
+
+.ai-notice .icon {
+  margin-top: 2px;
+  color: var(--primary-text);
 }
 
 .lesson-step {
