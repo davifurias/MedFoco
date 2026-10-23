@@ -233,9 +233,9 @@ export function createLocalRepository(
     async getTheme() {
       try {
         const saved = storage.getItem(STORAGE_KEYS.theme);
-        return saved === 'claro' || saved === 'escuro' ? saved : 'escuro';
+        return saved === 'claro' || saved === 'escuro' ? saved : 'claro';
       } catch {
-        return 'escuro';
+        return 'claro';
       }
     },
     async saveTheme(theme: Theme) {

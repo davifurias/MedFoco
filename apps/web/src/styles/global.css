@@ -1,63 +1,76 @@
 /*
- * Identidade visual do MedFoco (renovação "Índigo refinado"). Mantenha estes tokens como fonte
+ * Identidade visual do MedFoco (redesenho mobile "Ciano claro": fundo cinza claro, cartões brancos, ciano nas ações). Mantenha estes tokens como fonte
  * única de cores do app: os testes de contraste (contraste.test.ts) leem os dois blocos abaixo.
  * Fundo e texto de cada tema são pares testados (mínimo 4,5:1).
  */
 :root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f2f2f7;
+  --card: #ffffff;
+  /* Superfície um degrau acima do cartão (botões discretos, ícones, linhas em destaque). */
+  --card-2: #e6eef2;
+  --text: #1c1f26;
+  --muted: #5d6472;
+  --primary: #00708f;
+  /* Ciano usado como cor de TEXTO (contraste mínimo de 4,5:1 sobre o fundo de cada tema). */
+  --primary-text: #00708f;
+  --primary-d: #005a74;
+  --accent: #34c47c;
+  --danger: #e74c3c;
+  --accent-text: #1a6a37;
+  --danger-text: #b02020;
+  --warn-text: #8f4a00;
+  /* Fundo de botão/pílula vermelha com texto branco. */
+  --danger-strong: #d63a2c;
+  --text-on-light: #1c1f26;
+  --border: #e8eaef;
+  --c-trabalho: #f39c12;
+  --c-provas: #d63a2c;
+  --c-ferias: #00b894;
+  --c-aulas: #00708f;
+  --c-outro: #636e72;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-2: 0 8px 24px rgba(20, 25, 40, 0.14);
+}
+
+/* O tema claro é o padrão; o escuro é uma escolha do usuário (botão no cabeçalho ou no menu ⋯). */
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #12121c;
-  --card: #1b1b29;
+  --bg: #0f171e;
+  --card: #17222b;
   /* Superfície um degrau acima do cartão (botões discretos, ícones, linhas em destaque). */
-  --card-2: #242436;
-  --text: #f1f0f8;
-  --muted: #a6a4bd;
-  --primary: #6552e6;
-  /* Roxo usado como cor de TEXTO; no tema escuro fica mais claro para manter o contraste. */
-  --primary-text: #a79ffb;
-  --primary-d: #5240d4;
-  --accent: #2dd4a8;
+  --card-2: #213039;
+  --text: #eef3f7;
+  --muted: #a3b0bc;
+  --primary: #00708f;
+  /* Ciano usado como cor de TEXTO; no tema escuro fica mais claro para manter o contraste. */
+  --primary-text: #52c6e8;
+  --primary-d: #005a74;
+  --accent: #34d399;
   --danger: #e74c3c;
   /* Versões para TEXTO (contraste mínimo de 4,5:1 sobre o fundo de cada tema). */
-  --accent-text: #2dd4a8;
+  --accent-text: #34d399;
   --danger-text: #ff7b6e;
   --warn-text: #f5b942;
   /* Fundo de botão/pílula vermelha com texto branco. */
   --danger-strong: #d63a2c;
-  --text-on-light: #1c1c28;
-  --border: #2f2f45;
+  --text-on-light: #1c1f26;
+  --border: #2a3945;
   --c-trabalho: #f39c12;
   --c-provas: #d63a2c;
   --c-ferias: #00b894;
-  --c-aulas: #6c5ce7;
+  --c-aulas: #00708f;
   --c-outro: #636e72;
   --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
   --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
-/* O tema escuro é o padrão; o claro é uma escolha do usuário (botão no cabeçalho). */
-:root[data-theme='light'] {
-  color-scheme: light;
-  --bg: #f5f4fb;
-  --card: #ffffff;
-  --card-2: #efedf9;
-  --text: #1d1b2e;
-  --muted: #625f79;
-  --primary-text: #4a39c9;
-  --accent: #00b894;
-  --accent-text: #007a62;
-  --danger-text: #c0392b;
-  --warn-text: #9a5700;
-  --border: #e3e0f1;
-  --shadow-1: 0 1px 2px rgba(29, 27, 46, 0.08);
-  --shadow-2: 0 8px 24px rgba(29, 27, 46, 0.12);
-}
-
 /* Escalas de medidas e movimento (iguais nos dois temas). */
 :root {
   --font-sans: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --radius: 18px;
-  --radius-sm: 12px;
+  --radius: 20px;
+  --radius-sm: 14px;
   --fs-xs: 0.75rem;
   --fs-sm: 0.85rem;
   --fs-md: 0.95rem;

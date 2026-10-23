@@ -14,6 +14,7 @@ function renderApp(path = '/') {
 }
 
 const desktopNav = () => screen.getByRole('navigation', { name: 'Navegação principal' });
+const menu = () => screen.getByRole('dialog', { name: 'Menu' });
 const mobileNav = () => screen.getByRole('navigation', { name: 'Navegação principal (celular)' });
 /** Páginas já reconstruídas, reconhecidas por um cartão característico (têm vários títulos). */
 const PAGE_BY_REGION: Record<string, string> = {
@@ -39,6 +40,7 @@ const pageTitle = () => {
 
 afterEach(() => {
   cleanup();
+  delete document.documentElement.dataset.theme;
   vi.restoreAllMocks();
 });
 
@@ -65,7 +67,7 @@ describe('App', () => {
 });
 
 describe('Navegação principal', () => {
-  it('mostra as 8 áreas do app original, na mesma ordem, na barra do computador; no celular, 4 áreas + Mais', () => {
+  it('mostra as 8 áreas do app original, na mesma ordem, na barra do computador; no celular, 4 áreas', () => {
     renderApp();
     const expected = MAIN_AREAS.map((area) => area.label);
     expect(expected).toEqual([
@@ -85,7 +87,7 @@ describe('Navegação principal', () => {
     const mobileLabels = within(mobileNav())
       .getAllByRole('link')
       .map((link) => link.textContent);
-    expect(mobileLabels).toEqual(['Início', 'Agenda', 'Matérias', 'Foco', 'Mais']);
+    expect(mobileLabels).toEqual(['Início', 'Agenda', 'Matérias', 'Foco']);
   });
 
   const expectedTitles: Record<string, string> = {
@@ -100,7 +102,7 @@ describe('Navegação principal', () => {
   };
 
   it.each(MAIN_AREAS.map((area) => [area.label, area.path]))(
-    'navega para %s pela barra do computador e pelo celular (direto ou pela página Mais)',
+    'navega para %s pela barra do computador e pelo celular (direto ou pelo menu ⋯)',
     (label, path) => {
       const router = renderApp(path === '/' ? '/foco' : '/');
       fireEvent.click(within(desktopNav()).getByRole('link', { name: label }));
@@ -114,9 +116,8 @@ describe('Navegação principal', () => {
       const mobileRouter = renderApp(path === '/' ? '/foco' : '/');
       const onTabBar = MOBILE_TABS.some((tab) => tab.path === path);
       if (!onTabBar) {
-        fireEvent.click(within(mobileNav()).getByRole('link', { name: 'Mais' }));
-        expect(mobileRouter.state.location.pathname).toBe('/mais');
-        fireEvent.click(within(screen.getByRole('main')).getByRole('link', { name: label }));
+        fireEvent.click(screen.getByRole('button', { name: 'Abrir menu' }));
+        fireEvent.click(within(menu()).getByRole('link', { name: label }));
       } else {
         fireEvent.click(within(mobileNav()).getByRole('link', { name: label }));
       }
@@ -125,37 +126,65 @@ describe('Navegação principal', () => {
     },
   );
 
-  describe('página Mais (celular)', () => {
-    it('lista Mapa, Questões, Assessora IA, Ideias e Perfil, cada um com o seu endereço', () => {
-      renderApp('/mais');
-      const links = within(screen.getByRole('main')).getAllByRole('link');
+  describe('menu ⋯ (celular)', () => {
+    const open = () => fireEvent.click(screen.getByRole('button', { name: 'Abrir menu' }));
+
+    it('abre com todas as áreas agrupadas e o interruptor de tema, e fecha pelo X, por Esc e ao escolher', () => {
+      const router = renderApp('/agenda');
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).toBeNull();
+      open();
+      const links = within(menu()).getAllByRole('link');
       expect(links.map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
+        ['Início', '/'],
+        ['Agenda', '/agenda'],
+        ['Matérias', '/materias'],
+        ['Foco', '/foco'],
         ['Mapa', '/mapa'],
         ['Questões', '/questoes'],
         ['Assessora IA', '/assessora'],
         ['Ideias', '/ideias'],
-        ['Perfil', '/perfil'],
+        ['Buscar', '/busca'],
+        ['Perfil acadêmico', '/perfil'],
       ]);
-      expect(document.title).toBe('Mais · MedFoco');
+      expect(
+        within(menu()).getByRole('link', { name: 'Agenda' }).getAttribute('aria-current'),
+      ).toBe('page');
+      expect(within(menu()).getByRole('switch', { name: 'Tema escuro' })).toBeTruthy();
+      fireEvent.click(within(menu()).getByRole('button', { name: 'Fechar menu' }));
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).toBeNull();
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Abrir menu' }));
+      open();
+      fireEvent.keyDown(menu(), { key: 'Escape' });
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).toBeNull();
+      open();
+      fireEvent.click(within(menu()).getByRole('link', { name: 'Perfil acadêmico' }));
+      expect(router.state.location.pathname).toBe('/perfil');
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).toBeNull();
     });
 
-    it('o botão Mais fica ativo na própria página e nas telas listadas nela, e só nelas', () => {
-      const mais = () => within(mobileNav()).getByRole('link', { name: 'Mais' });
-      renderApp('/mais');
-      expect(mais().getAttribute('aria-current')).toBe('page');
-      cleanup();
-      for (const path of ['/mapa', '/questoes', '/assessora', '/ideias/caderno', '/perfil']) {
-        renderApp(path);
-        expect(mais().getAttribute('aria-current'), path).toBe('true');
-        expect(mais().classList.contains('active'), path).toBe(true);
-        cleanup();
-      }
-      for (const path of ['/', '/agenda/tarefas', '/materias', '/foco', '/busca']) {
-        renderApp(path);
-        expect(mais().getAttribute('aria-current'), path).toBeNull();
-        expect(mais().classList.contains('active'), path).toBe(false);
-        cleanup();
-      }
+    it('fecha ao deslizar para a direita e o interruptor troca o tema', async () => {
+      renderApp();
+      open();
+      fireEvent.touchStart(menu(), { touches: [{ clientX: 100 }] });
+      fireEvent.touchEnd(menu(), { changedTouches: [{ clientX: 220 }] });
+      expect(screen.queryByRole('dialog', { name: 'Menu' })).toBeNull();
+      open();
+      const tema = within(menu()).getByRole('switch', { name: 'Tema escuro' });
+      expect(tema.getAttribute('aria-checked')).toBe('false');
+      fireEvent.click(tema);
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      expect(tema.getAttribute('aria-checked')).toBe('true');
+    });
+
+    it('mostra título e legenda da tela no cabeçalho', () => {
+      renderApp('/foco');
+      expect(document.querySelector('.page-title')?.textContent).toBe('Foco');
+      expect(document.querySelector('.page-kicker')?.textContent).toBe('Um passo de cada vez');
+    });
+
+    it('o endereço antigo /mais volta ao Início', () => {
+      const router = renderApp('/mais');
+      expect(router.state.location.pathname).toBe('/');
     });
   });
 

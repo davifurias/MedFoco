@@ -108,7 +108,9 @@ describe('Busca', () => {
     await waitFor(() => expect(box()).toBeTruthy());
     type('CORACAO');
     await waitFor(() => expect(status()).toBe('4 resultados.'));
-    const names = screen.getAllByRole('region').map((r) => r.getAttribute('aria-labelledby'));
+    const names = within(screen.getByRole('main'))
+      .getAllByRole('region')
+      .map((r) => r.getAttribute('aria-labelledby'));
     expect(names).toEqual([
       'busca-title',
       'busca-materias',

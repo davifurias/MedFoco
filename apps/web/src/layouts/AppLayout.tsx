@@ -1,20 +1,33 @@
+import { useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation } from 'react-router';
-import { MAIN_AREAS, MOBILE_TABS, MORE_PATH, isInMore } from '../app/navigation';
+import { MAIN_AREAS, MOBILE_TABS, headerFor } from '../app/navigation';
 import { Icon } from '../components/Icon';
 import { RouteAnnouncer } from '../components/RouteAnnouncer';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { MenuCelular } from './MenuCelular';
 import './AppLayout.css';
 
 const MAIN_ID = 'conteudo-principal';
 
 /**
  * No computador, o cabeçalho é a barra lateral (marca, áreas e, no rodapé, Perfil, Buscar e Tema);
- * no celular, é uma barra fina no topo e a barra de baixo traz 4 áreas + "Mais". Os controles existem uma
- * só vez: o CSS muda de lugar, nunca duplica.
+ * no celular, o topo mostra o título da tela com o botão ⋯ (menu com todas as áreas) e a barra de
+ * baixo traz as 4 áreas principais. Perfil, Buscar e Tema existem uma só vez fora do menu: o CSS
+ * muda de lugar, nunca duplica.
  */
 export function AppLayout() {
   const { pathname } = useLocation();
-  const inMore = isInMore(pathname);
+  const { title, kicker } = headerFor(pathname);
+  // O menu guarda a tela em que foi aberto: trocar de tela o fecha, sem efeito nem estado extra.
+  const [openAt, setOpenAt] = useState<string | null>(null);
+  const menuOpen = openAt === pathname;
+  const menuButton = useRef<HTMLButtonElement>(null);
+
+  function closeMenu() {
+    setOpenAt(null);
+    menuButton.current?.focus();
+  }
+
   return (
     <div className="app">
       <a
@@ -56,6 +69,32 @@ export function AppLayout() {
           <ThemeToggle />
         </div>
       </header>
+      <div
+        className="page-head"
+        role="region"
+        aria-label="Menu da tela"
+        aria-hidden={menuOpen ? true : undefined}
+      >
+        {/* O nome da tela já chega a leitores de tela pelo título da aba e pelo aviso ao trocar de tela. */}
+        <div className="page-head-text" aria-hidden="true">
+          <div className="page-kicker">{kicker}</div>
+          <div className="page-title">{title}</div>
+        </div>
+        <button
+          ref={menuButton}
+          type="button"
+          className="menu-botao"
+          aria-label="Abrir menu"
+          aria-haspopup="dialog"
+          aria-expanded={menuOpen}
+          onClick={() => setOpenAt(pathname)}
+        >
+          <Icon name="mais" />
+        </button>
+      </div>
+      {menuOpen && (
+        <MenuCelular onClose={closeMenu} onNavigate={() => setOpenAt(null)} pathname={pathname} />
+      )}
       <main id={MAIN_ID} className="app-main" tabIndex={-1}>
         <Outlet />
       </main>
@@ -66,15 +105,6 @@ export function AppLayout() {
             {area.label}
           </NavLink>
         ))}
-        {/* "Mais" fica ativo na própria página e nas telas listadas nela (Mapa, Questões…). */}
-        <Link
-          to={MORE_PATH}
-          className={inMore ? 'active' : undefined}
-          aria-current={pathname === MORE_PATH ? 'page' : inMore ? 'true' : undefined}
-        >
-          <Icon name="mais" />
-          Mais
-        </Link>
       </nav>
     </div>
   );

@@ -458,9 +458,9 @@ describe('perfil acadêmico', () => {
 });
 
 describe('tema', () => {
-  it('sem escolha salva, o padrão é o escuro e nada é gravado', async () => {
+  it('sem escolha salva, o padrão é o claro e nada é gravado', async () => {
     const storage = createMemoryStorage();
-    expect(await createLocalRepository(storage).getTheme()).toBe('escuro');
+    expect(await createLocalRepository(storage).getTheme()).toBe('claro');
     expect(storage.getItem(STORAGE_KEYS.theme)).toBeNull();
   });
 
@@ -473,17 +473,17 @@ describe('tema', () => {
     expect(await createLocalRepository(storage).getTheme()).toBe('escuro');
   });
 
-  it('valor desconhecido ou leitura bloqueada voltam ao escuro', async () => {
+  it('valor desconhecido ou leitura bloqueada voltam ao claro', async () => {
     const storage = createMemoryStorage();
-    storage.setItem(STORAGE_KEYS.theme, '{"theme":"claro"}');
-    expect(await createLocalRepository(storage).getTheme()).toBe('escuro');
+    storage.setItem(STORAGE_KEYS.theme, '{"theme":"escuro"}');
+    expect(await createLocalRepository(storage).getTheme()).toBe('claro');
     const blocked = createLocalRepository({
       getItem: () => {
         throw new Error('bloqueado');
       },
       setItem: () => {},
     });
-    expect(await blocked.getTheme()).toBe('escuro');
+    expect(await blocked.getTheme()).toBe('claro');
   });
 
   it('avisa quando não consegue gravar (quem chama decide o que fazer)', async () => {
