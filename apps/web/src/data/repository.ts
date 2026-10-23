@@ -63,7 +63,7 @@ export interface MedFocoRepository {
 
   getDailySuggestion(): Promise<DailySuggestion | null>;
 
-  /** Tema escolhido; sem escolha salva (ou com valor inválido), devolve o escuro. */
+  /** Tema escolhido; sem escolha salva (ou com valor inválido), devolve o claro. */
   getTheme(): Promise<Theme>;
   saveTheme(theme: Theme): Promise<void>;
 

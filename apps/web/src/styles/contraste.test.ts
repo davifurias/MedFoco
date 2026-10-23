@@ -14,8 +14,8 @@ function block(selector: RegExp): Record<string, string> {
   return Object.fromEntries([...body.matchAll(/(--[\w-]+):\s*([^;]+);/g)].map((m) => [m[1], m[2]]));
 }
 
-const dark = block(/:root,\s*:root\[data-theme='dark'\]\s*\{/);
-const light = { ...dark, ...block(/:root\[data-theme='light'\]\s*\{/) };
+const light = block(/:root,\s*:root\[data-theme='light'\]\s*\{/);
+const dark = { ...light, ...block(/:root\[data-theme='dark'\]\s*\{/) };
 
 const themes = { escuro: dark, claro: light } as const;
 

@@ -12,7 +12,11 @@ test('navega pelas 8 áreas, com título da aba e tela certos', async ({ page })
 
 test('abre a Busca e o Perfil, e volta ao Início', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: 'Buscar' }).click();
+  if ((page.viewportSize()?.width ?? 0) >= 900) {
+    await page.getByRole('link', { name: 'Buscar' }).click();
+  } else {
+    await irParaArea(page, 'Buscar');
+  }
   await expect(page).toHaveTitle('Busca · MedFoco');
   await expect(page.getByLabel('Texto da busca')).toBeFocused();
   await page.goto('/');
@@ -60,51 +64,47 @@ test('nenhuma tela tem rolagem lateral', async ({ page }) => {
   expect(dataEm(0)).toMatch(/^\d{4}-\d{2}-\d{2}$/);
 });
 
-test('no computador a barra lateral traz Perfil, Buscar e Tema; no celular só Buscar e Tema', async ({
+test('no computador a barra lateral traz Perfil, Buscar e Tema; no celular, o menu ⋯ os traz', async ({
   page,
 }) => {
   await page.goto('/');
   const larguraComputador = (page.viewportSize()?.width ?? 0) >= 900;
-  const perfil = page.getByRole('link', { name: 'Perfil', exact: true });
-  const buscar = page.getByRole('link', { name: 'Buscar' });
-  const tema = page.getByRole('button', { name: /^Mudar para o tema/ });
-  await expect(buscar).toBeVisible();
-  await expect(tema).toBeVisible();
   if (larguraComputador) {
-    await expect(perfil).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Buscar' })).toBeVisible();
+    await expect(page.getByRole('button', { name: /^Mudar para o tema/ })).toBeVisible();
     await expect(page.getByRole('navigation', { name: 'Navegação principal' })).toBeVisible();
-    await perfil.click();
+    await expect(page.getByRole('button', { name: 'Abrir menu' })).toBeHidden();
+    await page.getByRole('link', { name: 'Perfil', exact: true }).click();
     await expect(page).toHaveTitle('Perfil acadêmico · MedFoco');
   } else {
-    await expect(perfil).toBeHidden();
+    await expect(page.getByRole('link', { name: 'Buscar' })).toBeHidden();
     await expect(
       page.getByRole('navigation', { name: 'Navegação principal (celular)' }),
     ).toBeVisible();
+    await page.getByRole('button', { name: 'Abrir menu' }).click();
+    const menu = page.getByRole('dialog', { name: 'Menu' });
+    await expect(menu.getByRole('link', { name: 'Buscar' })).toBeVisible();
+    await expect(menu.getByRole('switch', { name: 'Tema escuro' })).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Perfil acadêmico' })).toBeVisible();
   }
 });
 
-test('celular: a barra de baixo tem 4 áreas + Mais, e Mais leva às demais áreas e ao Perfil', async ({
+test('celular: a barra de baixo tem 4 áreas e o menu ⋯ leva às demais áreas e ao Perfil', async ({
   page,
 }) => {
-  test.skip((page.viewportSize()?.width ?? 0) >= 900, 'a página Mais é do celular');
+  test.skip((page.viewportSize()?.width ?? 0) >= 900, 'o menu ⋯ é do celular');
   await page.goto('/');
   const barra = page.getByRole('navigation', { name: 'Navegação principal (celular)' });
-  await expect(barra.getByRole('link')).toHaveText([
-    'Início',
-    'Agenda',
-    'Matérias',
-    'Foco',
-    'Mais',
-  ]);
-  await barra.getByRole('link', { name: 'Mais' }).click();
-  await expect(page).toHaveTitle('Mais · MedFoco');
-  const lista = page.getByRole('main').getByRole('link');
-  await expect(lista).toHaveText(['Mapa', 'Questões', 'Assessora IA', 'Ideias', 'Perfil']);
-  await lista.getByText('Mapa', { exact: true }).click();
+  await expect(barra.getByRole('link')).toHaveText(['Início', 'Agenda', 'Matérias', 'Foco']);
+  await page.getByRole('button', { name: 'Abrir menu' }).click();
+  const menu = page.getByRole('dialog', { name: 'Menu' });
+  await menu.getByRole('link', { name: 'Mapa', exact: true }).click();
   await expect(page).toHaveTitle('Mapa · MedFoco');
-  // Em uma tela da página Mais, o botão Mais continua marcado como ativo.
-  await expect(barra.getByRole('link', { name: 'Mais' })).toHaveAttribute('aria-current', 'true');
-  await barra.getByRole('link', { name: 'Mais' }).click();
-  await page.getByRole('main').getByRole('link', { name: 'Perfil', exact: true }).click();
+  await expect(menu).toBeHidden();
+  await page.getByRole('button', { name: 'Abrir menu' }).click();
+  await page.keyboard.press('Escape');
+  await expect(menu).toBeHidden();
+  await page.getByRole('button', { name: 'Abrir menu' }).click();
+  await menu.getByRole('link', { name: 'Perfil acadêmico' }).click();
   await expect(page).toHaveTitle('Perfil acadêmico · MedFoco');
 });
